@@ -1,0 +1,191 @@
+/* Main page */
+
+body {
+  padding-top: 56px;
+  position:relative;
+}
+
+.MainHeader {
+	font-family: Arial;
+	padding-top:15px;
+}
+
+.SubHeader {
+	font-family: Arial;
+	font-style: italic;
+}
+
+/* Map page */
+
+.model {
+	z-index: 2;
+	overflow: auto;
+}
+
+.container {
+	/*Empty*/
+}
+
+#map {
+	margin-top: 2%;
+	margin-bottom: 5%;
+}
+
+.marker {
+  background-image: url('../mapbox-markers/marker.png');
+  background-size: cover;
+  width: 35px;
+  height: 55px;
+  cursor: pointer;
+}
+
+.mapboxgl-popup {
+  max-width: 200px;
+}
+
+.mapboxgl-popup-content {
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+}
+
+	/* Popups */
+	.model {
+		display: none;
+		position: absolute; 
+		padding-top: 50px;
+		left: 0; 
+		top: 0;
+		width: 100%;
+		height: 100%; 
+		background-color: rgb(0, 0, 0);
+		background-color: rgba(0, 0, 0, 0.5);
+	}
+
+	#model-content {
+		position: relative; 
+		background-color: rgb(243,242,237);
+		padding: 20px; 
+		margin: auto; 
+		width: 75%;  
+		-webkit-animation-name: animatetop;
+		-webkit-animation-duration: 0.4s;
+		animation-name: animatetop;
+		animation-duration: 0.4s
+	}
+
+	.close-btn {
+		position: absolute;
+	  	right: 2.5%;
+		color: lightgray; 
+		font-size: 24px;  
+		font-weight: bold;
+	}
+
+	.close-btn:hover {
+		color: darkgray;
+	}
+
+	#stationHeader, #stationSubHeader {
+		text-align: center;
+		font-family: Arial;
+		font-weight: bold;
+	}
+
+	#stationHeader {
+		font-size: 250%;
+		color: rgb(77, 121, 255);
+	}
+
+	#stationSubHeader {
+		font-size: 150%;
+		color: rgb(77, 77, 77);
+	}
+
+	@-webkit-keyframes animatetop {
+	from {top:-300px; opacity:0} 
+	to {top:0; opacity:1}
+	}
+
+	@keyframes animatetop {
+	from {top:-300px; opacity:0}
+	to {top:0; opacity:1}
+	}
+
+	/* Overall selector SVG */
+	#Overallsvg, #DAsvg, #DFsvg {
+		background-color: white;
+		width: 20%;
+		box-shadow: 2px 2px grey;
+	}
+
+		#Overallsvg {
+			float: left;
+		}
+
+		#DAsvg {
+			float: left;
+			margin-left: 20%;
+		}
+
+		#DFsvg {
+			float: right;
+		}
+
+	/* Bar SVG */
+	#linesvg {
+		background-color: white;
+		margin-top: 2%;
+		box-shadow: 2px 2px grey;
+		
+	}
+
+		/* Bar chart */
+		.bar {
+	        fill: red;
+	    }
+
+	/* Line SVG */
+	#barsvg {
+		background-color: white;
+		margin-top: 2%;
+		box-shadow: 2px 2px grey;
+		float: right;
+	}
+
+	#line {
+		fill: none;
+	    stroke: rgb(77, 121, 255);
+	    stroke-width: 2px;
+	}
+
+	.area {
+		fill: rgb(221, 246, 254);
+	}
+
+	.dot {
+   		fill: rgb(77, 121, 197);
+    	stroke: white;
+	}
+
+
+/* Visualizations page */
+
+#VisualizeAbout {
+	border-radius: 5px;
+	background: #cccccc;
+	padding: 20px;
+	width: 70%;
+	height: auto; 
+}
+
+#VisualizeLinks {
+	display: inline;
+	position: relative;
+	float: right;
+	border-radius: 5px;
+	background: #cccccc;
+	padding: 20px;
+	width: auto;
+	height: auto; 
+}
+

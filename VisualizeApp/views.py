@@ -1,0 +1,117 @@
+from django.shortcuts import render
+from .models import Station
+from .models import Calls
+from django.http import HttpResponse
+from django.core import serializers
+import json
+from django.db.models import Count
+
+def home(request): #Handles logic of certain route
+	return render(request, 'VisualizeApp/home.html')
+	#Pass in variable: render(request, 'VisualizeApp/home.html', Name)
+
+def about(request):
+	return render(request, 'VisualizeApp/about.html')
+	#Pass in variable in dictionary directly: render(request, 'VisualizeApp/home.html', {'title': 'About'})
+
+def map(request):
+
+	json_serializer = serializers.get_serializer("json")()
+	
+	#Fetch all stations
+	allStations = Station.objects.all()
+
+	#Serialize all stations
+	stations = json_serializer.serialize(allStations, ensure_ascii=False)
+
+	#Create arguments and render page
+	args = {'stations': stations}
+	
+	return render(request, 'VisualizeApp/map.html', args)
+
+def visualizations(request):
+	return render(request, 'VisualizeApp/visualizations.html')
+
+#TestCalls:
+	#calls = json_serializer.serialize(Calls.objects.all()[:2], ensure_ascii=False)
+	#calls = Calls.objects.filter(details__StationArea="Tallaght")
+
+	#for call in calls:
+		#print(call.details)
+
+def get_overall_data(request):
+
+	input = request.POST['station']
+	
+	#json_serializer = serializers.get_serializer("json")()
+
+	#Get total calls for station
+	overallCalls = Calls.objects.filter(details__StationArea = input)
+
+	#Get total number of calls
+	overallNum = overallCalls.count()
+	response_list = [overallNum]
+
+	# ---------- DA ---------- #
+
+	#Get total number of calls for station DA
+	DATotal = overallCalls.filter(details__Agency = 'DA').count()
+	response_list.append(DATotal)
+
+	#Get most popular incidents
+	#PopIncident = DATotal.values('details__Incident').annotate(Count=Count('details__Incident')).order_by('-Count')[:1]
+	#response_list.append(PopIncident)
+	#print(PopIncident)
+
+	# ---------- DF ---------- #
+
+	#Get total number of calls for station DF
+	DF = overallCalls.filter(details__Agency = 'DF').count()
+	response_list.append(DF)
+
+	response_data={}
+
+	try:
+		response_data['result'] = input;
+		response_data['message'] = response_list;
+	except:
+		response_data['result'] = "Failure"
+		response_data['message'] = "Error";
+
+	return HttpResponse(json.dumps(response_data), content_type = "application/json")
+
+def get_calls_unit(request):
+
+	input = request.POST['station']
+	type = request.POST['type']
+	year = request.POST['year']
+
+	print(year)
+
+	response_data={}
+
+	if year == "NA":
+		#Get total calls for station year
+		if type == "Overall":
+			totalCalls = Calls.objects.filter(details__StationArea = input)
+		else:
+			totalCalls = Calls.objects.filter(details__Agency = type, details__StationArea = input)
+		
+		for x in range(2013, 2019):
+			calls = totalCalls.filter(details__Date__endswith=x).count()
+			response_data[x] = calls
+	else:
+		#Get total calls for station month
+		if type == "Overall":
+			totalCalls = Calls.objects.filter(details__StationArea = input)
+		else:
+			totalCalls = Calls.objects.filter(details__Date__endswith=year, details__Agency = type, details__StationArea = input)
+		
+		#01/01/2018
+		for x in range(1, 13):
+			time = str(x) + "/" + str(year)
+			print(time)
+			calls = totalCalls.filter(details__Date__endswith=time).count()
+			response_data[x] = calls
+
+	return HttpResponse(json.dumps(response_data), content_type = "application/json")

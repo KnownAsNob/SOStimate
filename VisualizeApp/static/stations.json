@@ -1,0 +1,10 @@
+{
+  "type": "Feature",
+  "geometry": {
+    "type": "Point",
+    "coordinates": [-6.259251, 53.346937]
+  },
+  "properties": {
+    "name": "Dublin Test"
+  }
+}

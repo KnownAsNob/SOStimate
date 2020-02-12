@@ -1,0 +1,88 @@
+{% extends "VisualizeApp/base.html" %}
+
+{% block content %}
+
+	<div class = "container">
+		<h1 class = "MainHeader">Map</h1>
+	
+
+		<div id='map' style='width: 100%; height: 500px;'></div>
+
+			<script>
+				var data_from_django = '{{ stations|escapejs }}';
+				var stationObject = JSON.parse(data_from_django);
+				
+				//var data_from_django2 = '{{ calls|escapejs }}';
+				//var callObject = JSON.parse(data_from_django2);
+
+				mapboxgl.accessToken = 'pk.eyJ1Ijoia25vd25hc25vYiIsImEiOiJjazVvNHdza3EwYW1wM2xucmd4eW85OGpqIn0.iR8IWbJUnuIRL3jThbTK1g';
+				var map = new mapboxgl.Map
+				({
+					container: 'map',
+					style: 'mapbox://styles/mapbox/streets-v11',
+					center: [-6.259405, 53.347528], // Starting position
+					zoom: 13 // Starting zoom
+				});
+
+				// Add zoom and rotation controls to the map.
+				map.addControl(new mapboxgl.NavigationControl());
+
+				var counter = 0;
+
+				//Add markers to map
+				stationObject.forEach(function(marker) 
+				{
+					//Create HTML element for each station
+	  				var el = document.createElement('div');
+	  				el.className = 'marker';
+
+	  				var id = "modal-btn";
+
+	  				new mapboxgl.Marker(el)
+	    				.setLngLat([marker.fields.info.geometry.coordinates[0], marker.fields.info.geometry.coordinates[1]])
+		  				.setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+    					.setHTML('<h3 id = "stationName">' + marker.fields.name + '</h3><button onclick="onClicked($(this))">More Information</button>'))
+  
+		  				.addTo(map);		
+		  		});
+
+			</script>
+		</div> <!-- Map -->
+
+		<!-- Popup window -->
+		<div class="model">
+			<div id="model-content">
+				<span class="close-btn">&times;</span>
+				
+				<h2 id = "stationHeader">Header</h2>
+				<h2 id = "stationSubHeader">Loading...</h2>
+					
+			</div>
+		</div> <!-- Popup window -->
+
+	</div> <!-- Container -->
+
+{% endblock content %}
+
+<!--{% for call, value in totalCalls %} 
+							<p>{{call}}: {{ value }}</p>
+						{% endfor %}-->
+
+<!--{% for station in stations %} 
+			<h1>{{ station.name }}</h1>
+		{% endfor %} 
+
+		{% for station in stations %} 
+			print({{ station.name }})
+			var marker = new mapboxgl.Marker()
+	  		.setLngLat([-6.253952, 53.345858])
+	  		.addTo(map);
+	  	{% endfor %} -->
+
+<!-- {% for call in calls %}
+						{% if call.details.StationArea == "Tallaght" %}
+							<p>{{ call.details }}</p>
+						{% else %}
+							<p>{{ call.details }}</p>
+						{% endif %}
+					{% endfor %} -->

@@ -1,0 +1,27 @@
+{
+    "0": {
+        "Index": "0",
+        "Date": "01/01/2015",
+        "Agency": "DF",
+        "Station Area": "Dun Laoghaire",
+        "Incident": "Fire CAR",
+        "TOC": "00:25:30",
+        "ORD": "00:26:31",
+        "MOB": "00:27:38",
+        "IA": "00:29:44",
+        "LS": "nan",
+        "AH": "nan",
+        "MAV": "00:38:54",
+        "CD": "00:41:03",
+        "TOC - ORD": "0:01:01",
+        "ORD - MOB": "0:01:07",
+        "MOB - IA": "0:02:06",
+        "IA - MAV": "0:09:10",
+        "MAV - CD": "0:02:09",
+        "TOC-ORD-Cat": "1",
+        "ORD-MOB-Cat": "1.0",
+        "MOB-IA-Cat": "2.0",
+        "IA-MAV-Cat": "3.0",
+        "MAV-CD-Cat": "2.0"
+    }
+}

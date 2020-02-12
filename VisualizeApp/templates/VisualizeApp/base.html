@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>SOStimate</title>
+
+		<!-- Bootstrap core CSS 
+		<link href="VisualizeApp/CSS/Core.css" rel="stylesheet">-->
+
+		<!-- Bootstrap core CSS -->
+		<link rel="stylesheet" type="text/css" href="{% static 'VisualizeApp/Custom.css' %}">
+
+		<!-- Custom styles for this template -->
+		<link rel="stylesheet" type="text/css" href="{% static 'VisualizeApp/Core.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'VisualizeApp/Bootstrap.css' %}">
+
+		<!-- Add MapBox -->
+		<script src='https://api.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
+		<link href='https://api.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
+
+		<!-- Button Logic at end -->
+
+		<!-- Display Logic -->
+		<script src="{% static 'VisualizeApp/displayLogic.js' %}"></script>
+
+		<!-- Import security cookies for AJAX -->
+		<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
+
+		<!-- Load D3 library -->
+		<script src="https://d3js.org/d3.v5.min.js"></script>
+
+	</head>
+
+	<body>
+		<!-- Navigation -->
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+			<div class="container">
+		
+		<a class="navbar-brand" href="http://localhost:8000/">SOStimate</a>
+			
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+				
+				<div class="collapse navbar-collapse" id="navbarResponsive">
+					<ul class="navbar-nav ml-auto">
+						<li class="nav-item active">
+							<a class="nav-link" href="{% url 'site-home' %}">Home
+		  						<span class="sr-only">(current)</span>
+							</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'site-about' %}">About</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'site-map' %}">Map</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link" href="{% url 'site-visualizations' %}">Visualizations</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<!-- End Nav -->
+
+		{% block content %} {% endblock %}
+
+		<!-- Footer -->
+		<footer class="py-5 bg-dark">
+			<div class="container">
+				<p class="m-0 text-center text-white">Copyright &copy; SOStimate</p>
+			</div>
+			<!-- /.container -->
+		</footer>
+
+		<!-- Bootstrap core JavaScript 
+		<link rel="stylesheet" type="text/css" href="{% static 'VisualizeApp/Core.css' %}">
+		<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+		<script src="{% static 'VisualizeApp/jquery.min.js' %}"></script>
+		<script src="{% static 'VisualizeApp/bootstrap.bundle.min.js' %}"></script>
+
+		<!-- Button Logic -->
+		<script src="{% static 'VisualizeApp/buttonLogic.js' %}"></script>
+
+	</body>
+
+</html>
+
+<!--{% for post in posts %} {% endfor %} //A loop through posts dictionary -->
+
+<!--<h1>{{ post.title }}</h1> //Access a variable -->
+
+<!--{% if title %} #If title present
+		<title> </title>
+	{% else %}
+		<title> </title> 
+	{% endif %}
+//A loop through posts dictionary 
+-->
