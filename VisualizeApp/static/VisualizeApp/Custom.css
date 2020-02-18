@@ -111,61 +111,80 @@ body {
 	to {top:0; opacity:1}
 	}
 
-	/* Overall selector SVG */
-	#Overallsvg, #DAsvg, #DFsvg {
-		background-color: white;
-		width: 20%;
-		box-shadow: 2px 2px grey;
+/* Overall selector SVG */
+#Overallsvg, #DAsvg, #DFsvg {
+	background-color: white;
+	width: 20%;
+	box-shadow: 2px 2px grey;
+}
+
+	#Overallsvg {
+		float: left;
 	}
 
-		#Overallsvg {
-			float: left;
-		}
-
-		#DAsvg {
-			float: left;
-			margin-left: 20%;
-		}
-
-		#DFsvg {
-			float: right;
-		}
-
-	/* Bar SVG */
-	#linesvg {
-		background-color: white;
-		margin-top: 2%;
-		box-shadow: 2px 2px grey;
-		
+	#DAsvg {
+		float: left;
+		margin-left: 20%;
 	}
 
-		/* Bar chart */
-		.bar {
-	        fill: red;
-	    }
+	#DFsvg {
+		float: right;
+	}
+
+/* Bar SVG */
+#linesvg {
+	background-color: white;
+	margin-top: 2%;
+	box-shadow: 2px 2px grey;
+	
+}
+
+	/* Bar chart */
+	.bar {
+        fill: red;
+    }
 
 	/* Line SVG */
-	#barsvg {
+	#barsvg, #bar2svg {
 		background-color: white;
 		margin-top: 2%;
 		box-shadow: 2px 2px grey;
 		float: right;
 	}
 
-	#line {
-		fill: none;
-	    stroke: rgb(77, 121, 255);
-	    stroke-width: 2px;
-	}
+		#line {
+			fill: none;
+		    stroke: rgb(77, 121, 255);
+		    stroke-width: 2px;
+		}
 
-	.area {
-		fill: rgb(221, 246, 254);
-	}
+		.area {
+			fill: red;
+		}
 
-	.dot {
-   		fill: rgb(77, 121, 197);
-    	stroke: white;
-	}
+		.dot {
+	   		fill: rgb(77, 121, 197);
+	    	stroke: white;
+		}
+
+/* Bar SVG */
+#piesvg {
+	background-color: white;
+	margin-top: 2%;
+	box-shadow: 2px 2px grey;	
+}
+
+/* Pie Chart */
+.pieLabel {
+	font-family: Arial;
+	font-style: italic;
+	/*fill: rgb(77, 121, 197);
+	stroke-width: 0.6px;
+	stroke: black;*/
+	fill: black;
+	font-size: 120%;
+	text-anchor: middle;
+}
 
 
 /* Visualizations page */

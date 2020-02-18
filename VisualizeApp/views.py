@@ -4,7 +4,14 @@ from .models import Calls
 from django.http import HttpResponse
 from django.core import serializers
 import json
+
 from django.db.models import Count
+from django.db.models import Avg
+from django.db.models import IntegerField
+from django.db.models.functions import Cast
+
+#Get total calls for station
+masterCalls = Calls.objects.all()
 
 def home(request): #Handles logic of certain route
 	return render(request, 'VisualizeApp/home.html')
@@ -46,7 +53,7 @@ def get_overall_data(request):
 	#json_serializer = serializers.get_serializer("json")()
 
 	#Get total calls for station
-	overallCalls = Calls.objects.filter(details__StationArea = input)
+	overallCalls = masterCalls.filter(details__StationArea = input)
 
 	#Get total number of calls
 	overallNum = overallCalls.count()
@@ -86,16 +93,14 @@ def get_calls_unit(request):
 	type = request.POST['type']
 	year = request.POST['year']
 
-	print(year)
-
 	response_data={}
 
 	if year == "NA":
 		#Get total calls for station year
 		if type == "Overall":
-			totalCalls = Calls.objects.filter(details__StationArea = input)
+			totalCalls = masterCalls.filter(details__StationArea = input)
 		else:
-			totalCalls = Calls.objects.filter(details__Agency = type, details__StationArea = input)
+			totalCalls = masterCalls.filter(details__Agency = type, details__StationArea = input)
 		
 		for x in range(2013, 2019):
 			calls = totalCalls.filter(details__Date__endswith=x).count()
@@ -103,15 +108,119 @@ def get_calls_unit(request):
 	else:
 		#Get total calls for station month
 		if type == "Overall":
-			totalCalls = Calls.objects.filter(details__StationArea = input)
+			totalCalls = masterCalls.filter(details__StationArea = input)
 		else:
-			totalCalls = Calls.objects.filter(details__Date__endswith=year, details__Agency = type, details__StationArea = input)
+			totalCalls = masterCalls.filter(details__Date__endswith=year, details__Agency = type, details__StationArea = input)
 		
-		#01/01/2018
+		#Format: 01/01/2018
 		for x in range(1, 13):
 			time = str(x) + "/" + str(year)
-			print(time)
 			calls = totalCalls.filter(details__Date__endswith=time).count()
 			response_data[x] = calls
+
+	return HttpResponse(json.dumps(response_data), content_type = "application/json")
+
+def get_incidents(request):
+
+	input = request.POST['station']
+	type = request.POST['type']
+	year = request.POST['year']
+
+	response_data={}
+	
+	######## Decide what is required ########
+	#!year
+	if year == 'NA':
+		#!year, !type
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input)
+		#!year, type
+		else:
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Agency = type)
+	#year
+	else:
+		#!type, year
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year)
+		#type, year
+		else:
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year, details__Agency = type)	
+
+	#Get most popular incidents
+	PopIncident = overallCalls.values('details__Incident').annotate(Count=Count('details__Incident')).order_by('-Count')[:6]
+
+	#Add to dictionary
+	for incident in PopIncident:
+		#print(incident['details__Incident'] + " " + str(incident['Count']))
+		response_data[str(incident['details__Incident'])] = incident['Count']
+
+	return HttpResponse(json.dumps(response_data), content_type = "application/json")
+
+def get_avg_response(request):
+	
+	#Calculate average response time
+	input = request.POST['station']
+	type = request.POST['type']
+	year = request.POST['year']
+
+	response_data={}
+
+	def calculateAverages(overallCalls, year):
+		#Get list of both categories
+		totalTOC_ORD = list(overallCalls.values('details__TOC-ORD-Cat').values_list('details__TOC-ORD-Cat', flat=True))
+		totalORD_MOB = list(overallCalls.values('details__ORD-MOB-Cat').values_list('details__ORD-MOB-Cat', flat=True))
+
+		totalTOCORD = 0
+		totalORDMOB = 0
+
+		totalNAN = 0
+
+		#Add to get averages
+		for item in totalTOC_ORD:
+			totalTOCORD = totalTOCORD + int(float(item))
+
+		for item in totalORD_MOB:
+			#Deal with NaNs
+			if item == 'nan':
+				totalNAN = totalNAN + 1
+			else:
+				totalORDMOB = totalORDMOB + int(float(item))
+
+		averageResponse = (totalTOCORD + totalORDMOB)/(len(totalTOC_ORD) + len(totalORD_MOB) - totalNAN)
+
+		response_data[year] = averageResponse
+	#End calculateAverages
+
+	######## Decide what is required ########
+	### Get all calls ###
+	#!year
+	if year == 'NA':
+		#!year, !type
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input)
+		#!year, type
+		else:
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Agency = type)
+
+		#Calculate every year
+		for x in range(2013, 2019):
+			filterCalls = overallCalls.filter(details__Date__endswith=x)
+			calculateAverages(filterCalls, x)
+
+	#year
+	else:
+		#!type, year
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year)
+		#type, year
+		else:
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year, details__Agency = type)
+
+		for x in range(1, 13):
+			time = str(x) + "/" + str(year)
+			calls = overallCalls.filter(details__Date__endswith=time)
+			calculateAverages(calls, x)
+
+	print(response_data)
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")

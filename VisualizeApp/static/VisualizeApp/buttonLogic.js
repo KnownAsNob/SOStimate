@@ -18,8 +18,15 @@ overallBarHeight = 400
 xBarScale = 0;
 yBarScale = 0;
 
+//Scales for line chart
 xLineScale = 0;
 yLineScale = 0;
+
+//Pie values
+pieWidth = 500;
+pieHeight = 400;
+pieMargin = 100;
+radius = 200;
 
 function onClicked(message) //On clicked - Map popup button
 {
@@ -35,19 +42,12 @@ function onClicked(message) //On clicked - Map popup button
 	div.id = "mainContainer";
 	container.appendChild(div); 
 
-		//createElement(Type, ID, ParentID)
-
 		//Create overall stat container
 		createElement("div", "overallStatContainer", "mainContainer");
 
 			/*Create text elements
-			createElement("P", "overallCalls", "overallStatContainer");
-
-			//Create text elements
-			createElement("P", "overallDA", "overallStatContainer");
-
-			//Create text elements
-			createElement("P", "overallDF", "overallStatContainer");*/
+			//createElement(Type, ID, ParentID)
+			createElement("P", "overallCalls", "overallStatContainer");*/
 
 	//Request from DB
 	$.ajax({
@@ -59,9 +59,7 @@ function onClicked(message) //On clicked - Map popup button
 		data: {"station": headerText},
 		success: function(json)
 		{
-			/*$('#overallCalls').html("Overall " + json.message[0]);
-				$('#overallDA').html("DA " + json.message[1]);
-				$('#overallDF').html("DF " + json.message[2]);*/
+			/*$('#overallCalls').html("Overall " + json.message[0]);*/
 
 			createOverall("Overall", json.message[0], "Overallsvg", headerText);
 			createOverall("DA", json.message[1], "DAsvg", headerText);
@@ -70,10 +68,19 @@ function onClicked(message) //On clicked - Map popup button
 			//Fetch BarLine data and draw
 			$.when(fetchBarLineData(headerText, "Overall", "NA")).done(function(returnVal){
 					createBarChart(returnVal, headerText, "Overall", "NA");
-					createLineChart(returnVal, headerText, "Overall", "NA");    			
+					createLineChart(returnVal, headerText, "Overall", "NA", "barsvg", "Station Calls Per Year");
+
+				//Fetch pie data and draw
+				$.when(fetchPieData(headerText, "Overall", "NA")).done(function(returnPieVal){
+					createPieChart(returnPieVal, headerText, "Overall", "NA");		
+				});
+
+				//Fetch line 2 data and draw
+				$.when(fetchLine2Data(headerText, "Overall", "NA")).done(function(returnLine2Val){
+					createLineChart(returnLine2Val, headerText, "Overall", "NA", "bar2svg", "Average Response Time");	
+				});
 			});
 				
-
 			//Change loading text
 			subheader.innerHTML = "Station Information";
 		}
@@ -115,7 +122,7 @@ function createElement(elementType, id, appendTo)
 
 /* -------------------- D3 Visualizations -------------------- */
 
-//Crate menu buttons
+//Create menu buttons
 function createOverall(Type, Input, ID, Station)
 {
 	mainContainer = document.getElementById("mainContainer");
@@ -200,16 +207,13 @@ function createOverall(Type, Input, ID, Station)
 /* ---------- Bar chart ---------- */
 function createBarChart(inputData, Station, Type, Year)
 {
-	//Process data
+	//Process data	
 	list = JSON.stringify(inputData);
 	parsed = JSON.parse(list);
 
 	//Transform the data
 	data = Object.keys(parsed)
 				 .map(function(key) { return [Number(key), parsed[key]]; });
-
-	//console.log(data); 
-	//console.log(data[0]);
 
 	mainContainer = document.getElementById("mainContainer")
 	
@@ -301,7 +305,7 @@ function createBarChart(inputData, Station, Type, Year)
 	{
         d3.select(this)
         	.transition()
-      		.style("fill", "rgb(221, 246, 254)");
+      		.style("fill", "rgb(129, 149, 255)");
 	}
 
 	function handleMouseOut(d, i) 
@@ -386,7 +390,7 @@ function updateBarChart(inputData, station, type, year)
 	{
         d3.select(this)
         	.transition()
-      		.style("fill", "rgb(221, 246, 254)");
+      		.style("fill", "rgb(129, 149, 255)");
 	}
 
 	function handleMouseOut(d, i) 
@@ -407,7 +411,7 @@ function updateBarChart(inputData, station, type, year)
 }
 
 /* ---------- Line chart ---------- */
-function createLineChart(dataIn, station, type, year)
+function createLineChart(dataIn, station, type, year, svg, name)
 {
 	//Process data
 	list = JSON.stringify(dataIn);
@@ -424,13 +428,13 @@ function createLineChart(dataIn, station, type, year)
 	
 	//Create new SVG canvas
 	const svgGraph = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-	svgGraph.id = "barsvg";
+	svgGraph.id = svg;
 	svgGraph.setAttribute("width", 680);
 	svgGraph.setAttribute("height", 400);
 	mainContainer.appendChild(svgGraph); 
 
 	//Create new line chart
-	var svg = d3.select("#barsvg"),
+	var svg = d3.select('#' + svg),
     margin = 100,
     width = svg.attr("width") - margin,
     height = svg.attr("height") - margin;
@@ -491,6 +495,13 @@ function createLineChart(dataIn, station, type, year)
 	       .attr("class", "area")
 	       .attr("d", area);
 
+	    //Transition to blue
+	    g.select(".area")
+	      .transition()
+	      .duration(400)
+	      .style("fill", "rgb(221, 246, 254)");
+
+
 	//Append dots to line
 	g.selectAll(".dot")
      .data(data)
@@ -509,7 +520,7 @@ function createLineChart(dataIn, station, type, year)
 		.attr("x", 0)
 		.attr("y", 20)
 		.attr("font-size", "18px")
-	 	.text("Station Calls Per Year")
+	 	.text(name)
 
 	//Add divider bar under text
 	svg.append("line")
@@ -556,7 +567,7 @@ function createLineChart(dataIn, station, type, year)
     }
 }
 
-function updateLineChart(inputData, station, type, year)
+function updateLineChart(inputData, station, type, year, svg)
 {
 	//process data
 	list = JSON.stringify(inputData);
@@ -574,7 +585,7 @@ function updateLineChart(inputData, station, type, year)
 	yLineScale = yLineScale.domain([0, d3.max(data, function(d) { return d[1]; })]);
 
 	//Find elements
-	svg = d3.select("#barsvg");
+	svg = d3.select('#' + svg);
 	g = svg.select("#mainGroup");
 
 	//Update X-Axis    
@@ -669,8 +680,192 @@ function updateLineChart(inputData, station, type, year)
     }
 }
 
+/* ---------- Incidents pie chart ---------- */
+function createPieChart(dataIn, station, type, year)
+{
+	//Process data
+	list = JSON.stringify(dataIn);
+	parsed = JSON.parse(list);
+
+	//Transform the data
+	data = Object.keys(parsed)
+				 .map(function(key) { return [String(key), parsed[key]]; });
+
+	mainContainer = document.getElementById("mainContainer")
+
+	//Create new SVG canvas
+	const svgGraph = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+		svgGraph.id = "piesvg";
+		svgGraph.setAttribute("width", pieWidth);
+		svgGraph.setAttribute("height", pieHeight);
+		mainContainer.appendChild(svgGraph); 
+	
+	//Create new bar chart
+	var svg = d3.select("#piesvg"),
+        width = svg.attr("width") - pieMargin,
+        height = svg.attr("height") - pieMargin,
+        radius = Math.min(width, height) / 2;
+
+    //Append group with translation effect
+    var g = svg.append("g")
+                   .attr("transform", "translate(" + svg.attr("width") / 2 + "," + svg.attr("height") / 2 + ")")
+                   .attr("id", "mainGroup");
+
+    var color = d3.scaleOrdinal(['rgb(40, 83, 119)','rgb(82, 115, 175)','rgb(119, 155, 210)','rgb(152, 178, 227)','rgb(176, 205, 247)', 'rgb(205, 232, 250)']);
+	//'#4daf4a','#377eb8','#ff7f00','#984ea3','#e41a1c', '#FFFF00'
+
+    var pie = d3.pie()
+    			.value(function(d) { return d[1]; })
+    			.sort(null);
+
+    var path = d3.arc()
+                     .outerRadius(radius)
+                     .innerRadius(0);
+
+    var label = d3.arc()
+                      .outerRadius(radius)
+                      .innerRadius(radius);
+
+    var pathExtended = d3.arc()
+                      .outerRadius(radius + 10)
+                      .innerRadius(0);
+
+ 		//Draw pie
+ 		var arc = g.selectAll(".arc")
+                       .data(pie(data))
+                       .enter().append("g")
+                       .attr("class", "arc");
+
+        arc.append("path")
+               .attr("d", path)
+               .attr("fill", function(d) { return color(d.data[0]); })
+               .on("mouseover", handleMouseOver)
+     		   .on("mouseout", handleMouseOut)
+    		   .on("click", handleClick);
+        
+        arc.append("text")
+           .attr("class", "pieLabel")
+           .attr("transform", function(d) { 
+                    return "translate(" + label.centroid(d) + ")"; 
+                })
+           .text(function(d) { return d.data[0]; });
+    
+    //Add title text
+    svg.append("text")
+		.attr("transform", "translate(15,0)")
+		.attr("x", 0)
+		.attr("y", 20)
+		.attr("font-size", "18px")
+	 	.text("Most Common Incidents")
+
+	//Add divider bar under text
+	svg.append("line")
+       .attr("x1", 0)
+       .attr("y1", 25)
+       .attr("x2", svg.attr("width"))
+       .attr("y2", 25)
+       .attr("stroke-width", 0.3)
+       .attr("stroke", "black");
+
+    /* HANDLE PIE MOUSE */
+    function handleMouseOver(d, i)
+    {
+    	d3.select(this)
+        	.transition()
+        	.attr("d", pathExtended)
+      		.style("fill", "rgb(125, 145, 228)");
+    }
+
+    function handleMouseOut(d, i)
+    {
+    	d3.select(this)
+        	.transition()
+        	.attr("d", path)
+      		.style("fill", function(d) { return color(d.data[0]); });
+    }
+
+    function handleClick(d, i)
+    {
+    	d3.select(this)
+        	.transition()
+        	.attr("d", path)
+        	.transition()
+      		.attr("d", pathExtended);
+    }
+}
+
+function updatePieChart(dataIn, station, type, year)
+{
+	//Process data
+	list = JSON.stringify(dataIn);
+	parsed = JSON.parse(list);
+
+	//Transform the data
+	data = Object.keys(parsed)
+				 .map(function(key) { return [String(key), parsed[key]]; });
+
+	//Find elements
+	svg = d3.select("#piesvg");
+	g = svg.select("#mainGroup");
+	
+	var color = d3.scaleOrdinal(['rgb(40, 83, 119)','rgb(82, 115, 175)','rgb(119, 155, 210)','rgb(152, 178, 227)','rgb(176, 205, 247)', 'rgb(205, 232, 250)']);
+	//'#4daf4a','#377eb8','#ff7f00','#984ea3','#e41a1c', '#FFFF00'
+
+	updateRadius = radius - (pieMargin/2);
+
+	//Create new pie values
+	var newPie = d3.pie()
+    			.value(function(d) { return d[1]; })
+    			.sort(null);
+
+   	//Select all old arcs and apply new data
+    var arc = g.selectAll(".arc")
+                       .data(newPie(data));
+
+    //Create new pie paths
+    var path = d3.arc()
+                     .outerRadius(updateRadius)
+                     .innerRadius(0);
+
+    //Create new label paths
+    var label = d3.arc()
+                      .outerRadius(updateRadius)
+                      .innerRadius(updateRadius);
+
+    //Select paths in old arcs and update
+    arc.select("path")
+               .transition()
+               .duration(750)
+               .attr("d", path)
+           	   .attr("fill", function(d) { return color(d.data[0]); });
+
+    //Remove old labels
+   	arc.selectAll("text")
+   		.attr("fill-opacity", 1)
+   		.transition()
+   		.duration(300)
+   		.attr("fill-opacity", 0)
+   		.delay(300)
+   		.remove();
+   		
+
+   	//Add new labels
+    arc.append("text")
+           .attr("class", "pieLabel")
+           .attr("transform", function(d) { 
+                    return "translate(" + label.centroid(d) + ")"; 
+                })
+           .attr("fill-opacity", 0)
+           .text(function(d) { return d.data[0]; })
+           .transition()
+           .delay(400)
+   		   .duration(300)
+           .attr("fill-opacity", 1);
+}
+
 /* -------------------- AJAX CALLS -------------------- */
 
+//Returns numbers of incidents
 function fetchBarLineData(station, type, year)
 {
 	function ajaxCall()
@@ -696,20 +891,97 @@ function fetchBarLineData(station, type, year)
 	});	
 }
 
+//Returns types of incidents
+function fetchPieData(station, type, year)
+{
+	function ajaxPieCall()
+	{
+		//Request number of calls/time unit
+		return $.ajax({
+			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+			type: "POST",
+			url: "http://localhost:8000/map/get_incidents/",
+			datatype: "json",
+			//async: true,
+			data: {"station": station, "type": type, "year": year},
+			success: function(json)
+			{
+				//Operations here
+			}
+		});
+	}
+
+	return $.when(ajaxPieCall()).done(function(data){
+	
+		return data;
+	});
+}
+
+//Returns average response times
+function fetchLine2Data(station, type, year)
+{
+	function ajaxLine2Call()
+	{
+		//Request number of calls/time unit
+		return $.ajax({
+			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+			type: "POST",
+			url: "http://localhost:8000/map/get_avg_response/",
+			datatype: "json",
+			//async: true,
+			data: {"station": station, "type": type, "year": year},
+			success: function(json)
+			{
+				//Operations here
+			}
+		});
+	}
+
+	return $.when(ajaxLine2Call()).done(function(data){
+	
+		return data;
+	});
+}
+
 /* -------------------- UPDATE GRAPHS -------------------- */
 function callUpdate(station, type, year)
 {
 	//Request number of calls/time unit
-	function ajax2()
+	function ajaxBarLine()
 	{
 		return fetchBarLineData(station, type, year);
 	}
+
+	function ajaxPieChart()
+	{
+		return fetchPieData(station, type, year);
+	}
+
+	function ajaxLine2Chart()
+	{
+		return fetchLine2Data(station, type, year);
+	}
 	
-	$.when(ajax2()).done(function(returnVal){
+	//Call bar and line update
+	$.when(ajaxBarLine()).done(function(returnVal){
     	
 		updateBarChart(returnVal, station, type, year);
-		updateLineChart(returnVal, station, type, year);
+		updateLineChart(returnVal, station, type, year, "barsvg");
 		
+	});
+
+	//Call pie update
+	$.when(ajaxPieChart()).done(function(returnVal){
+    	
+		updatePieChart(returnVal, station, type, year);
+
+	});
+
+	//Call line 2 update
+	$.when(ajaxLine2Chart()).done(function(returnVal){
+    	
+		updateLineChart(returnVal, station, type, year, "bar2svg");
+
 	});
 }
 
