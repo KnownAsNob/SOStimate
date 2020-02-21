@@ -13,8 +13,9 @@ Station = 'None';
 Type = 'None';
 
 //W & H of first bar chart
-overallBarWidth = 500
-overallBarHeight = 400
+overallBarWidth = 500;
+overallBarHeight = 400;
+margin = 100;
 xBarScale = 0;
 yBarScale = 0;
 
@@ -49,6 +50,16 @@ function onClicked(message) //On clicked - Map popup button
 			//createElement(Type, ID, ParentID)
 			createElement("P", "overallCalls", "overallStatContainer");*/
 
+	//Fetch line 2 data and draw
+	$.when(fetchLine2Data(headerText, "Overall", "NA")).done(function(returnLine2Val){
+		createLineChart(returnLine2Val, headerText, "Overall", "NA", "bar2svg", "Average Response Time");	
+	});
+	
+	//Fetch bar 2 data and draw
+	$.when(fetchBar2Data(headerText, "Overall", "NA")).done(function(returnBar2Val){
+		createBarChart(returnBar2Val, headerText, "Overall", "NA", "catBarsvg", "Time Category Counts", 1200);
+	});
+
 	//Request from DB
 	$.ajax({
 		contentType: "application/x-www-form-urlencoded;charset=UTF-8",
@@ -64,20 +75,15 @@ function onClicked(message) //On clicked - Map popup button
 			createOverall("Overall", json.message[0], "Overallsvg", headerText);
 			createOverall("DA", json.message[1], "DAsvg", headerText);
 			createOverall("DF", json.message[2], "DFsvg", headerText)
-			
+
 			//Fetch BarLine data and draw
 			$.when(fetchBarLineData(headerText, "Overall", "NA")).done(function(returnVal){
-					createBarChart(returnVal, headerText, "Overall", "NA");
+					createBarChart(returnVal, headerText, "Overall", "NA", "linesvg", "Station Calls Per Year", 500);
 					createLineChart(returnVal, headerText, "Overall", "NA", "barsvg", "Station Calls Per Year");
 
 				//Fetch pie data and draw
 				$.when(fetchPieData(headerText, "Overall", "NA")).done(function(returnPieVal){
 					createPieChart(returnPieVal, headerText, "Overall", "NA");		
-				});
-
-				//Fetch line 2 data and draw
-				$.when(fetchLine2Data(headerText, "Overall", "NA")).done(function(returnLine2Val){
-					createLineChart(returnLine2Val, headerText, "Overall", "NA", "bar2svg", "Average Response Time");	
 				});
 			});
 				
@@ -204,8 +210,9 @@ function createOverall(Type, Input, ID, Station)
         }
 }
 
-/* ---------- Bar chart ---------- */
-function createBarChart(inputData, Station, Type, Year)
+/* ---------- Total CallsBar chart ---------- */
+/* ---------- Time Categories Bar ---------- */
+function createBarChart(inputData, Station, Type, Year, ID, title, width)
 {
 	//Process data	
 	list = JSON.stringify(inputData);
@@ -215,17 +222,19 @@ function createBarChart(inputData, Station, Type, Year)
 	data = Object.keys(parsed)
 				 .map(function(key) { return [Number(key), parsed[key]]; });
 
+	console.log(data);
+
 	mainContainer = document.getElementById("mainContainer")
 	
 	//Create new SVG canvas
 	const svgGraph = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-	svgGraph.id = "linesvg";
-	svgGraph.setAttribute("width", overallBarWidth);
+	svgGraph.id = ID;
+	svgGraph.setAttribute("width", width);
 	svgGraph.setAttribute("height", overallBarHeight);
 	mainContainer.appendChild(svgGraph); 
 	
 	//Create new bar chart
-	var svg = d3.select("#linesvg"),
+	var svg = d3.select("#" + ID),
         margin = 100,
         width = svg.attr("width") - margin,
         height = svg.attr("height") - margin;
@@ -276,7 +285,7 @@ function createBarChart(inputData, Station, Type, Year)
 		.attr("x", 0)
 		.attr("y", 20)
 		.attr("font-size", "18px")
-	 	.text("Station Calls Per Year")
+	 	.text(title)
 
 	//Add divider bar under text
 	svg.append("line")
@@ -289,15 +298,20 @@ function createBarChart(inputData, Station, Type, Year)
 
   	g.selectAll(".bar")
   		.data(data)
-  		.transition()
+  		.transition("GrowBar")
         .ease(d3.easeLinear)
         .duration(500)
         .attr("height", function(d) { return height - yBarScale(d[1]); })
 
     g.selectAll(".bar")
-      	.transition()
+      	.transition("ColourBar")
       	.delay(500)
-      	.style("fill", "rgb(77, 121, 255)"); 	
+      	.style("fill", "rgb(77, 121, 255)"); 
+
+    //Define tooltip
+	var popUp = d3.select("body").append("div")		
+    			   .attr("class", "tooltip")				
+    			   .style("opacity", 0);	
 
 	/* FUNCTIONS FOR BAR CHART */
 
@@ -306,15 +320,24 @@ function createBarChart(inputData, Station, Type, Year)
         d3.select(this)
         	.transition()
       		.style("fill", "rgb(129, 149, 255)");
+
+      	popUp.transition()		
+             .duration(200)		
+             .style("opacity", .9);		
+        popUp.html("<p class = 'popUpText'><b><i>" + d[0] + "</b></i><br>" + d[1] + "</p>")	
+             .style("left", (d3.event.pageX) + "px")		
+             .style("top", (d3.event.pageY - 30) + "px");
 	}
 
 	function handleMouseOut(d, i) 
-	{
-		//console.log("Finished");
-        
+	{ 
         d3.select(this)
         	.transition()
-      		.style("fill", "rgb(77, 121, 255)");	
+      		.style("fill", "rgb(77, 121, 255)");
+
+      	popUp.transition()		
+           .duration(500)		
+           .style("opacity", 0);	
     }
 
     function handleClick(d, i, year) 
@@ -323,11 +346,15 @@ function createBarChart(inputData, Station, Type, Year)
           .transition()
       	  .style("fill", "rgb(55, 76, 172)");
 
+      	popUp.transition()		
+           .duration(500)		
+           .style("opacity", 0);
+
 		callUpdate(Station, Type, d[0])
     }
 }
 
-function updateBarChart(inputData, station, type, year)
+function updateBarChart(inputData, station, type, year, ID)
 {
 	list = JSON.stringify(inputData);
 	parsed = JSON.parse(list);
@@ -337,19 +364,21 @@ function updateBarChart(inputData, station, type, year)
   		return [Number(key), parsed[key]];
 	});
 
+	// Select the section we want to apply our changes to
+	var svg = d3.select("#" + ID)
+	var g = svg.select("#mainGroup")
+  
+	height = d3.select("#" + ID).attr("height") - 100; //(margin)
+
+	xBarScale = d3.scaleBand().range ([0, svg.attr("width") - margin]).padding(0.2),
+
 	// Scale the range of the data again 
 	xBarScale.domain(data.map(function(d) { return d[0]; }));
     yBarScale.domain([0, d3.max(data, function(d) { return d[1]; })]);
 
-	// Select the section we want to apply our changes to
-	var svg = d3.select("#linesvg")
-	var g = svg.select("#mainGroup")
-  
-	height = d3.select("#linesvg").attr("height") - 100; //(margin)
-
 	//Remove old bars
 	g.selectAll(".bar")
-	.transition()
+	.transition("RemoveBar")
 	.duration(500)
 	.attr("height", 0)
 	.remove();
@@ -366,7 +395,7 @@ function updateBarChart(inputData, station, type, year)
      .on("mouseover", handleMouseOver)
  	 .on("mouseout", handleMouseOut)
  	 .on("click", handleClick)
-     .transition()
+     .transition("RedrawBar")
      .ease(d3.easeLinear)
      .duration(500)
      .delay(500)
@@ -375,15 +404,20 @@ function updateBarChart(inputData, station, type, year)
 	
     //Update X-Axis    
 	svg.select("#xAxis") 
-	   .transition()
+	   .transition("UpdateXAxis")
 	   .duration(500)
 	   .call(d3.axisBottom(xBarScale));
 
 	//Update Y-Axis
 	svg.select("#yAxis") 
-	    .transition()
+	    .transition("UpdateYAxis")
 	    .duration(500)
 	    .call(d3.axisLeft(yBarScale));
+
+	//Define tooltip
+	var popUp = d3.select("body").append("div")		
+    			   .attr("class", "tooltip")				
+    			   .style("opacity", 0);
 
 	/* FUNCTIONS FOR BAR CHART */
 	function handleMouseOver(d, i) 
@@ -391,13 +425,24 @@ function updateBarChart(inputData, station, type, year)
         d3.select(this)
         	.transition()
       		.style("fill", "rgb(129, 149, 255)");
+
+      	popUp.transition()		
+             .duration(200)		
+             .style("opacity", .9);		
+        popUp.html("<p class = 'popUpText'><b><i>" + d[0] + "</b></i><br>" + d[1] + "</p>")	
+             .style("left", (d3.event.pageX) + "px")		
+             .style("top", (d3.event.pageY - 30) + "px");
 	}
 
 	function handleMouseOut(d, i) 
 	{
         d3.select(this)
         	.transition()
-      		.style("fill", "rgb(77, 121, 255)");	
+      		.style("fill", "rgb(77, 121, 255)");
+
+      	popUp.transition()		
+           .duration(500)		
+           .style("opacity", 0);	
     }
 
     function handleClick(d, i, year) 
@@ -406,11 +451,16 @@ function updateBarChart(inputData, station, type, year)
     	  .transition()
   		  .style("fill", "rgb(55, 76, 172)");
 
+  		popUp.transition()		
+           .duration(500)		
+           .style("opacity", 0);
+
         callUpdate(station, type, d[0]);
     }
 }
 
-/* ---------- Line chart ---------- */
+/* ---------- Total Calls Line chart ---------- */
+/* ---------- Response Time Line chart ---------- */
 function createLineChart(dataIn, station, type, year, svg, name)
 {
 	//Process data
@@ -531,6 +581,11 @@ function createLineChart(dataIn, station, type, year, svg, name)
        .attr("stroke-width", 0.3)
        .attr("stroke", "black");
 
+    //Define tooltip
+	var popUp = d3.select("body").append("div")		
+    			   .attr("class", "tooltip")				
+    			   .style("opacity", 0);
+
     /* FUNCTIONS FOR LINE CHART */
 
 	function handleMouseOver(d, i) 
@@ -539,6 +594,13 @@ function createLineChart(dataIn, station, type, year, svg, name)
         	.transition()
       		.style("fill", "rgb(55, 76, 172)")
       		.attr("r", "8");
+
+      	popUp.transition()		
+             .duration(200)		
+             .style("opacity", .9);		
+        popUp.html("<p class = 'popUpText'><b><i>" + d[0] + "</b></i><br>" + d[1] + "</p>")	
+             .style("left", (d3.event.pageX) + "px")		
+             .style("top", (d3.event.pageY - 30) + "px");	
 	}
 
 	function handleMouseOut(d, i) 
@@ -549,6 +611,10 @@ function createLineChart(dataIn, station, type, year, svg, name)
         	.transition()
       		.style("fill", "rgb(77, 121, 197)")
       		.attr("r", "6");	
+
+      	popUp.transition()		
+           .duration(500)		
+           .style("opacity", 0);
     }
 
     function handleClick(d, i, year) 
@@ -562,6 +628,10 @@ function createLineChart(dataIn, station, type, year, svg, name)
       		.transition()
       		.delay(200)
       		.attr("r", "8");
+
+      	popUp.transition()		
+           .duration(500)		
+           .style("opacity", 0);
 
 		callUpdate(station, type, d[0]);
     }
@@ -644,6 +714,11 @@ function updateLineChart(inputData, station, type, year, svg)
      .on("mouseout", handleMouseOut)
      .on("click", handleClick);
 
+    //Define tooltip
+	var popUp = d3.select("body").append("div")		
+    			   .attr("class", "tooltip")				
+    			   .style("opacity", 0);
+
     /* FUNCTIONS FOR LINE CHART */
 
 	function handleMouseOver(d, i) 
@@ -652,6 +727,13 @@ function updateLineChart(inputData, station, type, year, svg)
         	.transition()
       		.style("fill", "rgb(55, 76, 172)")
       		.attr("r", "8");
+
+      	popUp.transition()		
+             .duration(200)		
+             .style("opacity", .9);		
+        popUp.html("<p class = 'popUpText'><b><i>" + d[0] + "</b></i><br>" + d[1] + "</p>")	
+             .style("left", (d3.event.pageX) + "px")		
+             .style("top", (d3.event.pageY - 30) + "px");	
 	}
 
 	function handleMouseOut(d, i) 
@@ -661,7 +743,11 @@ function updateLineChart(inputData, station, type, year, svg)
         d3.select(this)
         	.transition()
       		.style("fill", "rgb(77, 121, 197)")
-      		.attr("r", "6");	
+      		.attr("r", "6");
+
+      	popUp.transition()		
+           .duration(500)		
+           .style("opacity", 0);	
     }
 
     function handleClick(d, i, year) 
@@ -675,6 +761,10 @@ function updateLineChart(inputData, station, type, year, svg)
       		.transition()
       		.delay(200)
       		.attr("r", "8");
+
+      	popUp.transition()		
+           .duration(500)		
+           .style("opacity", 0);
 
 		callUpdate(station, type, d[0]);
     }
@@ -767,13 +857,26 @@ function createPieChart(dataIn, station, type, year)
        .attr("stroke-width", 0.3)
        .attr("stroke", "black");
 
+    //Define tooltip
+	var popUp = d3.select("body").append("div")		
+    			   .attr("class", "tooltip")				
+    			   .style("opacity", 0);
+
     /* HANDLE PIE MOUSE */
+
     function handleMouseOver(d, i)
     {
     	d3.select(this)
         	.transition()
         	.attr("d", pathExtended)
       		.style("fill", "rgb(125, 145, 228)");
+
+      	popUp.transition()		
+             .duration(200)		
+             .style("opacity", .9);		
+        popUp.html("<p class = 'popUpText'><b><i>" + d.data[0] + "</b></i><br>" + d.data[1] + "</p>")	
+             .style("left", (d3.event.pageX) + "px")		
+             .style("top", (d3.event.pageY - 30) + "px");	
     }
 
     function handleMouseOut(d, i)
@@ -782,6 +885,10 @@ function createPieChart(dataIn, station, type, year)
         	.transition()
         	.attr("d", path)
       		.style("fill", function(d) { return color(d.data[0]); });
+
+      	popUp.transition()		
+           .duration(500)		
+           .style("opacity", 0);	
     }
 
     function handleClick(d, i)
@@ -791,6 +898,10 @@ function createPieChart(dataIn, station, type, year)
         	.attr("d", path)
         	.transition()
       		.attr("d", pathExtended);
+
+      	popUp.transition()		
+           .duration(500)		
+           .style("opacity", 0);	
     }
 }
 
@@ -943,6 +1054,31 @@ function fetchLine2Data(station, type, year)
 	});
 }
 
+function fetchBar2Data(station, type, year)
+{
+	function ajaxBar2Call()
+	{
+		//Request number of calls/time unit
+		return $.ajax({
+			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+			type: "POST",
+			url: "http://localhost:8000/map/get_total_cats/",
+			datatype: "json",
+			//async: true,
+			data: {"station": station, "type": type, "year": year},
+			success: function(json)
+			{
+				//Operations here
+			}
+		});
+	}
+
+	return $.when(ajaxBar2Call()).done(function(data){
+	
+		return data;
+	});
+}
+
 /* -------------------- UPDATE GRAPHS -------------------- */
 function callUpdate(station, type, year)
 {
@@ -962,10 +1098,17 @@ function callUpdate(station, type, year)
 		return fetchLine2Data(station, type, year);
 	}
 	
+	function ajaxBar2()
+	{
+		return fetchBar2Data(station, type, year);
+	}
+
+	/* ----------------- Call updates ----------------- */
+
 	//Call bar and line update
 	$.when(ajaxBarLine()).done(function(returnVal){
     	
-		updateBarChart(returnVal, station, type, year);
+		updateBarChart(returnVal, station, type, year, "linesvg");
 		updateLineChart(returnVal, station, type, year, "barsvg");
 		
 	});
@@ -981,6 +1124,13 @@ function callUpdate(station, type, year)
 	$.when(ajaxLine2Chart()).done(function(returnVal){
     	
 		updateLineChart(returnVal, station, type, year, "bar2svg");
+
+	});
+
+	//Call line 2 update
+	$.when(ajaxBar2()).done(function(returnCatVal){
+    	
+		updateBarChart(returnCatVal, station, type, year, "catBarsvg");
 
 	});
 }

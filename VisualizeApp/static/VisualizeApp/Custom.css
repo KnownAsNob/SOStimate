@@ -1,4 +1,4 @@
-/* Main page */
+/* ---------- Main page ---------- */
 
 body {
   padding-top: 56px;
@@ -7,7 +7,6 @@ body {
 
 .MainHeader {
 	font-family: Arial;
-	padding-top:15px;
 }
 
 .SubHeader {
@@ -15,7 +14,7 @@ body {
 	font-style: italic;
 }
 
-/* Map page */
+/* ---------- Map page ---------- */
 
 .model {
 	z-index: 2;
@@ -26,9 +25,41 @@ body {
 	/*Empty*/
 }
 
+/* Menu bar */
+
+#mapHeader {
+	margin-top: 2%;
+	outline: 1px solid rgb(224, 224, 224);
+}
+
+	#mapSelector {
+		background-color: rgb(243,242,237);
+		outline: 1px solid rgb(224, 224, 224);
+		padding-top: 0.5%;
+		padding-bottom: 0.5%;
+	}
+
+	#mainHeader, #selectorText {
+		padding-left: 1%;
+		font-family: Century Gothic;
+		height: auto;
+	}
+
+	#selectorText {
+		font-family: sans-serif;
+		float: left;
+	}
+
+	#mapSelectorDrop {
+		margin-left: 50%;
+	}
+
+/* Map */
+
 #map {
 	margin-top: 2%;
-	margin-bottom: 5%;
+	margin-bottom: 2%;
+	outline: 1px solid rgb(224, 224, 224);
 }
 
 .marker {
@@ -48,18 +79,18 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 
-	/* Popups */
-	.model {
-		display: none;
-		position: absolute; 
-		padding-top: 50px;
-		left: 0; 
-		top: 0;
-		width: 100%;
-		height: 100%; 
-		background-color: rgb(0, 0, 0);
-		background-color: rgba(0, 0, 0, 0.5);
-	}
+/* Popups */
+.model {
+	display: none;
+	position: absolute; 
+	padding-top: 50px;
+	left: 0; 
+	top: 0;
+	width: 100%;
+	height: 100%; 
+	background-color: rgb(0, 0, 0);
+	background-color: rgba(0, 0, 0, 0.5);
+}
 
 	#model-content {
 		position: relative; 
@@ -112,6 +143,7 @@ body {
 	}
 
 /* Overall selector SVG */
+
 #Overallsvg, #DAsvg, #DFsvg {
 	background-color: white;
 	width: 20%;
@@ -132,7 +164,7 @@ body {
 	}
 
 /* Bar SVG */
-#linesvg {
+#linesvg, #catBarsvg {
 	background-color: white;
 	margin-top: 2%;
 	box-shadow: 2px 2px grey;
@@ -141,16 +173,16 @@ body {
 
 	/* Bar chart */
 	.bar {
-        fill: red;
-    }
-
-	/* Line SVG */
-	#barsvg, #bar2svg {
-		background-color: white;
-		margin-top: 2%;
-		box-shadow: 2px 2px grey;
-		float: right;
+	    fill: red;
 	}
+
+/* Line SVG */
+#barsvg, #bar2svg {
+	background-color: white;
+	margin-top: 2%;
+	box-shadow: 2px 2px grey;
+	float: right;
+}
 
 		#line {
 			fill: none;
@@ -167,27 +199,43 @@ body {
 	    	stroke: white;
 		}
 
-/* Bar SVG */
+/* Pie Chart */
 #piesvg {
 	background-color: white;
 	margin-top: 2%;
 	box-shadow: 2px 2px grey;	
 }
 
-/* Pie Chart */
-.pieLabel {
-	font-family: Arial;
-	font-style: italic;
-	/*fill: rgb(77, 121, 197);
-	stroke-width: 0.6px;
-	stroke: black;*/
-	fill: black;
-	font-size: 120%;
-	text-anchor: middle;
+
+	.pieLabel {
+		font-family: Arial;
+		font-style: italic;
+		/*fill: rgb(77, 121, 197);
+		stroke-width: 0.6px;
+		stroke: black;*/
+		fill: black;
+		font-size: 120%;
+		text-anchor: middle;
+	}
+
+/* Tooltip */
+.tooltip {	
+    position: absolute;			
+    text-align: center;		
+    width: auto;					
+    height: 7%;					
+    padding: 2px;					
+    background: rgb(176, 196, 222);
+    border: 0px;		
+    border-radius: 8px;			
+    pointer-events: none;			
 }
 
+.popUpText {
+	font: 150% sans-serif;	
+}
 
-/* Visualizations page */
+/* ---------- Visualizations page ---------- */
 
 #VisualizeAbout {
 	border-radius: 5px;

@@ -9,5 +9,6 @@ urlpatterns = [
     path('map/get_overall_data/', views.get_overall_data, name='get-overall-data'),
     path('map/get_calls_unit/', views.get_calls_unit, name='get-calls-unit'), #Get calls/unit
     path('map/get_incidents/', views.get_incidents, name='get-incidents'),
-    path('map/get_avg_response/', views.get_avg_response, name='get-avg-response')
+    path('map/get_avg_response/', views.get_avg_response, name='get-avg-response'),
+    path('map/get_total_cats/', views.get_total_cats, name='get-total-cats')
 ]

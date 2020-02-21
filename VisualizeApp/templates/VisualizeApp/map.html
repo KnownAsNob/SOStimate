@@ -3,9 +3,18 @@
 {% block content %}
 
 	<div class = "container">
-		<h1 class = "MainHeader">Map</h1>
-	
-
+		<div id = "mapHeader">
+			<h1 id = "mainHeader">Map</h1>
+			<div id = "mapSelector">
+				<p id = "selectorText">Click on a station below or apply filters to map:</p>
+				<!-- Map type selector -->
+				<select id="mapSelectorDrop">
+				  <option value="none">None</option>
+				  <option value="saab">Most Popular</option>
+				</select>  
+			</div>
+		</div>
+		
 		<div id='map' style='width: 100%; height: 500px;'></div>
 
 			<script>

@@ -7,9 +7,9 @@
 
 	<!-- Jumbotron Header -->
 	<header class="jumbotron my-4">
-		<h1 class="display-3">A Warm Welcome!</h1>
-		<p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, ipsam, eligendi, in quo sunt possimus non incidunt odit vero aliquid similique quaerat nam nobis illo aspernatur vitae fugiat numquam repellat.</p>
-		<a href="#" class="btn btn-primary btn-lg">Call to action!</a>
+		<h1 class="display-3">Welcome!</h1>
+		<p class="lead">Welcome to SOStimate, the web application that allows you to dive into your Dublin regional ambulance <br>and fire bridage service.<br><br><i>Check out the options below or dive in with the button below.</i></p>
+		<a href="{% url 'site-map' %}" class="btn btn-primary btn-lg">Let's go!</a>
 	</header>
 
 	<!-- Page Features -->
@@ -17,52 +17,52 @@
 
 		<div class="col-lg-3 col-md-6 mb-4">
 			<div class="card h-100">
-				<img class="card-img-top" src="http://placehold.it/500x325" alt="">
+				<img class="card-img-top" src="../../static/VisualizeApp/img/About.png" alt="about image">
 					<div class="card-body">
-						<h4 class="card-title">Card title</h4>
-						<p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque.</p>
+						<h4 class="card-title">About</h4>
+						<p class="card-text">What is SOStimate? How can I use it? What data is used? Get answers to all of these questions and more by clicking the button below.</p>
 					</div>
 					<div class="card-footer">
-						<a href="#" class="btn btn-primary">Find Out More!</a>
+						<a href="#" class="btn btn-primary">More</a>
 					</div>
 			</div>
 		</div>
 
 		<div class="col-lg-3 col-md-6 mb-4">
 			<div class="card h-100">
-				<img class="card-img-top" src="http://placehold.it/500x325" alt="">
+				<img class="card-img-top" src="../../static/VisualizeApp/img/Map.png" alt="map sample">
 					<div class="card-body">
-						<h4 class="card-title">Card title</h4>
-						<p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo magni sapiente, tempore debitis beatae culpa natus architecto.</p>
+						<h4 class="card-title">Map</h4>
+						<p class="card-text">Jump straight into exploring the data by using the map. With the location of each dispatch station available, have a look at some of the statistics on a per-station basis.</p>
 					</div>
 					<div class="card-footer">
-					<a href="#" class="btn btn-primary">Find Out More!</a>
+					<a href="{% url 'site-map' %}" class="btn btn-primary">More</a>
 					</div>
 			</div>
 		</div>
 
 		<div class="col-lg-3 col-md-6 mb-4">
 			<div class="card h-100">
-				<img class="card-img-top" src="http://placehold.it/500x325" alt="">
+				<img class="card-img-top" src="../../static/VisualizeApp/img/Vis.png" alt="visualization image">
 					<div class="card-body">
-						<h4 class="card-title">Card title</h4>
-						<p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente esse necessitatibus neque.</p>
+						<h4 class="card-title">Visualizations</h4>
+						<p class="card-text">Not a fan of our visualizations? Something not here that you want to see? Make your own! Click below to generate your own visualizations from the datasets and use freely at your leisure.</p>
 					</div>
 					<div class="card-footer">
-						<a href="#" class="btn btn-primary">Find Out More!</a>
+						<a href="#" class="btn btn-primary">More</a>
 					</div>
 			</div>
 		</div>
 
 		<div class="col-lg-3 col-md-6 mb-4">
 			<div class="card h-100">
-				<img class="card-img-top" src="http://placehold.it/500x325" alt="">
+				<img class="card-img-top" src="../../static/VisualizeApp/img/Data.gov.png" alt="data.gov logo">
 					<div class="card-body">
-						<h4 class="card-title">Card title</h4>
-						<p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Explicabo magni sapiente, tempore debitis beatae culpa natus architecto.</p>
+						<h4 class="card-title">The Data</h4>
+						<p class="card-text">All data sourced from both Dublin City Council and the data.gov.ie website. Click below to be taken straight there and start your own data exploration journey!</p>
 					</div>
 					<div class="card-footer">
-						<a href="#" class="btn btn-primary">Find Out More!</a>
+						<a href="https://data.gov.ie/" class="btn btn-primary">More</a>
 					</div>
 			</div>
 		</div>

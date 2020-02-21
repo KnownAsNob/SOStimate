@@ -221,6 +221,48 @@ def get_avg_response(request):
 			calls = overallCalls.filter(details__Date__endswith=time)
 			calculateAverages(calls, x)
 
+	return HttpResponse(json.dumps(response_data), content_type = "application/json")
+
+def get_total_cats(request):
+
+	#Calculate total amount for each cat
+	input = request.POST['station']
+	type = request.POST['type']
+	year = request.POST['year']
+
+	response_data={}
+
+	######## Decide what is required ########
+	#!year
+	if year == 'NA':
+		#!year, !type
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input)
+		#!year, type
+		else:
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Agency = type)
+	#year
+	else:
+		#!type, year
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year)
+		#type, year
+		else:
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year, details__Agency = type)
+
+	list = ["TOC-ORD-Cat", "ORD-MOB-Cat", "MOB-IA-Cat", "IA-MAV-Cat", "MAV-CD-Cat"]
+
+	#Run through classifications of classes
+	for cat in range(1, 11):
+		total = 0
+		catStr = str(cat)
+		for category in list:
+			#Run though classes
+			result = "details__" + category
+			num = overallCalls.filter(**{result: catStr}).count()
+			total = total + num
+		response_data[cat] = total
+
 	print(response_data)
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
