@@ -2,7 +2,7 @@
 
 body {
   padding-top: 56px;
-  position:relative;
+  position: relative;
 }
 
 .MainHeader {
@@ -59,7 +59,8 @@ body {
 #map {
 	margin-top: 2%;
 	margin-bottom: 2%;
-	outline: 1px solid rgb(224, 224, 224);
+	border: 0px;		
+    border-radius: 8px;
 }
 
 .marker {
@@ -256,3 +257,92 @@ body {
 	height: auto; 
 }
 
+/* ---------- About page ---------- */
+
+#about {
+	margin-top: 2%;
+	margin-bottom: 2%;
+	font-family: Century Gothic;
+}
+
+#aboutSub {
+	font-size: 120%;
+}
+
+/* Menu */
+.faq_categories {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: rgb(52, 58, 64);
+	margin-bottom: 1%;
+	border: 0px;		
+    border-radius: 8px;
+}
+
+.faq_categories li {
+	float: left;
+}
+
+.faq_categories a {
+	font-family: Arial;
+	color: rgb(154, 147, 131);
+}
+
+	.faq_categories a:hover {
+	color: white;
+	text-decoration: none;
+	}
+
+
+.faq_listOption {
+	display: block;
+ 	color: white;
+	text-align: center;
+ 	padding: 16px;
+ 	text-decoration: none;
+}
+
+/* Items */
+.faq_items {
+	outline: 1px solid rgb(224, 224, 224);
+	padding: 1%;
+	padding-bottom: 0.5%;
+	margin-bottom: 1%;
+}
+
+.faq_items h3 {
+	font-family: Arial;
+}
+
+.faq_item {
+	outline: 1px solid rgb(224, 224, 224);
+	margin-top: 2%;
+	margin-bottom: 2%;
+}
+
+.faq_question {
+	background-color: rgb(243,242,237);
+	outline: 1px solid rgb(224, 224, 224);
+	padding: 0.5% 0 0.5% 0.5%;
+
+	cursor: pointer;
+	width: 100%;
+	border: none;
+	text-align: left;
+	outline: none;
+}
+
+	.faq_question:hover {
+	 	background-color: #ccc;
+	}
+
+.faq_answer {
+	font-size: 100%;
+	padding: 0 0.5% 0.5% 0.5%;
+	display: none;
+	max-height: 0;
+  	overflow: hidden;
+  	transition: max-height 0.2s ease-out;
+}
