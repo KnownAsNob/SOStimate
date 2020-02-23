@@ -25,7 +25,7 @@ body {
 	/*Empty*/
 }
 
-/* Menu bar */
+/* ----- Menu bar ----- */
 
 #mapHeader {
 	margin-top: 2%;
@@ -54,7 +54,7 @@ body {
 		margin-left: 50%;
 	}
 
-/* Map */
+/* ----- Map markers ----- */
 
 #map {
 	margin-top: 2%;
@@ -80,7 +80,33 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 
-/* Popups */
+/* ----- Map overlay ----- */
+
+#controlContainer {
+	position: absolute;
+	width: 30%;
+	background-color: rgb(243,242,237);
+	outline: 1px solid rgb(224, 224, 224);
+}
+
+#controlContainerInner, #legend {
+	margin: 3% 0 5% 3%;
+}
+
+#slider {
+	margin-left: 10%;
+	width: 80%;
+}
+
+#legend {
+	margin-left: 10%;
+	height: 10px;
+	width: 80%;
+	background: linear-gradient(to right, #214e7f, #73deff);
+}
+
+/* ----- Graph popup ----- */
+
 .model {
 	display: none;
 	position: absolute; 

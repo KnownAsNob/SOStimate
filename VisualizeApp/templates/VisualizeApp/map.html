@@ -8,16 +8,18 @@
 			<div id = "mapSelector">
 				<p id = "selectorText">Click on a station below or apply filters to map:</p>
 				<!-- Map type selector -->
-				<select id="mapSelectorDrop">
+				<select id="mapSelectorDrop" onchange="sendMap.call(this, event)", autocomplete="off">
 				  <option value="none">None</option>
-				  <option value="saab">Most Popular</option>
+				  <option value="most_pop">Most Popular</option>
 				</select>  
 			</div>
-		</div>
+		</div> <!-- End selection header -->
 		
 		<div id='map' style='width: 100%; height: 500px;'></div>
 
 			<script>
+				var map;
+
 				var data_from_django = '{{ stations|escapejs }}';
 				var stationObject = JSON.parse(data_from_django);
 				
@@ -25,7 +27,7 @@
 				//var callObject = JSON.parse(data_from_django2);
 
 				mapboxgl.accessToken = 'pk.eyJ1Ijoia25vd25hc25vYiIsImEiOiJjazVvNHdza3EwYW1wM2xucmd4eW85OGpqIn0.iR8IWbJUnuIRL3jThbTK1g';
-				var map = new mapboxgl.Map
+				map = new mapboxgl.Map
 				({
 					container: 'map',
 					style: 'mapbox://styles/mapbox/streets-v11',
@@ -55,6 +57,11 @@
 		  				.addTo(map);		
 		  		});
 
+		  		function sendMap(event) {
+		  			click = this;
+		  			overviewChange(click, event, map);
+		  		}
+
 			</script>
 		</div> <!-- Map -->
 
@@ -69,9 +76,9 @@
 				<h2 id = "stationSubHeader">Loading...</h2>
 					
 			</div>
-		</div> <!-- Popup window -->
+		</div> <!-- End popup window -->
 
-	</div> <!-- Container -->
+	</div> <!-- Overall xontainer -->
 
 {% endblock content %}
 

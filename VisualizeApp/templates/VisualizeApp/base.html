@@ -21,13 +21,12 @@
 		<link rel="stylesheet" type="text/css" href="{% static 'VisualizeApp/Bootstrap.css' %}">
 
 		<!-- Add MapBox -->
-		<script src='https://api.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
-		<link href='https://api.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
+		<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.js'></script>
+    	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.css' rel='stylesheet' />
+
 
 		<!-- Button Logic at end -->
-
-		<!-- Display Logic -->
-		<script src="{% static 'VisualizeApp/displayLogic.js' %}"></script>
+		<!-- Map overlay at end -->
 
 		<!-- Import security cookies for AJAX -->
 		<script src="https://cdn.jsdelivr.net/npm/js-cookie@beta/dist/js.cookie.min.js"></script>
@@ -83,14 +82,15 @@
 			<!-- /.container -->
 		</footer>
 
-		<!-- Bootstrap core JavaScript 
-		<link rel="stylesheet" type="text/css" href="{% static 'VisualizeApp/Core.css' %}">
-		<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script> -->
+		<!-- Bootstrap core JavaScript -->
 		<script src="{% static 'VisualizeApp/jquery.min.js' %}"></script>
 		<script src="{% static 'VisualizeApp/bootstrap.bundle.min.js' %}"></script>
 
 		<!-- Button Logic -->
 		<script src="{% static 'VisualizeApp/buttonLogic.js' %}"></script>
+
+		<!-- Map Overlay Logic -->
+		<script src="{% static 'VisualizeApp/mapDisplayLogic.js' %}"></script>
 
 		<!-- Load About JS -->
 		<script src="{% static 'VisualizeApp/AboutPage.js' %}"></script>
