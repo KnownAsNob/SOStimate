@@ -1,0 +1,15 @@
+:root {
+  --main-graph-color: rgb(255, 51, 51);
+  --mouse-over-graph-color: rgb(255, 120, 120);
+  --mouse-click-graph-color: rgb(186, 41, 41);
+  --light-area-graph-color: rgb(255, 194, 194);
+
+  --pie-color-1: rgb(138, 25, 25);
+  --pie-color-2: rgb(175, 82, 82);
+  --pie-color-3: rgb(210, 119, 119);
+  --pie-color-4: rgb(227, 152, 152);
+  --pie-color-5: rgb(247, 176, 176);
+  --pie-color-6: rgb(250, 205, 205);
+
+  --opposite-graph-color: rgb(77, 121, 255);
+}

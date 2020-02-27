@@ -10,10 +10,41 @@
 
 		<title>SOStimate</title>
 
+		<!-- Look for colour cookie -->
+		<script>
+			let allCookies = getCookies();
+			for(let cookie in allCookies)
+			{
+				if(allCookies[cookie] === "blue")
+				{
+					document.write('<link rel="stylesheet" type="text/css" href="{% static "VisualizeApp/baseColor.css" %}" />');
+					console.log("[Accessbility] Using blue colour");
+				}
+
+				else if(allCookies[cookie] === "red")
+				{
+					document.write('<link rel="stylesheet" type="text/css" href="{% static "VisualizeApp/redColor.css" %}" />');
+					console.log("[Accessbility] Using red colour");
+				}
+			}
+
+			//Gets all the cookies 
+			function getCookies(){
+				var pairs = document.cookie.split(";");
+				var cookies = {};
+				for (var i=0; i<pairs.length; i++)
+				{
+					var pair = pairs[i].split("=");
+					cookies[pair[0]] = unescape(pair[1]);
+				}
+				return cookies;
+			}
+		</script>
+
 		<!-- Bootstrap core CSS 
 		<link href="VisualizeApp/CSS/Core.css" rel="stylesheet">-->
-
-		<!-- Bootstrap core CSS -->
+		
+		<!-- Bootstrap custom CSS -->
 		<link rel="stylesheet" type="text/css" href="{% static 'VisualizeApp/Custom.css' %}">
 
 		<!-- Custom styles for this template -->
@@ -23,7 +54,6 @@
 		<!-- Add MapBox -->
 		<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.js'></script>
     	<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.8.0/mapbox-gl.css' rel='stylesheet' />
-
 
 		<!-- Button Logic at end -->
 		<!-- Map overlay at end -->

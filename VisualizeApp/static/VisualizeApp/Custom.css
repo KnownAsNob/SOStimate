@@ -151,7 +151,7 @@ body {
 
 	#stationHeader {
 		font-size: 250%;
-		color: rgb(77, 121, 255);
+		color: var(--main-graph-color);
 	}
 
 	#stationSubHeader {
@@ -200,7 +200,7 @@ body {
 
 	/* Bar chart */
 	.bar {
-	    fill: red;
+	    fill: var(--opposite-graph-color);
 	}
 
 /* Line SVG */
@@ -213,16 +213,16 @@ body {
 
 		#line {
 			fill: none;
-		    stroke: rgb(77, 121, 255);
+		    stroke: var(--main-graph-color);
 		    stroke-width: 2px;
 		}
 
 		.area {
-			fill: red;
+			fill: var(--opposite-graph-color);
 		}
 
 		.dot {
-	   		fill: rgb(77, 121, 197);
+	   		fill: var(--main-graph-color);
 	    	stroke: white;
 		}
 
@@ -237,9 +237,6 @@ body {
 	.pieLabel {
 		font-family: Arial;
 		font-style: italic;
-		/*fill: rgb(77, 121, 197);
-		stroke-width: 0.6px;
-		stroke: black;*/
 		fill: black;
 		font-size: 120%;
 		text-anchor: middle;
@@ -352,7 +349,6 @@ body {
 	background-color: rgb(243,242,237);
 	outline: 1px solid rgb(224, 224, 224);
 	padding: 0.5% 0 0.5% 0.5%;
-
 	cursor: pointer;
 	width: 100%;
 	border: none;
@@ -372,3 +368,12 @@ body {
   	overflow: hidden;
   	transition: max-height 0.2s ease-out;
 }
+
+#colorSelectorHeader {
+		margin-left: 10%;
+	}
+
+#colorSelectorDrop {
+		margin-left: 10%;
+		width: 25%;
+	}

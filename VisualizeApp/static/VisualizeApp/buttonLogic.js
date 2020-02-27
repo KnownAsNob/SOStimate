@@ -1,6 +1,8 @@
 //CTRL + K, CTRL + 1
 //CTRL + K, CTRL + J
 
+//css.getPropertyValue('--main-graph-color')
+
 //Visualizer map popup
 model = document.querySelector(".model");
 closeBtn = document.querySelector(".close-btn");
@@ -8,6 +10,8 @@ header = document.getElementById("stationHeader");
 subheader = document.getElementById("stationSubHeader");
 text = document.getElementById("text");
 container = document.getElementById("model-content");
+
+css = getComputedStyle(document.documentElement)
 
 Station = 'None';
 Type = 'None';
@@ -158,7 +162,7 @@ function createOverall(Type, Input, ID, Station)
    		   .attr("dy", "0em")
    		   .attr("font-size", "35px")
    		   .attr("font-weight", "bold")
-   		   .attr("fill", "rgb(77, 121, 255)")
+   		   .attr("fill", css.getPropertyValue('--main-graph-color'))
    	 	   .text(Type);
 
    	//Line
@@ -189,7 +193,7 @@ function createOverall(Type, Input, ID, Station)
 		{
 			d3.select(this)
             	.transition()
-	      		.style("fill", "rgb(130, 160, 255)");
+	      		.style("fill", css.getPropertyValue('--mouse-over-graph-color'));
 		}
 
 	function handleMouseOut(d, i) 
@@ -306,7 +310,7 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width)
     g.selectAll(".bar")
       	.transition("ColourBar")
       	.delay(500)
-      	.style("fill", "rgb(77, 121, 255)"); 
+      	.style("fill", css.getPropertyValue('--main-graph-color')); 
 
     //Define tooltip
 	var popUp = d3.select("body").append("div")		
@@ -319,7 +323,7 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width)
 	{
         d3.select(this)
         	.transition()
-      		.style("fill", "rgb(129, 149, 255)");
+      		.style("fill", css.getPropertyValue('--mouse-over-graph-color'));
 
       	popUp.transition()		
              .duration(200)		
@@ -333,7 +337,7 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width)
 	{ 
         d3.select(this)
         	.transition()
-      		.style("fill", "rgb(77, 121, 255)");
+      		.style("fill", css.getPropertyValue('--main-graph-color'));
 
       	popUp.transition()		
            .duration(500)		
@@ -344,7 +348,7 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width)
 	{
 		d3.select(this)
           .transition()
-      	  .style("fill", "rgb(55, 76, 172)");
+      	  .style("fill", css.getPropertyValue('--mouse-click-graph-color'));
 
       	popUp.transition()		
            .duration(500)		
@@ -400,7 +404,7 @@ function updateBarChart(inputData, station, type, year, ID)
      .duration(500)
      .delay(500)
      .attr("height", function(d) { return height - yBarScale(d[1]); })
-     .style("fill", "rgb(77, 121, 255)");
+     .style("fill", css.getPropertyValue('--main-graph-color'));
 	
     //Update X-Axis    
 	svg.select("#xAxis") 
@@ -424,7 +428,7 @@ function updateBarChart(inputData, station, type, year, ID)
 	{
         d3.select(this)
         	.transition()
-      		.style("fill", "rgb(129, 149, 255)");
+      		.style("fill", css.getPropertyValue('--mouse-over-graph-color'));
 
       	popUp.transition()		
              .duration(200)		
@@ -438,7 +442,7 @@ function updateBarChart(inputData, station, type, year, ID)
 	{
         d3.select(this)
         	.transition()
-      		.style("fill", "rgb(77, 121, 255)");
+      		.style("fill", css.getPropertyValue('--main-graph-color'));
 
       	popUp.transition()		
            .duration(500)		
@@ -449,7 +453,7 @@ function updateBarChart(inputData, station, type, year, ID)
 	{
         d3.select(this)
     	  .transition()
-  		  .style("fill", "rgb(55, 76, 172)");
+  		  .style("fill", css.getPropertyValue('--mouse-click-graph-color'));
 
   		popUp.transition()		
            .duration(500)		
@@ -549,8 +553,7 @@ function createLineChart(dataIn, station, type, year, svg, name)
 	    g.select(".area")
 	      .transition()
 	      .duration(400)
-	      .style("fill", "rgb(221, 246, 254)");
-
+	      .style("fill", css.getPropertyValue('--light-area-graph-color'));
 
 	//Append dots to line
 	g.selectAll(".dot")
@@ -592,7 +595,7 @@ function createLineChart(dataIn, station, type, year, svg, name)
 	{
         d3.select(this)
         	.transition()
-      		.style("fill", "rgb(55, 76, 172)")
+      		.style("fill", css.getPropertyValue('--mouse-over-graph-color'))
       		.attr("r", "8");
 
       	popUp.transition()		
@@ -609,7 +612,7 @@ function createLineChart(dataIn, station, type, year, svg, name)
         
         d3.select(this)
         	.transition()
-      		.style("fill", "rgb(77, 121, 197)")
+      		.style("fill", css.getPropertyValue('--main-graph-color'))
       		.attr("r", "6");	
 
       	popUp.transition()		
@@ -621,7 +624,7 @@ function createLineChart(dataIn, station, type, year, svg, name)
 	{
 		d3.select(this)
         	.transition()
-      		.style("fill", "rgb(77, 121, 197)")
+      		.style("fill", css.getPropertyValue('--mouse-click-graph-color'))
       		.attr("r", "6");
 
       	d3.select(this)
@@ -647,8 +650,6 @@ function updateLineChart(inputData, station, type, year, svg)
 	var data = Object.keys(parsed).map(function(key) {
   		return [Number(key), parsed[key]];
 	});
-
-	
 
 	//Create graph scale again
 	xLineScale = xLineScale.domain([d3.min(data, function(d) { return d[0]; }), d3.max(data, function(d) { return d[0]; })]);
@@ -725,7 +726,7 @@ function updateLineChart(inputData, station, type, year, svg)
 	{
         d3.select(this)
         	.transition()
-      		.style("fill", "rgb(55, 76, 172)")
+      		.style("fill", css.getPropertyValue('--mouse-over-graph-color'))
       		.attr("r", "8");
 
       	popUp.transition()		
@@ -742,7 +743,7 @@ function updateLineChart(inputData, station, type, year, svg)
         
         d3.select(this)
         	.transition()
-      		.style("fill", "rgb(77, 121, 197)")
+      		.style("fill", css.getPropertyValue('--main-graph-color'))
       		.attr("r", "6");
 
       	popUp.transition()		
@@ -754,7 +755,7 @@ function updateLineChart(inputData, station, type, year, svg)
 	{
 		d3.select(this)
         	.transition()
-      		.style("fill", "rgb(77, 121, 197)")
+      		.style("fill", css.getPropertyValue('--mouse-click-graph-color:'))
       		.attr("r", "6");
 
       	d3.select(this)
@@ -801,7 +802,7 @@ function createPieChart(dataIn, station, type, year)
                    .attr("transform", "translate(" + svg.attr("width") / 2 + "," + svg.attr("height") / 2 + ")")
                    .attr("id", "mainGroup");
 
-    var color = d3.scaleOrdinal(['rgb(40, 83, 119)','rgb(82, 115, 175)','rgb(119, 155, 210)','rgb(152, 178, 227)','rgb(176, 205, 247)', 'rgb(205, 232, 250)']);
+    var color = d3.scaleOrdinal([css.getPropertyValue('--pie-color-1'), css.getPropertyValue('--pie-color-2'), css.getPropertyValue('--pie-color-3'), css.getPropertyValue('--pie-color-4'), css.getPropertyValue('--pie-color-5'), css.getPropertyValue('--pie-color-6')]);
 	//'#4daf4a','#377eb8','#ff7f00','#984ea3','#e41a1c', '#FFFF00'
 
     var pie = d3.pie()
@@ -869,7 +870,7 @@ function createPieChart(dataIn, station, type, year)
     	d3.select(this)
         	.transition()
         	.attr("d", pathExtended)
-      		.style("fill", "rgb(125, 145, 228)");
+      		.style("fill", css.getPropertyValue('--mouse-over-graph-color'));
 
       	popUp.transition()		
              .duration(200)		
@@ -919,7 +920,7 @@ function updatePieChart(dataIn, station, type, year)
 	svg = d3.select("#piesvg");
 	g = svg.select("#mainGroup");
 	
-	var color = d3.scaleOrdinal(['rgb(40, 83, 119)','rgb(82, 115, 175)','rgb(119, 155, 210)','rgb(152, 178, 227)','rgb(176, 205, 247)', 'rgb(205, 232, 250)']);
+	var color = d3.scaleOrdinal([css.getPropertyValue('--pie-color-1'), css.getPropertyValue('--pie-color-2'), css.getPropertyValue('--pie-color-3'), css.getPropertyValue('--pie-color-4'), css.getPropertyValue('--pie-color-5'), css.getPropertyValue('--pie-color-6')]);
 	//'#4daf4a','#377eb8','#ff7f00','#984ea3','#e41a1c', '#FFFF00'
 
 	updateRadius = radius - (pieMargin/2);

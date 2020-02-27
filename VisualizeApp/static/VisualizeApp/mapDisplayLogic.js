@@ -48,3 +48,4 @@ function createMapElement(elementType, id, appendTo)
 
 	return newElement;
 }
+
