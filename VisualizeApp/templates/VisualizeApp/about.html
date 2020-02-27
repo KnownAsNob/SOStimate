@@ -28,11 +28,17 @@
 	         		</div> <!-- faq_item -->
 
 	         		<h4 id = "colorSelectorHeader"><i>Select graph base colour:</i></h4>
+					<h4 id = "textSelectorHeader"><i>Select text size:</i></h4>
 
 	         		<!-- Colour select drop-down -->
 	         		<select id="colorSelectorDrop" onchange="setCookie('ColorValue', this.options[this.selectedIndex].value, 1)">
 				  		<option value="blue">Blue</option>
 				  		<option value="red">Red</option>
+					</select> 
+
+					<select id="textSelectorDrop" onchange="setCookie('TextSize', this.options[this.selectedIndex].value, 1)">
+				  		<option value="small">Small</option>
+				  		<option value="large">Large</option>
 					</select> 
 
 	         	</div> <!-- faq_group -->

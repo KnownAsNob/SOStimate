@@ -13,6 +13,8 @@
 		<!-- Look for colour cookie -->
 		<script>
 			let allCookies = getCookies();
+
+			//Decide colour
 			for(let cookie in allCookies)
 			{
 				if(allCookies[cookie] === "blue")
@@ -25,6 +27,16 @@
 				{
 					document.write('<link rel="stylesheet" type="text/css" href="{% static "VisualizeApp/redColor.css" %}" />');
 					console.log("[Accessbility] Using red colour");
+				}
+			}
+
+			//Decide text size
+			for(let cookie in allCookies)
+			{
+				if(allCookies[cookie] === "large")
+				{
+					document.write('<link rel="stylesheet" type="text/css" href="{% static "VisualizeApp/largeText.css" %}" />');
+					console.log("[Accessbility] Using large text");
 				}
 			}
 

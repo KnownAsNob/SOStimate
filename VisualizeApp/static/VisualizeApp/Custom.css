@@ -345,6 +345,10 @@ body {
 	margin-bottom: 2%;
 }
 
+.faq_title {
+
+}
+
 .faq_question {
 	background-color: rgb(243,242,237);
 	outline: 1px solid rgb(224, 224, 224);
@@ -370,10 +374,25 @@ body {
 }
 
 #colorSelectorHeader {
-		margin-left: 10%;
-	}
+	float: left;
+	margin-left: 10%;
+	margin-right: 25%;
+}
 
 #colorSelectorDrop {
-		margin-left: 10%;
-		width: 25%;
-	}
+	float: left;
+	margin-left: 10%;
+	margin-right: 25%;
+	width: 25%;
+}
+
+#textSelectorHeader {
+	float: right;
+	margin-right: 20%;
+}
+
+#textSelectorDrop {
+	float: right;
+	margin-right: 10%;
+	width: 25%;
+}
