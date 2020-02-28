@@ -13,6 +13,8 @@ from django.db.models.functions import Cast
 #Get total calls for station
 masterCalls = Calls.objects.all()
 
+days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
 def home(request): #Handles logic of certain route
 	return render(request, 'VisualizeApp/home.html')
 	#Pass in variable: render(request, 'VisualizeApp/home.html', Name)
@@ -92,30 +94,104 @@ def get_calls_unit(request):
 	input = request.POST['station']
 	type = request.POST['type']
 	year = request.POST['year']
+	month = request.POST['month']
+	day = request.POST['day']
 
 	response_data={}
 
-	if year == "NA":
-		#Get total calls for station year
+	case = decideCase(year, month, day)
+
+	print(case)
+
+	#1 = !Year
+	#2 = #Year, !Month
+	#3 = #Year, Month, !Day
+	#4 = #Year, Month, Day
+	print(year)
+	#!Year
+	if case == 1:
+		#Overall
 		if type == "Overall":
 			totalCalls = masterCalls.filter(details__StationArea = input)
+			print("Here")
+		#Agency Specified
 		else:
 			totalCalls = masterCalls.filter(details__Agency = type, details__StationArea = input)
-		
+		#Cycle through all years
 		for x in range(2013, 2019):
 			calls = totalCalls.filter(details__Date__endswith=x).count()
+			print(calls)
 			response_data[x] = calls
-	else:
-		#Get total calls for station month
+	#Year, !Month
+	elif case == 2:
+		#Get total calls for each month
 		if type == "Overall":
 			totalCalls = masterCalls.filter(details__StationArea = input)
 		else:
 			totalCalls = masterCalls.filter(details__Date__endswith=year, details__Agency = type, details__StationArea = input)
-		
-		#Format: 01/01/2018
+		#Cycle though all months
 		for x in range(1, 13):
 			time = str(x) + "/" + str(year)
 			calls = totalCalls.filter(details__Date__endswith=time).count()
+			response_data[x] = calls
+	#Year, Month, !Day
+	elif case == 3:
+		#Generate month + year to filter
+		strMonth = str(month)
+
+		if len(strMonth) == 1:
+			strMonth = "0" + strMonth
+
+		filter = strMonth + "/" + str(year)
+
+		#Get total calls for each day of month
+		if type == "Overall":
+			totalCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=filter)
+		else:
+			totalCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = type, details__StationArea = input)
+
+		no_days = days_in_month[int(month) - 1]
+
+		#Cycle though all days in month
+		for x in range(1, no_days + 1):
+			day = str(x)
+
+			if len(day) == 1:
+				day = "0" + day
+
+			time = day + "/" + filter
+			calls = totalCalls.filter(details__Date = time).count()
+			response_data[x] = calls
+	#Year, Month, Day
+	else:
+		day = str(day)
+		month = str(month)
+		year = str(year)
+
+		if len(day) == 1:
+			day = "0" + day
+
+		if len(month) == 1:
+			month = "0" + month
+
+		date = day + "/" + month + "/" + str(year)
+
+		#Get total calls for each hour of day
+		if type == "Overall":
+			totalCalls = masterCalls.filter(details__StationArea = input, details__Date = date)
+		else:
+			totalCalls = masterCalls.filter(details__Date = date, details__Agency = type, details__StationArea = input)
+
+		print(date)
+		print(totalCalls)
+
+		#Cycle though all hours in day
+		for x in range(0, 25):
+			hour = str(x)
+			if len(hour) == 1:
+				hour = "0" + hour
+			print(hour)
+			calls = totalCalls.filter(details__TOC__startswith = hour).count()
 			response_data[x] = calls
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
@@ -266,3 +342,27 @@ def get_total_cats(request):
 	print(response_data)
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
+
+def decideCase(year, month, day):
+
+	#1 = !Year
+	#2 = #Year, !Month
+	#3 = #Year, Month, !Day
+	#4 = #Year, Month, Day
+
+	#!Year
+	if year == "NA":
+		return 1
+	#Year
+	else:
+		#Year, !Month
+		if month == "NA":
+			return 2
+		#Year, Month
+		else:
+			#Year, Month, !Day
+			if day == "NA":
+				return 3
+			#Year, Month, Day
+			else:
+				return 4

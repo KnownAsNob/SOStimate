@@ -13,6 +13,8 @@ container = document.getElementById("model-content");
 
 css = getComputedStyle(document.documentElement)
 
+maxDetail = false;
+
 Station = 'None';
 Type = 'None';
 
@@ -55,9 +57,9 @@ function onClicked(message) //On clicked - Map popup button
 			createElement("P", "overallCalls", "overallStatContainer");*/
 
 	//Fetch line 2 data and draw
-	$.when(fetchLine2Data(headerText, "Overall", "NA")).done(function(returnLine2Val){
-		createLineChart(returnLine2Val, headerText, "Overall", "NA", "bar2svg", "Average Response Time | Type: Overall | Year: All", 680);	
-	});
+	/*$.when(fetchLine2Data(headerText, "Overall", "NA")).done(function(returnLine2Val){
+		createLineChart(returnLine2Val, headerText, "Overall", "NA", "bar2svg", "Average Response Time | Type: Overall | Year: All", 680, "NA", "NA");	
+	});*/
 	
 	/*Fetch bar 2 data and draw
 	$.when(fetchBar2Data(headerText, "Overall", "NA")).done(function(returnBar2Val){
@@ -83,14 +85,14 @@ function onClicked(message) //On clicked - Map popup button
 			createOverall("DF", json.message[2], "DFsvg", headerText)
 
 			//Fetch BarLine data and draw
-			$.when(fetchBarLineData(headerText, "Overall", "NA")).done(function(returnVal){
+			$.when(fetchBarLineData(headerText, "Overall", "NA", "NA", "NA")).done(function(returnVal){
 					//createBarChart(returnVal, headerText, "Overall", "NA", "linesvg", "Station Calls Per Year | Type: Overall | Year: All", 500);
-					createLineChart(returnVal, headerText, "Overall", "NA", "barsvg", "Station Calls Per Year | Type: Overall | Year: All", 1200);
+					createLineChart(returnVal, headerText, "Overall", "NA", "barsvg", "Station Calls Per Year | Type: Overall | Year: All | Month: NA | Day: NA", 1200, "NA", "NA");
 
 				//Fetch pie data and draw
-				$.when(fetchPieData(headerText, "Overall", "NA")).done(function(returnPieVal){
+				/*$.when(fetchPieData(headerText, "Overall", "NA")).done(function(returnPieVal){
 					createPieChart(returnPieVal, headerText, "Overall", "NA", "Most Common Incidents | Type: Overall | Year: All");		
-				});
+				});*/
 			});
 				
 			//Change loading text
@@ -242,7 +244,8 @@ function createOverall(Type, Input, ID, Station)
 
     function handleClick(d, i) 
 	{
-		callUpdate(Station, Type, "NA")
+		maxDetail = false;
+		callUpdate(Station, Type, "NA", "NA", "NA");
     }
 }
 
@@ -502,7 +505,7 @@ function updateBarChart(inputData, station, type, year, ID, title)
 
 /* ---------- Total Calls Line chart ---------- */
 /* ---------- Response Time Line chart ---------- */
-function createLineChart(dataIn, station, type, year, svg, name, width)
+function createLineChart(dataIn, station, type, year, svg, name, width, month, day)
 {
 	//Process data
 	list = JSON.stringify(dataIn);
@@ -674,11 +677,11 @@ function createLineChart(dataIn, station, type, year, svg, name, width)
            .duration(500)		
            .style("opacity", 0);
 
-		callUpdate(station, type, d[0]);
+		callUpdate(station, type, d[0], "NA", "NA");
     }
 }
 
-function updateLineChart(inputData, station, type, year, svg, title)
+function updateLineChart(inputData, station, type, year, svg, title, month, day)
 {
 	//process data
 	list = JSON.stringify(inputData);
@@ -793,9 +796,9 @@ function updateLineChart(inputData, station, type, year, svg, title)
       	popUp.transition()		
            .duration(500)		
            .style("opacity", 0);	
-    }
+    } 
 
-    function handleClick(d, i, year) 
+    function handleClick(d, i) 
 	{
 		d3.select(this)
         	.transition()
@@ -805,18 +808,65 @@ function updateLineChart(inputData, station, type, year, svg, title)
       	d3.select(this)
       		.transition()
       		.delay(200)
-      		.attr("r", "8");
+      		.attr("r", "8");	
 
       	popUp.transition()		
            .duration(500)		
-           .style("opacity", 0);
+           .style("opacity", 0); 
 
-		callUpdate(station, type, d[0]);
+	    if(maxDetail == false)   
+	    {
+	        if(year == "NA" && d[0] == null )
+	        {
+	        	console.log("Call1");
+				callUpdate(station, type, "NA", "NA", "NA");
+	        }
+
+	        if(year == "NA")
+	        {
+	        	console.log("Call1.2");
+				callUpdate(station, type, d[0], "NA", "NA");
+	        }
+
+	        else if(month == "NA")
+	        {
+	        	console.log("Call2");
+	        	callUpdate(station, type, year, d[0], "NA");
+	        }
+
+	        else if (day == "NA")
+	        {
+	        	console.log("Call3");
+	        	callUpdate(station, type, year, month, d[0]);
+	        	console.log("Max detail reached!");
+	        	maxDetail = true;
+	        }
+
+	        else 
+	        {
+	        	console.log("Error!");
+	        }
+	    }
+
+	    else
+	    {
+	    	popUp.transition()		
+             .duration(200)		
+             .style("opacity", .9);		
+        	popUp.html("<p class = 'popUpText'><i>Current max level of detail reached!</i></p>")	
+             .style("left", (d3.event.pageX) + "px")		
+             .style("top", (d3.event.pageY - 30) + "px")
+
+            popUp.transition()	
+            	 .delay(1000)	
+           		 .duration(500)		
+           		 .style("opacity", 0);
+	    }
     }
 }
 
 /* ---------- Incidents pie chart ---------- */
-function createPieChart(dataIn, station, type, year, title)
+function createPieChart(dataIn, station, type, year, title, month, day)
 {
 	//Process data
 	list = JSON.stringify(dataIn);
@@ -951,7 +1001,7 @@ function createPieChart(dataIn, station, type, year, title)
     }
 }
 
-function updatePieChart(dataIn, station, type, year, title)
+function updatePieChart(dataIn, station, type, year, title, month, day)
 {
 	//Process data
 	list = JSON.stringify(dataIn);
@@ -1027,7 +1077,7 @@ function updatePieChart(dataIn, station, type, year, title)
 /* -------------------- AJAX CALLS -------------------- */
 
 //Returns numbers of incidents
-function fetchBarLineData(station, type, year)
+function fetchBarLineData(station, type, year, month, day)
 {
 	function ajaxCall()
 	{
@@ -1038,7 +1088,7 @@ function fetchBarLineData(station, type, year)
 			url: "http://localhost:8000/map/get_calls_unit/",
 			datatype: "json",
 			//async: true,
-			data: {"station": station, "type": type, "year": year},
+			data: {"station": station, "type": type, "year": year, "month": month, "day": day},
 			success: function(json)
 			{
 				//Operations here
@@ -1053,7 +1103,7 @@ function fetchBarLineData(station, type, year)
 }
 
 //Returns types of incidents
-function fetchPieData(station, type, year)
+function fetchPieData(station, type, year, month, day)
 {
 	function ajaxPieCall()
 	{
@@ -1064,7 +1114,7 @@ function fetchPieData(station, type, year)
 			url: "http://localhost:8000/map/get_incidents/",
 			datatype: "json",
 			//async: true,
-			data: {"station": station, "type": type, "year": year},
+			data: {"station": station, "type": type, "year": year, "month": month, "day": day},
 			success: function(json)
 			{
 				//Operations here
@@ -1079,7 +1129,7 @@ function fetchPieData(station, type, year)
 }
 
 //Returns average response times
-function fetchLine2Data(station, type, year)
+function fetchLine2Data(station, type, year, month, day)
 {
 	function ajaxLine2Call()
 	{
@@ -1090,7 +1140,7 @@ function fetchLine2Data(station, type, year)
 			url: "http://localhost:8000/map/get_avg_response/",
 			datatype: "json",
 			//async: true,
-			data: {"station": station, "type": type, "year": year},
+			data: {"station": station, "type": type, "year": year, "month": month, "day": day},
 			success: function(json)
 			{
 				//Operations here
@@ -1130,22 +1180,22 @@ function fetchLine2Data(station, type, year)
 }*/
 
 /* -------------------- UPDATE GRAPHS -------------------- */
-function callUpdate(station, type, year)
+function callUpdate(station, type, year, month, day)
 {
 	//Request number of calls/time unit
 	function ajaxBarLine()
 	{
-		return fetchBarLineData(station, type, year);
+		return fetchBarLineData(station, type, year, month, day);
 	}
 
 	function ajaxPieChart()
 	{
-		return fetchPieData(station, type, year);
+		return fetchPieData(station, type, year, month, day);
 	}
 
 	function ajaxLine2Chart()
 	{
-		return fetchLine2Data(station, type, year);
+		return fetchLine2Data(station, type, year, month, day);
 	}
 	
 	/*function ajaxBar2()
@@ -1159,23 +1209,23 @@ function callUpdate(station, type, year)
 	$.when(ajaxBarLine()).done(function(returnVal){
    
 		//updateBarChart(returnVal, station, type, year, "linesvg", "Station Calls Per Year | Type: " + type + " | Year: " + year);
-		updateLineChart(returnVal, station, type, year, "barsvg",  "Station Calls Per Year | Type: " + type + " | Year: " + year);
+		updateLineChart(returnVal, station, type, year, "barsvg",  "Station Calls Per Year | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
 		
 	});
 
 	//Call pie update
-	$.when(ajaxPieChart()).done(function(returnVal){
+	/*$.when(ajaxPieChart()).done(function(returnVal){
     	
 		updatePieChart(returnVal, station, type, year, "Most Common Incidents | Type: " + type + " | Year: " + year);
 
-	});
+	});*/
 
 	//Call line 2 update
-	$.when(ajaxLine2Chart()).done(function(returnVal){
+	/*$.when(ajaxLine2Chart()).done(function(returnVal){
     	
 		updateLineChart(returnVal, station, type, year, "bar2svg", "Average Response Time | Type: " + type + " | Year: " + year);
 
-	});
+	});*/
 
 	//Call bar 2 update
 	/*$.when(ajaxBar2()).done(function(returnCatVal){
