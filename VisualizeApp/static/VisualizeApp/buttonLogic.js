@@ -56,10 +56,10 @@ function onClicked(message) //On clicked - Map popup button
 			//createElement(Type, ID, ParentID)
 			createElement("P", "overallCalls", "overallStatContainer");*/
 
-	//Fetch line 2 data and draw
-	/*$.when(fetchLine2Data(headerText, "Overall", "NA")).done(function(returnLine2Val){
-		createLineChart(returnLine2Val, headerText, "Overall", "NA", "bar2svg", "Average Response Time | Type: Overall | Year: All", 680, "NA", "NA");	
-	});*/
+	//Fetch line data and draw
+	$.when(fetchLine2Data(headerText, "Overall", "NA", "NA", "NA")).done(function(returnLine2Val){
+		createLineChart(returnLine2Val, headerText, "Overall", "NA", "bar2svg", "Average Response Time | Type: Overall | Year: All | Month: NA | Day: NA", 680, "NA", "NA");	
+	});
 	
 	/*Fetch bar 2 data and draw
 	$.when(fetchBar2Data(headerText, "Overall", "NA")).done(function(returnBar2Val){
@@ -85,14 +85,14 @@ function onClicked(message) //On clicked - Map popup button
 			createOverall("DF", json.message[2], "DFsvg", headerText)
 
 			//Fetch BarLine data and draw
-			$.when(fetchBarLineData(headerText, "Overall", "NA", "NA", "NA")).done(function(returnVal){
-					//createBarChart(returnVal, headerText, "Overall", "NA", "linesvg", "Station Calls Per Year | Type: Overall | Year: All", 500);
-					createLineChart(returnVal, headerText, "Overall", "NA", "barsvg", "Station Calls Per Year | Type: Overall | Year: All | Month: NA | Day: NA", 1200, "NA", "NA");
+			$.when(fetchBarData(headerText, "Overall", "NA", "NA", "NA")).done(function(returnVal){
+				createBarChart(returnVal, headerText, "Overall", "NA", "linesvg", "Station Calls Per Year | Type: Overall | Year: All | Month: NA | Day: NA", 1200, "NA", "NA");
+				//createLineChart(returnVal, headerText, "Overall", "NA", "barsvg", "Station Calls Per Year | Type: Overall | Year: All | Month: NA | Day: NA", 1200, "NA", "NA");
 
 				//Fetch pie data and draw
-				/*$.when(fetchPieData(headerText, "Overall", "NA")).done(function(returnPieVal){
-					createPieChart(returnPieVal, headerText, "Overall", "NA", "Most Common Incidents | Type: Overall | Year: All");		
-				});*/
+				$.when(fetchPieData(headerText, "Overall", "NA", "NA", "NA")).done(function(returnPieVal){
+					createPieChart(returnPieVal, headerText, "Overall", "NA", "Incidents | Type: Overall | Year: All | Month: NA | Day: NA", "NA", "NA");		
+				});
 			});
 				
 			//Change loading text
@@ -251,7 +251,7 @@ function createOverall(Type, Input, ID, Station)
 
 /* ---------- Total CallsBar chart ---------- */
 /* ---------- Time Categories Bar ---------- */
-function createBarChart(inputData, Station, Type, Year, ID, title, width)
+function createBarChart(inputData, Station, Type, Year, ID, title, width, month, day)
 {
 	//Process data	
 	list = JSON.stringify(inputData);
@@ -260,8 +260,6 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width)
 	//Transform the data
 	data = Object.keys(parsed)
 				 .map(function(key) { return [Number(key), parsed[key]]; });
-
-	console.log(data);
 
 	mainContainer = document.getElementById("mainContainer")
 	
@@ -390,11 +388,11 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width)
            .duration(500)		
            .style("opacity", 0);
 
-		callUpdate(Station, Type, d[0])
+		callUpdate(Station, Type, d[0], "NA", "NA");
     }
 }
 
-function updateBarChart(inputData, station, type, year, ID, title)
+function updateBarChart(inputData, station, type, year, svg, title, month, day)
 {
 	list = JSON.stringify(inputData);
 	parsed = JSON.parse(list);
@@ -404,11 +402,13 @@ function updateBarChart(inputData, station, type, year, ID, title)
   		return [Number(key), parsed[key]];
 	});
 
+	console.log(svg);
+
 	// Select the section we want to apply our changes to
-	var svg = d3.select("#" + ID)
+	var svg = d3.select("#" + svg)
 	var g = svg.select("#mainGroup")
   
-	height = d3.select("#" + ID).attr("height") - 100; //(margin)
+	height = svg.attr("height") - 100; //(margin)
 
 	xBarScale = d3.scaleBand().range ([0, svg.attr("width") - margin]).padding(0.2)
 
@@ -489,7 +489,7 @@ function updateBarChart(inputData, station, type, year, ID, title)
            .style("opacity", 0);	
     }
 
-    function handleClick(d, i, year) 
+    function handleClick(d, i) 
 	{
         d3.select(this)
     	  .transition()
@@ -499,7 +499,54 @@ function updateBarChart(inputData, station, type, year, ID, title)
            .duration(500)		
            .style("opacity", 0);
 
-        callUpdate(station, type, d[0]);
+        if(maxDetail == false)   
+	    {
+	        if(year == "NA" && d[0] == null )
+	        {
+	        	console.log("Call1");
+				callUpdate(station, type, "NA", "NA", "NA");
+	        }
+
+	        if(year == "NA")
+	        {
+	        	console.log("Call1.2");
+				callUpdate(station, type, d[0], "NA", "NA");
+	        }
+
+	        else if(month == "NA")
+	        {
+	        	console.log("Call2");
+	        	callUpdate(station, type, year, d[0], "NA");
+	        }
+
+	        else if (day == "NA")
+	        {
+	        	console.log("Call3");
+	        	callUpdate(station, type, year, month, d[0]);
+	        	console.log("Max detail reached!");
+	        	maxDetail = true;
+	        }
+
+	        else 
+	        {
+	        	console.log("Error!");
+	        }
+	    }
+
+	    else
+	    {
+	    	popUp.transition()		
+             .duration(200)		
+             .style("opacity", .9);		
+        	popUp.html("<p class = 'popUpText'><i>Current max level of detail reached!</i></p>")	
+             .style("left", (d3.event.pageX) + "px")		
+             .style("top", (d3.event.pageY - 30) + "px")
+
+            popUp.transition()	
+            	 .delay(1000)	
+           		 .duration(500)		
+           		 .style("opacity", 0);
+	    }
     }
 }
 
@@ -818,25 +865,21 @@ function updateLineChart(inputData, station, type, year, svg, title, month, day)
 	    {
 	        if(year == "NA" && d[0] == null )
 	        {
-	        	console.log("Call1");
 				callUpdate(station, type, "NA", "NA", "NA");
 	        }
 
 	        if(year == "NA")
 	        {
-	        	console.log("Call1.2");
 				callUpdate(station, type, d[0], "NA", "NA");
 	        }
 
 	        else if(month == "NA")
 	        {
-	        	console.log("Call2");
 	        	callUpdate(station, type, year, d[0], "NA");
 	        }
 
 	        else if (day == "NA")
 	        {
-	        	console.log("Call3");
 	        	callUpdate(station, type, year, month, d[0]);
 	        	console.log("Max detail reached!");
 	        	maxDetail = true;
@@ -1077,7 +1120,7 @@ function updatePieChart(dataIn, station, type, year, title, month, day)
 /* -------------------- AJAX CALLS -------------------- */
 
 //Returns numbers of incidents
-function fetchBarLineData(station, type, year, month, day)
+function fetchBarData(station, type, year, month, day)
 {
 	function ajaxCall()
 	{
@@ -1183,9 +1226,9 @@ function fetchLine2Data(station, type, year, month, day)
 function callUpdate(station, type, year, month, day)
 {
 	//Request number of calls/time unit
-	function ajaxBarLine()
+	function ajaxBar()
 	{
-		return fetchBarLineData(station, type, year, month, day);
+		return fetchBarData(station, type, year, month, day);
 	}
 
 	function ajaxPieChart()
@@ -1206,26 +1249,24 @@ function callUpdate(station, type, year, month, day)
 	/* ----------------- Call updates ----------------- */
 
 	//Call bar and line update
-	$.when(ajaxBarLine()).done(function(returnVal){
+	$.when(ajaxBar()).done(function(returnVal){
    
-		//updateBarChart(returnVal, station, type, year, "linesvg", "Station Calls Per Year | Type: " + type + " | Year: " + year);
-		updateLineChart(returnVal, station, type, year, "barsvg",  "Station Calls Per Year | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
-		
+		updateBarChart(returnVal, station, type, year, "linesvg", "Station Calls Per Year | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
+		//updateLineChart(returnVal, station, type, year, "barsvg",  "Station Calls Per Year | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
 	});
 
 	//Call pie update
-	/*$.when(ajaxPieChart()).done(function(returnVal){
+	$.when(ajaxPieChart()).done(function(returnVal){
     	
-		updatePieChart(returnVal, station, type, year, "Most Common Incidents | Type: " + type + " | Year: " + year);
+		updatePieChart(returnVal, station, type, year, "Incidents | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
 
-	});*/
+	});
 
 	//Call line 2 update
-	/*$.when(ajaxLine2Chart()).done(function(returnVal){
+	$.when(ajaxLine2Chart()).done(function(returnVal){
     	
-		updateLineChart(returnVal, station, type, year, "bar2svg", "Average Response Time | Type: " + type + " | Year: " + year);
-
-	});*/
+		updateLineChart(returnVal, station, type, year, "bar2svg",  "Average Response Time | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
+	});
 
 	//Call bar 2 update
 	/*$.when(ajaxBar2()).done(function(returnCatVal){
@@ -1235,7 +1276,7 @@ function callUpdate(station, type, year, month, day)
 	});*/
 }
 
-/* -------------------- SET COOKIES FOR AJAX -------------------- */
+/------------------- SET COOKIES FOR AJAX -------------------- */
 
 var csrftoken = Cookies.get('csrftoken');
 

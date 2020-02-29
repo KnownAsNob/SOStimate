@@ -207,8 +207,12 @@ body {
 #barsvg, #bar2svg {
 	background-color: white;
 	margin-top: 2%;
-	box-shadow: 2px 2px grey;
 	float: right;
+	box-shadow: 2px 2px grey;
+}
+
+#barsvg {
+	width: 100%;
 }
 
 		#line {

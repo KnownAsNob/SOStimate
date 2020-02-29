@@ -101,26 +101,22 @@ def get_calls_unit(request):
 
 	case = decideCase(year, month, day)
 
-	print(case)
-
 	#1 = !Year
 	#2 = #Year, !Month
 	#3 = #Year, Month, !Day
 	#4 = #Year, Month, Day
-	print(year)
+
 	#!Year
 	if case == 1:
 		#Overall
 		if type == "Overall":
 			totalCalls = masterCalls.filter(details__StationArea = input)
-			print("Here")
 		#Agency Specified
 		else:
 			totalCalls = masterCalls.filter(details__Agency = type, details__StationArea = input)
 		#Cycle through all years
 		for x in range(2013, 2019):
 			calls = totalCalls.filter(details__Date__endswith=x).count()
-			print(calls)
 			response_data[x] = calls
 	#Year, !Month
 	elif case == 2:
@@ -182,15 +178,11 @@ def get_calls_unit(request):
 		else:
 			totalCalls = masterCalls.filter(details__Date = date, details__Agency = type, details__StationArea = input)
 
-		print(date)
-		print(totalCalls)
-
 		#Cycle though all hours in day
 		for x in range(0, 25):
 			hour = str(x)
 			if len(hour) == 1:
 				hour = "0" + hour
-			print(hour)
 			calls = totalCalls.filter(details__TOC__startswith = hour).count()
 			response_data[x] = calls
 
@@ -201,26 +193,75 @@ def get_incidents(request):
 	input = request.POST['station']
 	type = request.POST['type']
 	year = request.POST['year']
+	month = request.POST['month']
+	day = request.POST['day']
 
 	response_data={}
+
+	case = decideCase(year, month, day)
+
+	#1 = !Year
+	#2 = #Year, !Month
+	#3 = #Year, Month, !Day
+	#4 = #Year, Month, Day
 	
 	######## Decide what is required ########
-	#!year
-	if year == 'NA':
-		#!year, !type
+	#!Year
+	if case == 1:
+		#Overall
 		if type == "Overall":
 			overallCalls = masterCalls.filter(details__StationArea = input)
 		#!year, type
 		else:
 			overallCalls = masterCalls.filter(details__StationArea = input, details__Agency = type)
-	#year
-	else:
+			
+	#Year, !Month
+	elif case == 2:
 		#!type, year
 		if type == "Overall":
 			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year)
 		#type, year
 		else:
-			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year, details__Agency = type)	
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year, details__Agency = type)
+	
+	#Year, Month, !Day
+	elif case == 3:
+		#Generate month + year to filter
+		strMonth = str(month)
+
+		if len(strMonth) == 1:
+			strMonth = "0" + strMonth
+
+		filter = strMonth + "/" + str(year)
+
+		#Get incidents for each day of month
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=filter)
+		else:
+			overallCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = type, details__StationArea = input)
+
+		no_days = days_in_month[int(month) - 1]
+			
+	#Year, Month, Day
+	else:
+		day = str(day)
+		month = str(month)
+		year = str(year)
+
+		if len(day) == 1:
+			day = "0" + day
+
+		if len(month) == 1:
+			month = "0" + month
+
+		date = day + "/" + month + "/" + str(year)
+
+		#Get total calls for each hour of day
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date = date)
+		else:
+			overallCalls = masterCalls.filter(details__Date = date, details__Agency = type, details__StationArea = input)
+
 
 	#Get most popular incidents
 	PopIncident = overallCalls.values('details__Incident').annotate(Count=Count('details__Incident')).order_by('-Count')[:6]
@@ -234,14 +275,22 @@ def get_incidents(request):
 
 def get_avg_response(request):
 	
-	#Calculate average response time
 	input = request.POST['station']
 	type = request.POST['type']
 	year = request.POST['year']
+	month = request.POST['month']
+	day = request.POST['day']
 
 	response_data={}
 
-	def calculateAverages(overallCalls, year):
+	case = decideCase(year, month, day)
+
+	#1 = !Year
+	#2 = #Year, !Month
+	#3 = #Year, Month, !Day
+	#4 = #Year, Month, Day
+
+	def calculateAverages(overallCalls, timeUnit):
 		#Get list of both categories
 		totalTOC_ORD = list(overallCalls.values('details__TOC-ORD-Cat').values_list('details__TOC-ORD-Cat', flat=True))
 		totalORD_MOB = list(overallCalls.values('details__ORD-MOB-Cat').values_list('details__ORD-MOB-Cat', flat=True))
@@ -251,30 +300,34 @@ def get_avg_response(request):
 
 		totalNAN = 0
 
-		#Add to get averages
-		for item in totalTOC_ORD:
-			totalTOCORD = totalTOCORD + int(float(item))
+		#Check not = 0
+		if not totalTOC_ORD:
+			response_data[timeUnit] = 0
 
-		for item in totalORD_MOB:
-			#Deal with NaNs
-			if item == 'nan':
-				totalNAN = totalNAN + 1
-			else:
-				totalORDMOB = totalORDMOB + int(float(item))
+		else:
+			#Add to get averages
+			for item in totalTOC_ORD:
+				totalTOCORD = totalTOCORD + int(float(item))
 
-		averageResponse = (totalTOCORD + totalORDMOB)/(len(totalTOC_ORD) + len(totalORD_MOB) - totalNAN)
+			for item in totalORD_MOB:
+				#Deal with NaNs
+				if item == 'nan':
+					totalNAN = totalNAN + 1
+				else:
+					totalORDMOB = totalORDMOB + int(float(item))
 
-		response_data[year] = averageResponse
+			averageResponse = (totalTOCORD + totalORDMOB)/(len(totalTOC_ORD) + len(totalORD_MOB) - totalNAN)
+
+			response_data[timeUnit] = averageResponse
 	#End calculateAverages
 
 	######## Decide what is required ########
-	### Get all calls ###
-	#!year
-	if year == 'NA':
-		#!year, !type
+	#!Year
+	if case == 1:
+		#!Year, !Type
 		if type == "Overall":
 			overallCalls = masterCalls.filter(details__StationArea = input)
-		#!year, type
+		#!Year, Type
 		else:
 			overallCalls = masterCalls.filter(details__StationArea = input, details__Agency = type)
 
@@ -282,19 +335,76 @@ def get_avg_response(request):
 		for x in range(2013, 2019):
 			filterCalls = overallCalls.filter(details__Date__endswith=x)
 			calculateAverages(filterCalls, x)
-
-	#year
-	else:
-		#!type, year
+			
+	#Year, !Month
+	elif case == 2:
+		#!Type, Year
 		if type == "Overall":
 			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year)
-		#type, year
+		#Type, Year
 		else:
 			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year, details__Agency = type)
 
 		for x in range(1, 13):
 			time = str(x) + "/" + str(year)
 			calls = overallCalls.filter(details__Date__endswith=time)
+			calculateAverages(calls, x)
+		
+	
+	#Year, Month, !Day
+	elif case == 3:
+		#Generate month + year to filter
+		strMonth = str(month)
+
+		if len(strMonth) == 1:
+			strMonth = "0" + strMonth
+
+		filter = strMonth + "/" + str(year)
+
+		#Get incidents for each day of month
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=filter)
+		else:
+			overallCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = type, details__StationArea = input)
+
+		for x in range(1, days_in_month[int(month)]):
+			xStr = str(x)
+
+			if len(xStr) == 1:
+				xStr = "0" + xStr
+
+			time = xStr + "/" + filter
+			calls = overallCalls.filter(details__Date=time)
+			calculateAverages(calls, x)
+			
+	#Year, Month, Day
+	else:
+		#Generate month + year to filter
+		strDay = str(day)
+
+		if len(strDay) == 1:
+			strDay = "0" + strDay
+
+		strMonth = str(month)
+
+		if len(strMonth) == 1:
+			strMonth = "0" + strMonth
+
+		filter = strDay + "/" + strMonth + "/" + str(year)
+
+		#Get incidents for each day of month
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=filter)
+		else:
+			overallCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = type, details__StationArea = input)
+
+		for x in range(1, 25):
+			xStr = str(x)
+
+			if len(xStr) == 1:
+				xStr = "0" + xStr
+			
+			calls = overallCalls.filter(details__TOC__startswith=x)
 			calculateAverages(calls, x)
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
@@ -338,8 +448,6 @@ def get_total_cats(request):
 			num = overallCalls.filter(**{result: catStr}).count()
 			total = total + num
 		response_data[cat] = total
-
-	print(response_data)
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
 
