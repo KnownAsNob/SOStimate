@@ -53,7 +53,7 @@ function onClicked(message) //On clicked - Map popup button
 				
 	//Fetch average dispatch data and draw
 	$.when(fetchAvgDispatch(headerText, "Overall", "NA", "NA", "NA")).done(function(returnLine2Val){
-		createLineChart(returnLine2Val, headerText, "Overall", "NA", "bar2svg", "Average Dispatch Category | Type: Overall | Year: All | Month: NA | Day: NA", 680, "NA", "NA");	
+		createLineChart(returnLine2Val, headerText, "Overall", "NA", "bar2svg", "Average Dispatch Category | Type: Overall | Year: All | Month: NA | Day: NA", 670, "NA", "NA");	
 	});
 
 	//Request from DB
@@ -74,7 +74,7 @@ function onClicked(message) //On clicked - Map popup button
 			createOverall("DA", json.message[1], "DAsvg", headerText);
 			createOverall("DF", json.message[2], "DFsvg", headerText)
 
-			//Fetch BarLine data and draw
+			//Fetch Bar data and draw
 			$.when(fetchBarData(headerText, "Overall", "NA", "NA", "NA")).done(function(returnVal){
 				createBarChart(returnVal, headerText, "Overall", "NA", "linesvg", "Station Calls Per Year | Type: Overall | Year: All | Month: NA | Day: NA", 1200, "NA", "NA");
 
@@ -85,7 +85,13 @@ function onClicked(message) //On clicked - Map popup button
 
 				//Fetch average travel data and draw
 				$.when(fetchAvgTravel(headerText, "Overall", "NA", "NA", "NA")).done(function(returnAvgTravel){
-					createLineChart(returnAvgTravel, headerText, "Overall", "NA", "avgTravelLine", "Average Travel Category | Type: Overall | Year: All | Month: NA | Day: NA", 680, "NA", "NA");	
+					createLineChart(returnAvgTravel, headerText, "Overall", "NA", "avgTravelLine", "Average Travel Category | Type: Overall | Year: All | Month: NA | Day: NA", getDivWidth('#model-content')/2, "NA", "NA");	
+				});
+
+				//Fetch call times data and draw
+				$.when(fetchCallTimes(headerText, "Overall", "NA", "NA", "NA")).done(function(returnCallTimes){
+					console.log("Ready to draw...")
+					//createScatterPlot(returnCallTimes, headerText, "Overall", "NA", "callTimes", "Indident Times | Type: Overall | Year: All | Month: NA | Day: NA", getDivWidth('#model-content')/2, "NA", "NA");	
 				});
 			});
 				
@@ -1095,6 +1101,33 @@ function updatePieChart(dataIn, station, type, year, ID, title, month, day)
    	   .text(title)
 }
 
+/* ---------- Call time scatter plot ---------- */
+function createScatterPlot(dataIn, station, type, year, ID, title, month, day)
+{
+	//Process data
+	list = JSON.stringify(dataIn);
+	parsed = JSON.parse(list);
+
+	//Transform the data
+	data = Object.keys(parsed)
+				 .map(function(key) { return [Number(key), parsed[key]]; });
+
+	mainContainer = document.getElementById("mainContainer")
+	
+	//Create new SVG canvas
+	const svgGraph = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+	svgGraph.id = svg;
+	svgGraph.setAttribute("width", width);
+	svgGraph.setAttribute("height", 400);
+	mainContainer.appendChild(svgGraph); 
+
+	//Create new line chart
+	var svg = d3.select('#' + svg),
+    margin = 100,
+    width = svg.attr("width") - margin,
+    height = svg.attr("height") - margin;
+}
+
 /* -------------------- AJAX CALLS -------------------- */
 
 //Returns numbers of incidents
@@ -1201,6 +1234,32 @@ function fetchAvgTravel(station, type, year, month, day)
 	});
 }
 
+//Returns each incident time
+function fetchCallTimes(station, type, year, month, day)
+{
+	function ajaxCallTimes()
+	{
+		//Request number of calls/time unit
+		return $.ajax({
+			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+			type: "POST",
+			url: "http://localhost:8000/map/get_incident_lengths/",
+			datatype: "json",
+			//async: true,
+			data: {"station": station, "type": type, "year": year, "month": month, "day": day},
+			success: function(json)
+			{
+				//Operations here
+			}
+		});
+	}
+
+	return $.when(ajaxCallTimes()).done(function(data){
+	
+		return data;
+	});
+}
+
 /* -------------------- UPDATE GRAPHS -------------------- */
 function callUpdate(station, type, year, month, day)
 {
@@ -1290,6 +1349,17 @@ function removeLoader(ID)
 	ID.select("#loadBox").remove();
 	ID.select("#loadText").remove();
 }
+
+function getDivWidth (div) 
+{
+	var width = d3.select(div)
+		//Get width of div
+		.style('width')
+		//Take off 'px'
+		.slice(0, -2)
+	//Return as an integer
+	return Math.round(Number(width)) - (Math.round(Number(width)) * 0.03)
+  }
 
 /* ------------------- SET COOKIES FOR AJAX -------------------- */
 

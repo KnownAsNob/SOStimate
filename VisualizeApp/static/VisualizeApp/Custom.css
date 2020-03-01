@@ -122,7 +122,7 @@ body {
 	#model-content {
 		position: relative; 
 		background-color: rgb(243,242,237);
-		padding: 20px; 
+		padding: 1.5%; 
 		margin: auto; 
 		width: 75%;  
 		-webkit-animation-name: animatetop;
@@ -245,6 +245,8 @@ body {
 		font-size: 120%;
 		text-anchor: middle;
 	}
+
+
 
 /* Tooltip */
 .tooltip {	

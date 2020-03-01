@@ -541,6 +541,182 @@ def get_avg_travel(request):
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
 
+def get_incident_lengths(request):
+
+	input = request.POST['station']
+	type = request.POST['type']
+	year = request.POST['year']
+	month = request.POST['month']
+	day = request.POST['day']
+
+	response_data={}
+
+	case = decideCase(year, month, day)
+
+	#1 = !Year
+	#2 = #Year, !Month
+	#3 = #Year, Month, !Day
+	#4 = #Year, Month, Day
+
+	
+	#End getCalls
+
+	callList = []
+
+	def getCalls(calls, timeUnit, type):
+
+		def getTimes(list):
+			for item in list:
+
+				if item is not None and item != 'nan':
+					if len(item) != 8:
+						item = "0" + item
+
+					hour = int(item[1])
+					
+					if hour > 0:
+						hour = 60 * hour
+
+					item = item[2:5]
+					item = item.replace(':', '')
+					item = int(item) + hour
+					
+					callList.append(item)
+		
+		if type == "DA":
+			IALS_Amb_List = list(calls.values('details__IA-LS').values_list('details__IA-LS', flat=True))
+			
+			getTimes(IALS_Amb_List)
+		
+		elif type == "DF":
+			IALS_Fire_List = list(calls.values('details__IA-MAV').values_list('details__IA-MAV', flat=True))
+			
+			getTimes(IALS_Fire_List)
+		
+		else:
+			IALS_Amb_List = list(calls.values('details__IA-LS').values_list('details__IA-LS', flat=True))
+			IALS_Fire_List = list(calls.values('details__IA-MAV').values_list('details__IA-MAV', flat=True))
+
+			getTimes(IALS_Amb_List)
+			getTimes(IALS_Fire_List)
+
+		response_data[timeUnit] = callList
+
+	######## Decide what is required ########
+	
+	#!Year
+	if case == 1:
+		#!Year, !Type
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input)
+		#!Year, Type
+		else:
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Agency = type)
+
+		#Calculate every year
+		for x in range(2013, 2019):
+			filterCalls = overallCalls.filter(details__Date__endswith=x, details__Agency = 'DA')
+			getCalls(filterCalls, x, type)	
+			
+	#Year, !Month
+	elif case == 2:
+		#!Type, Year
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year)
+		#Type, Year
+		else:
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year, details__Agency = type)
+
+		for x in range(1, 13):
+			time = str(x) + "/" + str(year)
+			calls = overallCalls.filter(details__Date__endswith=time)
+			getCalls(calls, x, type)
+		
+	
+	#Year, Month, !Day
+	elif case == 3:
+		#Generate month + year to filter
+		strMonth = str(month)
+
+		if len(strMonth) == 1:
+			strMonth = "0" + strMonth
+
+		filter = strMonth + "/" + str(year)
+
+		#Get incidents for each day of month
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=filter)
+		else:
+			overallCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = type, details__StationArea = input)
+
+		for x in range(1, days_in_month[int(month)]):
+			xStr = str(x)
+
+			if len(xStr) == 1:
+				xStr = "0" + xStr
+
+			time = xStr + "/" + filter
+			calls = overallCalls.filter(details__Date=time)
+			getCalls(calls, x, type)
+			
+	#Year, Month, Day
+	else:
+		#Generate month + year to filter
+		strDay = str(day)
+
+		if len(strDay) == 1:
+			strDay = "0" + strDay
+
+		strMonth = str(month)
+
+		if len(strMonth) == 1:
+			strMonth = "0" + strMonth
+
+		filter = strDay + "/" + strMonth + "/" + str(year)
+
+		#Get incidents for each day of month
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=filter)
+		else:
+			overallCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = type, details__StationArea = input)
+
+		for x in range(1, 25):
+			xStr = str(x)
+
+			if len(xStr) == 1:
+				xStr = "0" + xStr
+			
+			calls = overallCalls.filter(details__TOC__startswith=x)
+			getCalls(calls, x, type)
+
+	return HttpResponse(json.dumps(response_data), content_type = "application/json")
+
+#Decide time details to provide
+def decideCase(year, month, day):
+
+	#1 = !Year
+	#2 = #Year, !Month
+	#3 = #Year, Month, !Day
+	#4 = #Year, Month, Day
+
+	#!Year
+	if year == "NA":
+		return 1
+	#Year
+	else:
+		#Year, !Month
+		if month == "NA":
+			return 2
+		#Year, Month
+		else:
+			#Year, Month, !Day
+			if day == "NA":
+				return 3
+			#Year, Month, Day
+			else:
+				return 4
+
+
 #Unused: 
 def get_total_cats(request):
 
@@ -583,28 +759,3 @@ def get_total_cats(request):
 		response_data[cat] = total
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
-
-#Decide time details to provide
-def decideCase(year, month, day):
-
-	#1 = !Year
-	#2 = #Year, !Month
-	#3 = #Year, Month, !Day
-	#4 = #Year, Month, Day
-
-	#!Year
-	if year == "NA":
-		return 1
-	#Year
-	else:
-		#Year, !Month
-		if month == "NA":
-			return 2
-		#Year, Month
-		else:
-			#Year, Month, !Day
-			if day == "NA":
-				return 3
-			#Year, Month, Day
-			else:
-				return 4
