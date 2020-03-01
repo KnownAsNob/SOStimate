@@ -1,8 +1,6 @@
 //CTRL + K, CTRL + 1
 //CTRL + K, CTRL + J
 
-//css.getPropertyValue('--main-graph-color')
-
 //Visualizer map popup
 model = document.querySelector(".model");
 closeBtn = document.querySelector(".close-btn");
@@ -50,21 +48,13 @@ function onClicked(message) //On clicked - Map popup button
 	container.appendChild(div); 
 
 		//Create overall stat container
+		//createElement(Type, ID, ParentID)
 		createElement("div", "overallStatContainer", "mainContainer");
-
-			/*Create text elements
-			//createElement(Type, ID, ParentID)
-			createElement("P", "overallCalls", "overallStatContainer");*/
-
-	//Fetch line data and draw
-	$.when(fetchLine2Data(headerText, "Overall", "NA", "NA", "NA")).done(function(returnLine2Val){
-		createLineChart(returnLine2Val, headerText, "Overall", "NA", "bar2svg", "Average Response Time | Type: Overall | Year: All | Month: NA | Day: NA", 680, "NA", "NA");	
+				
+	//Fetch average dispatch data and draw
+	$.when(fetchAvgDispatch(headerText, "Overall", "NA", "NA", "NA")).done(function(returnLine2Val){
+		createLineChart(returnLine2Val, headerText, "Overall", "NA", "bar2svg", "Average Dispatch Category | Type: Overall | Year: All | Month: NA | Day: NA", 680, "NA", "NA");	
 	});
-	
-	/*Fetch bar 2 data and draw
-	$.when(fetchBar2Data(headerText, "Overall", "NA")).done(function(returnBar2Val){
-		createBarChart(returnBar2Val, headerText, "Overall", "NA", "catBarsvg", "Time Category Counts", 1200);
-	});*/
 
 	//Request from DB
 	$.ajax({
@@ -87,11 +77,15 @@ function onClicked(message) //On clicked - Map popup button
 			//Fetch BarLine data and draw
 			$.when(fetchBarData(headerText, "Overall", "NA", "NA", "NA")).done(function(returnVal){
 				createBarChart(returnVal, headerText, "Overall", "NA", "linesvg", "Station Calls Per Year | Type: Overall | Year: All | Month: NA | Day: NA", 1200, "NA", "NA");
-				//createLineChart(returnVal, headerText, "Overall", "NA", "barsvg", "Station Calls Per Year | Type: Overall | Year: All | Month: NA | Day: NA", 1200, "NA", "NA");
 
 				//Fetch pie data and draw
 				$.when(fetchPieData(headerText, "Overall", "NA", "NA", "NA")).done(function(returnPieVal){
-					createPieChart(returnPieVal, headerText, "Overall", "NA", "Incidents | Type: Overall | Year: All | Month: NA | Day: NA", "NA", "NA");		
+					createPieChart(returnPieVal, headerText, "Overall", "NA", "piesvg", "Incidents | Type: Overall | Year: All | Month: NA | Day: NA", "NA", "NA");		
+				});
+
+				//Fetch average travel data and draw
+				$.when(fetchAvgTravel(headerText, "Overall", "NA", "NA", "NA")).done(function(returnAvgTravel){
+					createLineChart(returnAvgTravel, headerText, "Overall", "NA", "avgTravelLine", "Average Travel Category | Type: Overall | Year: All | Month: NA | Day: NA", 680, "NA", "NA");	
 				});
 			});
 				
@@ -210,12 +204,6 @@ function createOverall(Type, Input, ID, Station)
    		   .attr("id", "numVal")
    	 	   .text(Input);
 
-   	//Create mouseover events
-   	/*d3.select("#" + ID)
-   			.on("mouseover", handleMouseOver)
-         	.on("mouseout", handleMouseOut)
-         	.on("click", handleClick);*/
-
    	function handleMouseOver(d, i) 
 	{
 		group = d3.select(this)
@@ -250,7 +238,6 @@ function createOverall(Type, Input, ID, Station)
 }
 
 /* ---------- Total CallsBar chart ---------- */
-/* ---------- Time Categories Bar ---------- */
 function createBarChart(inputData, Station, Type, Year, ID, title, width, month, day)
 {
 	//Process data	
@@ -394,6 +381,8 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width, month,
 
 function updateBarChart(inputData, station, type, year, svg, title, month, day)
 {
+	removeLoader(svg);
+
 	list = JSON.stringify(inputData);
 	parsed = JSON.parse(list);
 
@@ -401,8 +390,6 @@ function updateBarChart(inputData, station, type, year, svg, title, month, day)
 	var data = Object.keys(parsed).map(function(key) {
   		return [Number(key), parsed[key]];
 	});
-
-	console.log(svg);
 
 	// Select the section we want to apply our changes to
 	var svg = d3.select("#" + svg)
@@ -503,25 +490,21 @@ function updateBarChart(inputData, station, type, year, svg, title, month, day)
 	    {
 	        if(year == "NA" && d[0] == null )
 	        {
-	        	console.log("Call1");
 				callUpdate(station, type, "NA", "NA", "NA");
 	        }
 
 	        if(year == "NA")
 	        {
-	        	console.log("Call1.2");
 				callUpdate(station, type, d[0], "NA", "NA");
 	        }
 
 	        else if(month == "NA")
 	        {
-	        	console.log("Call2");
 	        	callUpdate(station, type, year, d[0], "NA");
 	        }
 
 	        else if (day == "NA")
 	        {
-	        	console.log("Call3");
 	        	callUpdate(station, type, year, month, d[0]);
 	        	console.log("Max detail reached!");
 	        	maxDetail = true;
@@ -550,7 +533,6 @@ function updateBarChart(inputData, station, type, year, svg, title, month, day)
     }
 }
 
-/* ---------- Total Calls Line chart ---------- */
 /* ---------- Response Time Line chart ---------- */
 function createLineChart(dataIn, station, type, year, svg, name, width, month, day)
 {
@@ -561,9 +543,6 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 	//Transform the data
 	data = Object.keys(parsed)
 				 .map(function(key) { return [Number(key), parsed[key]]; });
-
-	//console.log(data);
-	//console.log(data[0]);
 
 	mainContainer = document.getElementById("mainContainer")
 	
@@ -695,9 +674,7 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 	}
 
 	function handleMouseOut(d, i) 
-	{
-		//console.log("Finished");
-        
+	{ 
         d3.select(this)
         	.transition()
       		.style("fill", css.getPropertyValue('--main-graph-color'))
@@ -730,6 +707,8 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 
 function updateLineChart(inputData, station, type, year, svg, title, month, day)
 {
+	removeLoader(svg);
+
 	//process data
 	list = JSON.stringify(inputData);
 	parsed = JSON.parse(list);
@@ -832,9 +811,7 @@ function updateLineChart(inputData, station, type, year, svg, title, month, day)
 	}
 
 	function handleMouseOut(d, i) 
-	{
-		//console.log("Finished");
-        
+	{   
         d3.select(this)
         	.transition()
       		.style("fill", css.getPropertyValue('--main-graph-color'))
@@ -909,7 +886,7 @@ function updateLineChart(inputData, station, type, year, svg, title, month, day)
 }
 
 /* ---------- Incidents pie chart ---------- */
-function createPieChart(dataIn, station, type, year, title, month, day)
+function createPieChart(dataIn, station, type, year, ID, title, month, day)
 {
 	//Process data
 	list = JSON.stringify(dataIn);
@@ -923,13 +900,13 @@ function createPieChart(dataIn, station, type, year, title, month, day)
 
 	//Create new SVG canvas
 	const svgGraph = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-		svgGraph.id = "piesvg";
+		svgGraph.id = ID;
 		svgGraph.setAttribute("width", pieWidth);
 		svgGraph.setAttribute("height", pieHeight);
 		mainContainer.appendChild(svgGraph); 
 	
 	//Create new bar chart
-	var svg = d3.select("#piesvg"),
+	var svg = d3.select("#" + ID),
         width = svg.attr("width") - pieMargin,
         height = svg.attr("height") - pieMargin,
         radius = Math.min(width, height) / 2;
@@ -1044,8 +1021,10 @@ function createPieChart(dataIn, station, type, year, title, month, day)
     }
 }
 
-function updatePieChart(dataIn, station, type, year, title, month, day)
+function updatePieChart(dataIn, station, type, year, ID, title, month, day)
 {
+	removeLoader(ID);
+
 	//Process data
 	list = JSON.stringify(dataIn);
 	parsed = JSON.parse(list);
@@ -1055,7 +1034,7 @@ function updatePieChart(dataIn, station, type, year, title, month, day)
 				 .map(function(key) { return [String(key), parsed[key]]; });
 
 	//Find elements
-	svg = d3.select("#piesvg");
+	svg = d3.select("#" + ID);
 	g = svg.select("#mainGroup");
 	
 	var color = d3.scaleOrdinal([css.getPropertyValue('--pie-color-1'), css.getPropertyValue('--pie-color-2'), css.getPropertyValue('--pie-color-3'), css.getPropertyValue('--pie-color-4'), css.getPropertyValue('--pie-color-5'), css.getPropertyValue('--pie-color-6')]);
@@ -1097,7 +1076,6 @@ function updatePieChart(dataIn, station, type, year, title, month, day)
    		.attr("fill-opacity", 0)
    		.delay(300)
    		.remove();
-   		
 
    	//Add new labels
     arc.append("text")
@@ -1172,7 +1150,7 @@ function fetchPieData(station, type, year, month, day)
 }
 
 //Returns average response times
-function fetchLine2Data(station, type, year, month, day)
+function fetchAvgDispatch(station, type, year, month, day)
 {
 	function ajaxLine2Call()
 	{
@@ -1197,18 +1175,19 @@ function fetchLine2Data(station, type, year, month, day)
 	});
 }
 
-/*function fetchBar2Data(station, type, year)
+//Returns average response times
+function fetchAvgTravel(station, type, year, month, day)
 {
-	function ajaxBar2Call()
+	function ajaxAvgTravelCall()
 	{
 		//Request number of calls/time unit
 		return $.ajax({
 			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 			type: "POST",
-			url: "http://localhost:8000/map/get_total_cats/",
+			url: "http://localhost:8000/map/get_avg_travel/",
 			datatype: "json",
 			//async: true,
-			data: {"station": station, "type": type, "year": year},
+			data: {"station": station, "type": type, "year": year, "month": month, "day": day},
 			success: function(json)
 			{
 				//Operations here
@@ -1216,15 +1195,20 @@ function fetchLine2Data(station, type, year, month, day)
 		});
 	}
 
-	return $.when(ajaxBar2Call()).done(function(data){
+	return $.when(ajaxAvgTravelCall()).done(function(data){
 	
 		return data;
 	});
-}*/
+}
 
 /* -------------------- UPDATE GRAPHS -------------------- */
 function callUpdate(station, type, year, month, day)
 {
+	createLoader("linesvg");
+	createLoader("piesvg");
+	createLoader("bar2svg");
+	createLoader("avgTravelLine");
+
 	//Request number of calls/time unit
 	function ajaxBar()
 	{
@@ -1238,13 +1222,13 @@ function callUpdate(station, type, year, month, day)
 
 	function ajaxLine2Chart()
 	{
-		return fetchLine2Data(station, type, year, month, day);
+		return fetchAvgDispatch(station, type, year, month, day);
 	}
-	
-	/*function ajaxBar2()
+
+	function ajaxAvgTravel()
 	{
-		return fetchBar2Data(station, type, year);
-	}*/
+		return fetchAvgTravel(station, type, year, month, day);
+	}
 
 	/* ----------------- Call updates ----------------- */
 
@@ -1252,31 +1236,62 @@ function callUpdate(station, type, year, month, day)
 	$.when(ajaxBar()).done(function(returnVal){
    
 		updateBarChart(returnVal, station, type, year, "linesvg", "Station Calls Per Year | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
-		//updateLineChart(returnVal, station, type, year, "barsvg",  "Station Calls Per Year | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
 	});
 
 	//Call pie update
 	$.when(ajaxPieChart()).done(function(returnVal){
     	
-		updatePieChart(returnVal, station, type, year, "Incidents | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
+		updatePieChart(returnVal, station, type, year, "piesvg", "Incidents | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
 
 	});
 
 	//Call line 2 update
 	$.when(ajaxLine2Chart()).done(function(returnVal){
     	
-		updateLineChart(returnVal, station, type, year, "bar2svg",  "Average Response Time | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
+		updateLineChart(returnVal, station, type, year, "bar2svg",  "Average Dispatch Category | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
 	});
 
-	//Call bar 2 update
-	/*$.when(ajaxBar2()).done(function(returnCatVal){
+	//Call average travel update (Line 2)
+	$.when(ajaxAvgTravel()).done(function(returnAvgTravel){
     	
-		updateBarChart(returnCatVal, station, type, year, "catBarsvg", "Title");
-
-	});*/
+		updateLineChart(returnAvgTravel, station, type, year, "avgTravelLine",  "Average Travel Category | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
+	});
 }
 
-/------------------- SET COOKIES FOR AJAX -------------------- */
+/* ------------------- DRAW LOADING OVERLAY  -------------------- */
+
+function createLoader(ID)
+{
+	ID = d3.select("#" + ID);
+
+	ID.append("rect")
+       .attr("x", 0)
+       .attr("y", 0)
+       .attr("width", ID.attr("width") + 20)
+       .attr("height", ID.attr("height"))
+       .attr("id", "loadBox")
+       .attr("fill", "black")
+       .style("opacity", "0.8");
+
+	ID.append("text")
+		.attr("x", ID.attr("width")/2 - 175)
+		.attr("y", ID.attr("height")/2)
+		.attr("font-size", "30px")
+		.style("fill", "white")
+		.style("font-style", "italic")
+		.attr("id", "loadText")
+		.text("Fetching your information...");
+}
+
+function removeLoader(ID)
+{
+	ID = d3.select("#" + ID);
+
+	ID.select("#loadBox").remove();
+	ID.select("#loadText").remove();
+}
+
+/* ------------------- SET COOKIES FOR AJAX -------------------- */
 
 var csrftoken = Cookies.get('csrftoken');
 

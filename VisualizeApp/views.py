@@ -41,6 +41,7 @@ def map(request):
 def visualizations(request):
 	return render(request, 'VisualizeApp/visualizations.html')
 
+############### Map Functions ###############
 #TestCalls:
 	#calls = json_serializer.serialize(Calls.objects.all()[:2], ensure_ascii=False)
 	#calls = Calls.objects.filter(details__StationArea="Tallaght")
@@ -66,11 +67,6 @@ def get_overall_data(request):
 	#Get total number of calls for station DA
 	DATotal = overallCalls.filter(details__Agency = 'DA').count()
 	response_list.append(DATotal)
-
-	#Get most popular incidents
-	#PopIncident = DATotal.values('details__Incident').annotate(Count=Count('details__Incident')).order_by('-Count')[:1]
-	#response_list.append(PopIncident)
-	#print(PopIncident)
 
 	# ---------- DF ---------- #
 
@@ -409,6 +405,143 @@ def get_avg_response(request):
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
 
+def get_avg_travel(request):
+	
+	input = request.POST['station']
+	type = request.POST['type']
+	year = request.POST['year']
+	month = request.POST['month']
+	day = request.POST['day']
+
+	response_data={}
+
+	case = decideCase(year, month, day)
+
+	#1 = !Year
+	#2 = #Year, !Month
+	#3 = #Year, Month, !Day
+	#4 = #Year, Month, Day
+
+	def calculateAverages(overallCalls, timeUnit):
+		#Get list of both categories
+		totalMOB_IA = list(overallCalls.values('details__MOB-IA-Cat').values_list('details__MOB-IA-Cat', flat=True))
+
+		totalMOBIA = 0
+
+		totalNAN = 0
+
+		#Check not = 0
+		if not totalMOB_IA:
+			response_data[timeUnit] = 0
+
+		else:
+			#Add to get averages
+			for item in totalMOB_IA:
+				#Deal with NaNs
+				if item == 'nan':
+					totalNAN = totalNAN + 1
+				else:
+					totalMOBIA = totalMOBIA + int(float(item))
+
+			if totalMOBIA == 0:
+				response_data[timeUnit] = 0
+
+			else:
+				averageResponse = totalMOBIA/(len(totalMOB_IA) - totalNAN)
+
+				response_data[timeUnit] = averageResponse
+	#End calculateAverages
+
+	######## Decide what is required ########
+	
+	#!Year
+	if case == 1:
+		#!Year, !Type
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input)
+		#!Year, Type
+		else:
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Agency = type)
+
+		#Calculate every year
+		for x in range(2013, 2019):
+			filterCalls = overallCalls.filter(details__Date__endswith=x)
+			calculateAverages(filterCalls, x)
+			
+	#Year, !Month
+	elif case == 2:
+		#!Type, Year
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year)
+		#Type, Year
+		else:
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year, details__Agency = type)
+
+		for x in range(1, 13):
+			time = str(x) + "/" + str(year)
+			calls = overallCalls.filter(details__Date__endswith=time)
+			calculateAverages(calls, x)
+		
+	
+	#Year, Month, !Day
+	elif case == 3:
+		#Generate month + year to filter
+		strMonth = str(month)
+
+		if len(strMonth) == 1:
+			strMonth = "0" + strMonth
+
+		filter = strMonth + "/" + str(year)
+
+		#Get incidents for each day of month
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=filter)
+		else:
+			overallCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = type, details__StationArea = input)
+
+		for x in range(1, days_in_month[int(month)]):
+			xStr = str(x)
+
+			if len(xStr) == 1:
+				xStr = "0" + xStr
+
+			time = xStr + "/" + filter
+			calls = overallCalls.filter(details__Date=time)
+			calculateAverages(calls, x)
+			
+	#Year, Month, Day
+	else:
+		#Generate month + year to filter
+		strDay = str(day)
+
+		if len(strDay) == 1:
+			strDay = "0" + strDay
+
+		strMonth = str(month)
+
+		if len(strMonth) == 1:
+			strMonth = "0" + strMonth
+
+		filter = strDay + "/" + strMonth + "/" + str(year)
+
+		#Get incidents for each day of month
+		if type == "Overall":
+			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=filter)
+		else:
+			overallCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = type, details__StationArea = input)
+
+		for x in range(1, 25):
+			xStr = str(x)
+
+			if len(xStr) == 1:
+				xStr = "0" + xStr
+			
+			calls = overallCalls.filter(details__TOC__startswith=x)
+			calculateAverages(calls, x)
+
+	return HttpResponse(json.dumps(response_data), content_type = "application/json")
+
+#Unused: 
 def get_total_cats(request):
 
 	#Calculate total amount for each cat
@@ -451,6 +584,7 @@ def get_total_cats(request):
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
 
+#Decide time details to provide
 def decideCase(year, month, day):
 
 	#1 = !Year
