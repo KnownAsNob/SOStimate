@@ -1,3 +1,5 @@
 1) Pie chart broken when only one incident type e.g. Fire Small
 2) Missing data
 3) Slow fetch
+4) Broken colours
+5) Scatter plot mis-aslign and Y axis not able to find max (Only sees 1 array)

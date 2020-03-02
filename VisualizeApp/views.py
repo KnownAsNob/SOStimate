@@ -114,6 +114,7 @@ def get_calls_unit(request):
 		for x in range(2013, 2019):
 			calls = totalCalls.filter(details__Date__endswith=x).count()
 			response_data[x] = calls
+	
 	#Year, !Month
 	elif case == 2:
 		#Get total calls for each month
@@ -543,6 +544,8 @@ def get_avg_travel(request):
 
 def get_incident_lengths(request):
 
+	print("Got here!")
+
 	input = request.POST['station']
 	type = request.POST['type']
 	year = request.POST['year']
@@ -557,13 +560,12 @@ def get_incident_lengths(request):
 	#2 = #Year, !Month
 	#3 = #Year, Month, !Day
 	#4 = #Year, Month, Day
-
 	
-	#End getCalls
-
-	callList = []
+	print("Got here 2!")
 
 	def getCalls(calls, timeUnit, type):
+
+		callList = []
 
 		def getTimes(list):
 			for item in list:
@@ -609,13 +611,14 @@ def get_incident_lengths(request):
 		#!Year, !Type
 		if type == "Overall":
 			overallCalls = masterCalls.filter(details__StationArea = input)
+			print(len(overallCalls))
 		#!Year, Type
 		else:
 			overallCalls = masterCalls.filter(details__StationArea = input, details__Agency = type)
 
 		#Calculate every year
 		for x in range(2013, 2019):
-			filterCalls = overallCalls.filter(details__Date__endswith=x, details__Agency = 'DA')
+			filterCalls = overallCalls.filter(details__Date__endswith=x)
 			getCalls(filterCalls, x, type)	
 			
 	#Year, !Month
@@ -626,6 +629,8 @@ def get_incident_lengths(request):
 		#Type, Year
 		else:
 			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year, details__Agency = type)
+
+		print("Got here 3!")
 
 		for x in range(1, 13):
 			time = str(x) + "/" + str(year)
@@ -688,6 +693,8 @@ def get_incident_lengths(request):
 			
 			calls = overallCalls.filter(details__TOC__startswith=x)
 			getCalls(calls, x, type)
+
+	print(len(response_data))
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
 

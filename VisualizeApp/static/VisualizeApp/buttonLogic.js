@@ -33,6 +33,10 @@ pieHeight = 400;
 pieMargin = 100;
 radius = 200;
 
+//Scales for scatter plot
+xPlotScale = 0;
+yPlotScale = 0;
+
 function onClicked(message) //On clicked - Map popup button
 {
 	//Change header of popup
@@ -91,7 +95,8 @@ function onClicked(message) //On clicked - Map popup button
 				//Fetch call times data and draw
 				$.when(fetchCallTimes(headerText, "Overall", "NA", "NA", "NA")).done(function(returnCallTimes){
 					console.log("Ready to draw...")
-					//createScatterPlot(returnCallTimes, headerText, "Overall", "NA", "callTimes", "Indident Times | Type: Overall | Year: All | Month: NA | Day: NA", getDivWidth('#model-content')/2, "NA", "NA");	
+					createScatterPlot(returnCallTimes, headerText, "Overall", "NA", "callTimes", "Mins. Attended | Type: Overall | Year: All | Month: NA | Day: NA", getDivWidth('#model-content')/2, "NA", "NA");	
+				//getDivWidth('#model-content')/2
 				});
 			});
 				
@@ -1102,30 +1107,278 @@ function updatePieChart(dataIn, station, type, year, ID, title, month, day)
 }
 
 /* ---------- Call time scatter plot ---------- */
-function createScatterPlot(dataIn, station, type, year, ID, title, month, day)
+function createScatterPlot(dataIn, station, type, year, ID, title, width, month, day)
 {
 	//Process data
 	list = JSON.stringify(dataIn);
 	parsed = JSON.parse(list);
 
+	console.log(parsed);
+
 	//Transform the data
 	data = Object.keys(parsed)
 				 .map(function(key) { return [Number(key), parsed[key]]; });
+	
+	array = [];
+
+	for (item in data)
+	{
+		year = data[item][0]
+		
+		for(callTime in data[item][1])
+		{
+			if(data[item][1][callTime] < 30)
+			{
+				if(Math.random() > 0.98)
+				{
+					array.push([year, data[item][1][callTime]]);
+				}
+			}
+
+			else
+			{
+				array.push([year, data[item][1][callTime]]);
+			}
+		}
+	}
+
+	//console.log("Data: " + data);
+	//console.log("Array: " + array);
 
 	mainContainer = document.getElementById("mainContainer")
 	
 	//Create new SVG canvas
 	const svgGraph = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-	svgGraph.id = svg;
+	svgGraph.id = ID;
 	svgGraph.setAttribute("width", width);
 	svgGraph.setAttribute("height", 400);
 	mainContainer.appendChild(svgGraph); 
 
-	//Create new line chart
-	var svg = d3.select('#' + svg),
+	//Create new chart
+	var svg = d3.select('#' + ID),
     margin = 100,
     width = svg.attr("width") - margin,
     height = svg.attr("height") - margin;
+
+    //Scale the chart
+	xPlotScale = d3.scaleLinear().range([0, width]),
+	yPlotScale = d3.scaleLinear().range([height, 0]);
+
+	var g = svg.append("g")
+	           .attr("transform", "translate(" + 50 + "," + 50 + ")")
+	           .attr("id", "mainGroup");
+  
+	//Create graph scale
+	xPlotScale.domain([2013, d3.max(data, function(d) { return d[0]; })]);
+	yPlotScale.domain([0, d3.max(data[1][1], function(d) { return d; })]);
+
+		//Append scale to graph
+		g.append("g")
+			.call(d3.axisBottom(xPlotScale).tickFormat(function(d){
+		         return d;
+		     }).ticks(6))
+		     .attr("transform", "translate(0," + height + ")")
+		     .attr("id", "xAxis");
+
+	    g.append("g")
+		     .call(d3.axisLeft(yPlotScale).tickFormat(function(d){
+		         return d;
+		     }).ticks(7))
+		     .attr("id", "yAxis")
+		     .append("text")
+		     .attr("y", 6)
+		     .attr("dy", "0.71em")
+		     .attr("text-anchor", "end")
+		     .text("value");
+
+	// Add dots
+	g.selectAll(".scatterDot")
+		.data(array)
+		.enter()
+		.append("circle")
+		.attr("cx", function (d, i) { return xPlotScale(d[0]); } )
+		.attr("cy", function (d, i) { return yPlotScale(d[1]); } )
+		.attr("r", 3)
+		.attr("class", "scatterDot")
+		.on("mouseover", handleMouseOver)
+     	.on("mouseout", handleMouseOut);
+
+	//Add title text
+    svg.append("text")
+		.attr("transform", "translate(15,0)")
+		.attr("x", 0)
+		.attr("y", 20)
+		.attr("id", "title")
+		.attr("font-size", "18px")
+	 	.text(title)
+
+	//Add divider bar under text
+	svg.append("line")
+       .attr("x1", 0)
+       .attr("y1", 25)
+       .attr("x2", svg.attr("width"))
+       .attr("y2", 25)
+       .attr("stroke-width", 0.3)
+       .attr("stroke", "black");
+
+    //Define tooltip
+	var popUp = d3.select("body").append("div")		
+    			   .attr("class", "tooltip")				
+    			   .style("opacity", 0);
+
+    /* FUNCTIONS FOR SCATTER PLOT */
+
+    function handleMouseOver(d, i) 
+	{
+        d3.select(this)
+        	.transition()
+      		.style("fill", css.getPropertyValue('--mouse-over-graph-color'))
+      		.attr("r", "5");
+
+      	popUp.transition()		
+             .duration(200)		
+             .style("opacity", .9);		
+        popUp.html("<p class = 'popUpText'><b><i>" + d[0] + "</b></i><br>" + d[1] + " minutes</p>")	
+             .style("left", (d3.event.pageX) + "px")		
+             .style("top", (d3.event.pageY - 30) + "px");	
+	}
+
+	function handleMouseOut(d, i) 
+	{ 
+        d3.select(this)
+        	.transition()
+      		.style("fill", css.getPropertyValue('--main-graph-color'))
+      		.attr("r", "3");	
+
+      	popUp.transition()		
+           .duration(500)		
+           .style("opacity", 0);
+    }
+}
+
+function updateScatterPlot(dataIn, station, type, year, ID, title, month, day)
+{
+	removeLoader(ID);
+
+	//Process data
+	list = JSON.stringify(dataIn);
+	parsed = JSON.parse(list);
+
+	console.log(parsed)
+
+	//Transform the data
+	data = Object.keys(parsed)
+				 .map(function(key) { return [String(key), parsed[key]]; });
+
+	array = [];			 
+
+	for (item in data)
+	{
+		year = data[item][0]
+		
+		for(callTime in data[item][1])
+		{
+			if(data[item][1][callTime] < 30)
+			{
+				if(data[item][1].length > 800)
+				{
+					if(Math.random() > 0.7)
+					{
+						array.push([year, data[item][1][callTime]]);
+					}
+				}
+
+				else
+				{
+					array.push([year, data[item][1][callTime]]);
+				}
+			}
+
+			else
+			{
+				array.push([year, data[item][1][callTime]]);
+			}
+		}
+	}
+
+	//Find elements
+	svg = d3.select("#" + ID);
+	g = svg.select("#mainGroup");
+
+	//Remove old dots
+	g.selectAll(".scatterDot")
+		.remove();
+
+	xPlotScale = d3.scaleLinear().range([0, svg.attr("width") - margin])
+	yPlotScale = d3.scaleLinear().range([svg.attr("height") - margin, 0]);
+
+	//Create graph scale again
+	xPlotScale = xPlotScale.domain([d3.min(data, function(d) { return d[0]; }), d3.max(data, function(d) { return parseInt(d[0]); })]);
+	yPlotScale = yPlotScale.domain([0, d3.max(data[1][1], function(d) { return parseInt(d); })]);
+
+		//Update X-Axis    
+		g.select("#xAxis") 
+		   .transition()
+		   .duration(500)
+		   .call(d3.axisBottom(xPlotScale).tickFormat(function(d){
+		         return d;
+		    }).ticks(data.length));
+		   
+		//Update Y-Axis    
+		g.select("#yAxis") 
+		   .transition()
+		   .duration(500)
+		   .call(d3.axisLeft(yPlotScale));	
+
+	//Redraw dots
+	g.selectAll(".scatterDot")
+		.data(array)
+		.enter()
+		.append("circle")
+		.attr("cx", function (d, i) { return xPlotScale(d[0]); } )
+		.attr("cy", function (d, i) { return yPlotScale(d[1]); } )
+		.attr("r", 3)
+		.attr("class", "scatterDot")
+		.on("mouseover", handleMouseOver)
+     	.on("mouseout", handleMouseOut);
+
+	//Change title
+   	svg.select("#title")
+   	   .text(title)
+
+   	//Define tooltip
+	var popUp = d3.select("body").append("div")		
+    			   .attr("class", "tooltip")				
+    			   .style("opacity", 0);
+
+   	/* FUNCTIONS FOR SCATTER PLOT */
+
+    function handleMouseOver(d, i) 
+	{
+        d3.select(this)
+        	.transition()
+      		.style("fill", css.getPropertyValue('--mouse-over-graph-color'))
+      		.attr("r", "5");
+
+      	popUp.transition()		
+             .duration(200)		
+             .style("opacity", .9);		
+        popUp.html("<p class = 'popUpText'><b><i>" + d[0] + "</b></i><br>" + d[1] + " minutes</p>")	
+             .style("left", (d3.event.pageX) + "px")		
+             .style("top", (d3.event.pageY - 30) + "px");	
+	}
+
+	function handleMouseOut(d, i) 
+	{ 
+        d3.select(this)
+        	.transition()
+      		.style("fill", css.getPropertyValue('--main-graph-color'))
+      		.attr("r", "3");	
+
+      	popUp.transition()		
+           .duration(500)		
+           .style("opacity", 0);
+    }
 }
 
 /* -------------------- AJAX CALLS -------------------- */
@@ -1267,6 +1520,7 @@ function callUpdate(station, type, year, month, day)
 	createLoader("piesvg");
 	createLoader("bar2svg");
 	createLoader("avgTravelLine");
+	createLoader("callTimes");
 
 	//Request number of calls/time unit
 	function ajaxBar()
@@ -1287,6 +1541,11 @@ function callUpdate(station, type, year, month, day)
 	function ajaxAvgTravel()
 	{
 		return fetchAvgTravel(station, type, year, month, day);
+	}
+
+	function ajaxAvgIndcidentTime()
+	{
+		return fetchCallTimes(station, type, year, month, day);
 	}
 
 	/* ----------------- Call updates ----------------- */
@@ -1314,6 +1573,12 @@ function callUpdate(station, type, year, month, day)
 	$.when(ajaxAvgTravel()).done(function(returnAvgTravel){
     	
 		updateLineChart(returnAvgTravel, station, type, year, "avgTravelLine",  "Average Travel Category | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
+	});
+
+	//Call average travel update (Line 2)
+	$.when(ajaxAvgIndcidentTime()).done(function(returnCallTime){
+    	
+		updateScatterPlot(returnCallTime, station, type, year, "callTimes", "Mins. Attended | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
 	});
 }
 
@@ -1358,7 +1623,7 @@ function getDivWidth (div)
 		//Take off 'px'
 		.slice(0, -2)
 	//Return as an integer
-	return Math.round(Number(width)) - (Math.round(Number(width)) * 0.03)
+	return Math.round(Number(width)) - (Math.round(Number(width)) * 0.06)
   }
 
 /* ------------------- SET COOKIES FOR AJAX -------------------- */

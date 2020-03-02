@@ -191,7 +191,7 @@ body {
 	}
 
 /* Bar SVG */
-#linesvg, #catBarsvg, #avgTravelLine {
+#linesvg, #catBarsvg, #avgTravelLine, #callTimes {
 	background-color: white;
 	margin-top: 2%;
 	box-shadow: 2px 2px grey;
@@ -246,7 +246,14 @@ body {
 		text-anchor: middle;
 	}
 
+/* Scatter plot */
+#callTimes {
+	float: right;
+}
 
+.dot {
+	fill: fill: var(--main-graph-color);
+}
 
 /* Tooltip */
 .tooltip {	
