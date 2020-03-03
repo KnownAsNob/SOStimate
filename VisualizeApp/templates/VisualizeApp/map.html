@@ -71,7 +71,7 @@
 			      .style("top", 0)
 			      .style("left", 0)    
 			      .attr("width", bb.width)
-			      .attr("height", bb.height)
+			      .attr("height", bb.height);
 			      .style("pointer-events", "none"); 
 			      // the svg shouldn't capture mouse events, so we can have pan and zoom from mapbox
 
@@ -103,15 +103,20 @@
             		.style("pointer-events", "all");*/
 
             	// Add circles
-           		circles = svg.selectAll("circle")
-	                .data(data.features)
-	                .enter()
-	                .append("circle")
-	                    .attr("r", 8);
-	                    /*.on("click", function(d) {
-	                        alert(d.properties.name);
-	                    });*/
-	      
+            	function addCircles()
+            	{
+	           		circles = svg.selectAll("circle")
+		                .data(data.features)
+		                .enter()
+		                .append("circle")
+		                	.attr("class", "mapCircle")
+		                    .attr("r", 30)
+		                    .on("click", function(d) {
+		                        alert(d.properties.name);
+		                    });
+		            return circles;
+	      		}
+
             	console.log("Still alive...");
 
 			    //const update = () => {
@@ -125,21 +130,18 @@
 			    
 			    //Call update to draw
 
-			    update();
+			    
 			    // Every time the map changes, update the dots
 			    map.on("viewreset", update);
 			    map.on("move", update);
 			    map.on("moveend", update);
-			  
-			   
-
-		  		
 
 				//Adjust view
 		  		function sendMap(event) {
 		  			click = this;
-		  			overviewChange(click, event, map);
-
+		  			addCircles();
+		  			update();
+		  			overviewChange(click, event, map, svg);
 		  		}
 
 			</script>

@@ -1,7 +1,7 @@
 mainContainer = document.getElementsByClassName("container");
 mapContainer = document.getElementById("map");
 
-function overviewChange(click, event, map) {
+function overviewChange(click, event, map, svg) {
     
     //Check if container already present
 	if(document.getElementById("controlContainer") != null)
@@ -9,6 +9,9 @@ function overviewChange(click, event, map) {
 		frame = document.getElementById("controlContainer");
 
 		frame.parentNode.removeChild(frame);
+
+		svg.selectAll(".mapCircle")
+			.remove();
 	}
 
 	//Check if none is selected i.e. default
