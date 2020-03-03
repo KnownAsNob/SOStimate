@@ -22,9 +22,12 @@
 
 				var data_from_django = '{{ stations|escapejs }}';
 				var stationObject = JSON.parse(data_from_django);
-				
-				//var data_from_django2 = '{{ calls|escapejs }}';
-				//var callObject = JSON.parse(data_from_django2);
+
+				dataString = '{"type": "FeatureCollection","features": [{"type": "Feature", "geometry": {"type": "Point", "coordinates": [-6.253952, 53.345858]}, "properties": {"name": "Tara Street"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-6.383862, 53.307185]}, "properties": {"name": "Tallaght"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-6.151403, 53.281992]}, "properties": {"name": "Dun Laoighre"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-6.168699, 53.3911]}, "properties": {"name": "Kilbarrack"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-6.264666, 53.292038]}, "properties": {"name": "Rathfarnam"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-6.273491, 53.357574]}, "properties": {"name": "Phibsborough"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-6.292924, 53.331704]}, "properties": {"name": "Dolphins Barn"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-6.219063, 53.46456]}, "properties": {"name": "Swords"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-6.239582, 53.360021]}, "properties": {"name": "North Strand"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-6.237166, 53.322295]}, "properties": {"name": "Donnybrook"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-6.30358, 53.389846]}, "properties": {"name": "Finglas"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-6.116244, 53.572132]}, "properties": {"name": "Skerries"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-6.395457, 53.3847]}, "properties": {"name": "Blanchardstown"}}, {"type": "Feature", "geometry": {"type": "Point", "coordinates": [-6.187165, 53.605582]}, "properties": {"name": "Balbriggan"}}]}';
+
+				data = JSON.parse(dataString);
+
+				//console.log(data);
 
 				mapboxgl.accessToken = 'pk.eyJ1Ijoia25vd25hc25vYiIsImEiOiJjazVvNHdza3EwYW1wM2xucmd4eW85OGpqIn0.iR8IWbJUnuIRL3jThbTK1g';
 				map = new mapboxgl.Map
@@ -40,7 +43,7 @@
 
 				var counter = 0;
 
-				//Add markers to map
+				// -------------------- Add markers to map --------------------
 				stationObject.forEach(function(marker) 
 				{
 					//Create HTML element for each station
@@ -57,9 +60,65 @@
 		  				.addTo(map);		
 		  		});
 
+		  		// -------------------- Draw SVG on map --------------------
+		  		container = document.getElementById("map");
+
+		  		const bb = container.getBoundingClientRect();  
+			    
+			    var svg = d3.select(container)
+			      .append("svg")
+			      .style("position", "absolute")
+			      .style("top", 0)
+			      .style("left", 0)    
+			      .attr("width", bb.width)
+			      .attr("height", bb.height)
+			      .style("pointer-events", "none"); 
+			      // the svg shouldn't capture mouse events, so we can have pan and zoom from mapbox
+
+			  	//Project any point to map's current state
+				function projectPoint(lon, lat)
+				{
+					var point = map.project(new mapboxgl.LngLat(lon, lat));
+					this.stream.point(point.x, point.y);;
+				}
+			  
+			    //Projection function
+			    var transform = d3.geoTransform({point:projectPoint});
+			    var path = d3.geoPath().projection(transform);       
+			  
+			    console.log("Made it to here...");
+
+			    console.log("Alive here...");
+
+			    const dots = svg.selectAll(".puesto")
+            		//.data(votingStations.features)
+            		.data(data.features)
+            		.join("path")
+            		.attr("class", "puesto")
+            		.style("fill", "green")
+            		//.on("mouseover", d => mutable hovered=d)
+            		.style("pointer-events", "all"); 
+      
+            	console.log("Still alive...");
+
+			    const update = () => {
+			       dots.attr("d", path);    
+			    }
+			    
+			    // Every time the map changes, update the dots
+			    map.on("viewreset", update);
+			    map.on("move", update);
+			    map.on("moveend", update);
+			  
+			    update();
+
+		  		
+
+				//Adjust view
 		  		function sendMap(event) {
 		  			click = this;
 		  			overviewChange(click, event, map);
+
 		  		}
 
 			</script>

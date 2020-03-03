@@ -4,6 +4,7 @@ from .models import Calls
 from django.http import HttpResponse
 from django.core import serializers
 import json
+from django.core.serializers import serialize
 
 from django.db.models import Count
 from django.db.models import Avg
@@ -29,6 +30,9 @@ def map(request):
 	
 	#Fetch all stations
 	allStations = Station.objects.all()
+
+	test = Station.objects.values_list('info', flat=True)
+	print(test)
 
 	#Serialize all stations
 	stations = json_serializer.serialize(allStations, ensure_ascii=False)

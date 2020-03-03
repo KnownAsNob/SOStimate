@@ -251,8 +251,8 @@ body {
 	float: right;
 }
 
-.dot {
-	fill: fill: var(--main-graph-color);
+.scatterDot {
+	fill: var(--main-graph-color);
 }
 
 /* Tooltip */

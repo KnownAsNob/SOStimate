@@ -80,7 +80,7 @@ function onClicked(message) //On clicked - Map popup button
 
 			//Fetch Bar data and draw
 			$.when(fetchBarData(headerText, "Overall", "NA", "NA", "NA")).done(function(returnVal){
-				createBarChart(returnVal, headerText, "Overall", "NA", "linesvg", "Station Calls Per Year | Type: Overall | Year: All | Month: NA | Day: NA", 1200, "NA", "NA");
+				createBarChart(returnVal, headerText, "Overall", "NA", "linesvg", "Station Calls Per Year | Type: Overall | Year: All | Month: NA | Day: NA", getDivWidth('#model-content'), "NA", "NA");
 
 				//Fetch pie data and draw
 				$.when(fetchPieData(headerText, "Overall", "NA", "NA", "NA")).done(function(returnPieVal){

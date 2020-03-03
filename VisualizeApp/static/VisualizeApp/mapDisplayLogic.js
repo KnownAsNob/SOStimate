@@ -21,20 +21,11 @@ function overviewChange(click, event, map) {
     {
     	map.flyTo({center: [-6.183489, 53.458838], zoom: 9, essential: true});
 
-    //Create map outer
-    outer = createMapElement("div", "controlContainer", mapContainer);
-    	inner = createMapElement("div", "controlContainerInner", outer);
-    		createMapElement("h3", "filterTitle", inner).innerHTML = "Sample";
-    		createMapElement("label", "month", inner);
-    		input = createMapElement("input", "slider", inner);
-	    	input.type = "range";
-	    	input.min = "0";
-	    	input.max = "11";
-	    	input.step = "1";
-	    	input.value = "0";
-    	legend = createMapElement("div", "legend", outer);
-	   		createMapElement("div", "bar", legend);
-	   		createMapElement("div", "legendText", legend).innerHTML = "Calls";
+    	
+
+    	createBox();
+	    
+
     }
 } //End overviewChange
 
@@ -47,5 +38,22 @@ function createMapElement(elementType, id, appendTo)
 	parentContainer.appendChild(newElement);
 
 	return newElement;
+}
+
+function createBox()
+{
+	outer = createMapElement("div", "controlContainer", mapContainer);
+	    	inner = createMapElement("div", "controlContainerInner", outer);
+	    		createMapElement("h3", "filterTitle", inner).innerHTML = "Sample";
+	    		createMapElement("label", "month", inner);
+	    		input = createMapElement("input", "slider", inner);
+		    	input.type = "range";
+		    	input.min = "0";
+		    	input.max = "11";
+		    	input.step = "1";
+		    	input.value = "0";
+	    	legend = createMapElement("div", "legend", outer);
+		   		createMapElement("div", "bar", legend);
+		   		createMapElement("div", "legendText", legend).innerHTML = "Calls";
 }
 
