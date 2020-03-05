@@ -24,11 +24,19 @@ function overviewChange(click, event, map, svg) {
     {
     	map.flyTo({center: [-6.183489, 53.458838], zoom: 9, essential: true});
 
-    	
-
+  		//Create control box
     	createBox();
-	    
 
+  		//Get slider change info
+    	slider = document.getElementById("slider");
+    	sliderText = document.getElementById("sliderText");
+
+    	//Update values based on slider
+    	slider.oninput = function() 
+    	{
+  			updateCircles(this.value, output);
+  			sliderText.innerHTML = this.value;
+		} 
     }
 } //End overviewChange
 
@@ -51,12 +59,59 @@ function createBox()
 	    		createMapElement("label", "month", inner);
 	    		input = createMapElement("input", "slider", inner);
 		    	input.type = "range";
-		    	input.min = "0";
-		    	input.max = "11";
+		    	input.min = "2013";
+		    	input.max = "2018";
 		    	input.step = "1";
 		    	input.value = "0";
+		    createMapElement("p", "sliderText", inner).innerHTML = "2013";
 	    	legend = createMapElement("div", "legend", outer);
+	    	legend.style.background = 'linear-gradient(to right, ' + css.getPropertyValue('--mouse-click-graph-color') + ', ' + css.getPropertyValue('--mouse-over-graph-color') + ')';
 		   		createMapElement("div", "bar", legend);
-		   		createMapElement("div", "legendText", legend).innerHTML = "Calls";
+		   		createMapElement("p", "legendText", legend).innerHTML = "Calls";
 }
 
+// ---------- Fetch data ---------- //
+
+output = {};
+
+function fetchData(year, svg)
+{
+	function ajaxCall()
+	{
+		//Request number of calls/time unit
+		return $.ajax({
+			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+			type: "POST",
+			url: "http://localhost:8000/map/get_calls_year/",
+			datatype: "json",
+			//async: true,
+			data: {"year": year},
+			success: function(json)
+			{
+				output = json;
+				//console.log("Return: " + json);
+			}
+		});
+	}
+
+	$.when(ajaxCall()).done(function(returnVal){
+		
+		//Process data	
+		list = JSON.stringify(returnVal);
+		parsed = JSON.parse(list);
+
+		//Transform the data
+		output = Object.keys(parsed)
+			.map(function(key) { return [Array(key), parsed[key]]; });
+
+		console.log("Return: " + output);
+
+		addCircles(output);
+		update();
+	});
+
+	
+	//console.log("Return: " + output);
+
+	return output;
+}

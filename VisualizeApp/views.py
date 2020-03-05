@@ -31,9 +31,6 @@ def map(request):
 	#Fetch all stations
 	allStations = Station.objects.all()
 
-	test = Station.objects.values_list('info', flat=True)
-	print(test)
-
 	#Serialize all stations
 	stations = json_serializer.serialize(allStations, ensure_ascii=False)
 
@@ -548,8 +545,6 @@ def get_avg_travel(request):
 
 def get_incident_lengths(request):
 
-	print("Got here!")
-
 	input = request.POST['station']
 	type = request.POST['type']
 	year = request.POST['year']
@@ -564,8 +559,6 @@ def get_incident_lengths(request):
 	#2 = #Year, !Month
 	#3 = #Year, Month, !Day
 	#4 = #Year, Month, Day
-	
-	print("Got here 2!")
 
 	def getCalls(calls, timeUnit, type):
 
@@ -615,7 +608,6 @@ def get_incident_lengths(request):
 		#!Year, !Type
 		if type == "Overall":
 			overallCalls = masterCalls.filter(details__StationArea = input)
-			print(len(overallCalls))
 		#!Year, Type
 		else:
 			overallCalls = masterCalls.filter(details__StationArea = input, details__Agency = type)
@@ -633,8 +625,6 @@ def get_incident_lengths(request):
 		#Type, Year
 		else:
 			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year, details__Agency = type)
-
-		print("Got here 3!")
 
 		for x in range(1, 13):
 			time = str(x) + "/" + str(year)
@@ -698,8 +688,6 @@ def get_incident_lengths(request):
 			calls = overallCalls.filter(details__TOC__startswith=x)
 			getCalls(calls, x, type)
 
-	print(len(response_data))
-
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
 
 #Decide time details to provide
@@ -727,6 +715,37 @@ def decideCase(year, month, day):
 			else:
 				return 4
 
+########## Map Functions ##########
+def get_calls_year(request):
+
+	year = request.POST['year']
+
+	print("running")
+
+	stations = ["Tara Street", "Tallaght", "Kilbarrack", "Dun Laoghaire", "Rathfarnham", "Phibsborough", "Dolphins Barn", "Swords", "North Strand", "Donnybrook", "Finglas", "Skerries", "Blanchardstown", "Balbriggan"]
+
+	response_data={}
+	
+	#if type == "Overall":
+	#totalCalls = masterCalls.filter(details__Date__endswith=year)
+	#Agency Specified
+	#else:
+		#totalCalls = masterCalls.filter(details__Agency = type, details__StationArea = input)
+	#Cycle through all years
+	for x in stations:
+
+		yearResponse={}
+
+		for year in range(2013, 2019):
+			calls = masterCalls.filter(details__StationArea=x, details__Date__endswith=year).count()
+			yearResponse[year] = calls
+
+		response_data[x] = yearResponse
+
+	print(response_data)
+
+	return HttpResponse(json.dumps(response_data), content_type = "application/json")
+	
 
 #Unused: 
 def get_total_cats(request):

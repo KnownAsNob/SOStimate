@@ -85,12 +85,13 @@ body {
 #controlContainer {
 	position: absolute;
 	width: 30%;
+	height: 32%;
 	background-color: rgb(243,242,237);
 	outline: 1px solid rgb(224, 224, 224);
 }
 
 #controlContainerInner, #legend {
-	margin: 3% 0 5% 3%;
+	margin: 3% 0 4% 3%;
 }
 
 #slider {
@@ -102,7 +103,16 @@ body {
 	margin-left: 10%;
 	height: 10px;
 	width: 80%;
-	background: linear-gradient(to right, #214e7f, #73deff);
+}
+
+#sliderText {
+	font-size: 130%;
+	margin-left: 7%;
+}
+
+#legendText {
+	font-size: 130%;
+	padding-top: 5%;
 }
 
 /* ----- Graph popup ----- */
