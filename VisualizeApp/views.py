@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Station
 from .models import Calls
+from .models import MapDisplay
 from django.http import HttpResponse
 from django.core import serializers
 import json
@@ -10,6 +11,8 @@ from django.db.models import Count
 from django.db.models import Avg
 from django.db.models import IntegerField
 from django.db.models.functions import Cast
+
+from django.http import JsonResponse
 
 #Get total calls for station
 masterCalls = Calls.objects.all()
@@ -690,6 +693,50 @@ def get_incident_lengths(request):
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
 
+########## Map Functions ##########
+
+def get_calls_year(request):
+
+	type = request.POST['type']
+
+	stations = ["Tara Street", "Tallaght", "Kilbarrack", "Dun Laoghaire", "Rathfarnham", "Phibsborough", "Dolphins Barn", "Swords", "North Strand", "Donnybrook", "Finglas", "Skerries", "Blanchardstown", "Balbriggan"]
+
+	response_data={}
+
+	if type == "Most_Pop":
+
+		stationCalls = MapDisplay.objects.filter(name="No_Calls")
+		
+		for x in stations:
+
+			yearResponse={}
+
+			for year in range(2013, 2019):
+				calls = stationCalls.values_list("info__Year__" + str(year), flat=True).get(info__Station=x)
+				
+				yearResponse[year] = calls
+
+			response_data[x] = yearResponse
+		
+	else:
+
+		stationCalls = MapDisplay.objects.filter(name="Avg_Response")
+
+		for x in stations:
+
+			yearResponse={}
+
+			for year in range(2013, 2019):
+				calls = stationCalls.values_list("info__Year__" + str(year), flat=True).get(info__Station=x)
+				yearResponse[year] = calls
+
+			response_data[x] = yearResponse
+
+	return HttpResponse(json.dumps(response_data), content_type = "application/json")
+	
+
+
+
 #Decide time details to provide
 def decideCase(year, month, day):
 
@@ -714,38 +761,6 @@ def decideCase(year, month, day):
 			#Year, Month, Day
 			else:
 				return 4
-
-########## Map Functions ##########
-def get_calls_year(request):
-
-	year = request.POST['year']
-
-	print("running")
-
-	stations = ["Tara Street", "Tallaght", "Kilbarrack", "Dun Laoghaire", "Rathfarnham", "Phibsborough", "Dolphins Barn", "Swords", "North Strand", "Donnybrook", "Finglas", "Skerries", "Blanchardstown", "Balbriggan"]
-
-	response_data={}
-	
-	#if type == "Overall":
-	#totalCalls = masterCalls.filter(details__Date__endswith=year)
-	#Agency Specified
-	#else:
-		#totalCalls = masterCalls.filter(details__Agency = type, details__StationArea = input)
-	#Cycle through all years
-	for x in stations:
-
-		yearResponse={}
-
-		for year in range(2013, 2019):
-			calls = masterCalls.filter(details__StationArea=x, details__Date__endswith=year).count()
-			yearResponse[year] = calls
-
-		response_data[x] = yearResponse
-
-	print(response_data)
-
-	return HttpResponse(json.dumps(response_data), content_type = "application/json")
-	
 
 #Unused: 
 def get_total_cats(request):

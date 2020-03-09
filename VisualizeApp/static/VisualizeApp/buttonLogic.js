@@ -243,6 +243,9 @@ function createOverall(Type, Input, ID, Station)
 
     function handleClick(d, i) 
 	{
+		d3.selectAll("#xLabel")
+					.text("Years");
+					
 		maxDetail = false;
 		callUpdate(Station, Type, "NA", "NA", "NA");
     }
@@ -271,14 +274,14 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width, month,
 	//Create new bar chart
 	var svg = d3.select("#" + ID),
         margin = 100,
-        width = svg.attr("width") - margin,
+        width = svg.attr("width") - margin - 15,
         height = svg.attr("height") - margin;
 
     xBarScale = d3.scaleBand().range ([0, width]).padding(0.2),
     yBarScale = d3.scaleLinear().range ([height, 0]);
 
     var g = svg.append("g")
-               .attr("transform", "translate(" + 50 + "," + 50 + ")")
+               .attr("transform", "translate(" + 70 + "," + 50 + ")")
                .attr("id", "mainGroup");
     
     //Create graph scale
@@ -288,18 +291,27 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width, month,
     g.append("g")
      .attr("transform", "translate(0," + height + ")")
      .call(d3.axisBottom(xBarScale))
-     .attr("id", "xAxis");
+     .attr("id", "xAxis")
+     .append("text")
+         //.attr("transform", "rotate(-90)")
+         .attr("id", "xLabel")
+         .attr("dx", svg.attr("width")/2 - 20)
+         .attr("dy", "2em")
+         .attr("text-anchor", "end")
+         .text("Years");
 
     g.append("g")
      .call(d3.axisLeft(yBarScale).tickFormat(function(d){
          return d;
      }).ticks(7))
      .attr("id", "yAxis")
-     .append("text")
-     .attr("y", 6)
-     .attr("dy", "0.71em")
-     .attr("text-anchor", "end")
-     .text("value");
+         .append("text")
+         .attr("id", "yLabel")
+         .attr("transform", "rotate(-90)")
+         .attr("dx", "-8em")
+         .attr("dy", "-2.5em")
+         .attr("text-anchor", "end")
+         .text("Calls");
 
     //Add bars
     g.selectAll(".bar")
@@ -385,6 +397,9 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width, month,
       	popUp.transition()		
            .duration(500)		
            .style("opacity", 0);
+
+        d3.selectAll("#xLabel")
+				.text("Months");
 
 		callUpdate(Station, Type, d[0], "NA", "NA");
     }
@@ -502,21 +517,34 @@ function updateBarChart(inputData, station, type, year, svg, title, month, day)
 	        if(year == "NA" && d[0] == null )
 	        {
 				callUpdate(station, type, "NA", "NA", "NA");
+
+				d3.selectAll("#xLabel")
+					.text("Years");
 	        }
 
 	        if(year == "NA")
 	        {
 				callUpdate(station, type, d[0], "NA", "NA");
+
+				d3.selectAll("#xLabel")
+					.text("Months");
 	        }
 
 	        else if(month == "NA")
 	        {
 	        	callUpdate(station, type, year, d[0], "NA");
+
+	        	d3.selectAll("#xLabel")
+					.text("Days");
 	        }
 
 	        else if (day == "NA")
 	        {
 	        	callUpdate(station, type, year, month, d[0]);
+
+	        	d3.selectAll("#xLabel")
+					.text("Hours");
+
 	        	console.log("Max detail reached!");
 	        	maxDetail = true;
 	        }
@@ -545,6 +573,7 @@ function updateBarChart(inputData, station, type, year, svg, title, month, day)
 }
 
 /* ---------- Response Time Line chart ---------- */
+
 function createLineChart(dataIn, station, type, year, svg, name, width, month, day)
 {
 	//Process data
@@ -567,7 +596,7 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 	//Create new line chart
 	var svg = d3.select('#' + svg),
     margin = 100,
-    width = svg.attr("width") - margin,
+    width = svg.attr("width") - margin - 5,
     height = svg.attr("height") - margin;
 
     //Scale the chart
@@ -575,7 +604,7 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 	yLineScale = d3.scaleLinear().range([height, 0]);
 
 	var g = svg.append("g")
-	           .attr("transform", "translate(" + 50 + "," + 50 + ")")
+	           .attr("transform", "translate(" + 60 + "," + 50 + ")")
 	           .attr("id", "mainGroup");
   
 	//Create graph scale
@@ -588,18 +617,25 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 	         return d;
 	     }).ticks(6))
 	     .attr("transform", "translate(0," + height + ")")
-	     .attr("id", "xAxis");
+	     .attr("id", "xAxis")
+	     	 .append("text")
+		     .attr("id", "xLabel")
+	         .attr("dx", svg.attr("width")/2 - 20)
+	         .attr("dy", "2em")
+	         .attr("text-anchor", "end")
+	         .text("Years");
 
 	    g.append("g")
 	     .call(d3.axisLeft(yLineScale).tickFormat(function(d){
 	         return d;
 	     }).ticks(7))
-	     .attr("id", "yAxis")
-	     .append("text")
-	     .attr("y", 6)
-	     .attr("dy", "0.71em")
-	     .attr("text-anchor", "end")
-	     .text("value");
+	     	 .append("text")
+	         .attr("id", "yLabel")
+	         .attr("transform", "rotate(-90)")
+	         .attr("dx", "-6em")
+	         .attr("dy", "-1.8em")
+	         .attr("text-anchor", "end")
+	         .text("Time Category");
 
 	//Define line
 	var valueline = d3.line()
@@ -711,6 +747,9 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
       	popUp.transition()		
            .duration(500)		
            .style("opacity", 0);
+
+        d3.selectAll("#xLabel")
+					.text("Months");
 
 		callUpdate(station, type, d[0], "NA", "NA");
     }
@@ -853,21 +892,33 @@ function updateLineChart(inputData, station, type, year, svg, title, month, day)
 	    {
 	        if(year == "NA" && d[0] == null )
 	        {
+	        	d3.selectAll("#xLabel")
+					.text("Years");
+
 				callUpdate(station, type, "NA", "NA", "NA");
 	        }
 
 	        if(year == "NA")
 	        {
+	        	d3.selectAll("#xLabel")
+					.text("Months");
+
 				callUpdate(station, type, d[0], "NA", "NA");
 	        }
 
 	        else if(month == "NA")
 	        {
+	        	d3.selectAll("#xLabel")
+					.text("Days");
+
 	        	callUpdate(station, type, year, d[0], "NA");
 	        }
 
 	        else if (day == "NA")
 	        {
+	        	d3.selectAll("#xLabel")
+					.text("Hours");
+
 	        	callUpdate(station, type, year, month, d[0]);
 	        	console.log("Max detail reached!");
 	        	maxDetail = true;

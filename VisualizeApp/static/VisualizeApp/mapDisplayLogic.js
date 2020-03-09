@@ -3,15 +3,12 @@ mapContainer = document.getElementById("map");
 
 function overviewChange(click, event, map, svg) {
     
+	output = {};
+
     //Check if container already present
 	if(document.getElementById("controlContainer") != null)
 	{
-		frame = document.getElementById("controlContainer");
-
-		frame.parentNode.removeChild(frame);
-
-		svg.selectAll(".mapCircle")
-			.remove();
+		clearMap(svg);
 	}
 
 	//Check if none is selected i.e. default
@@ -24,8 +21,21 @@ function overviewChange(click, event, map, svg) {
     {
     	map.flyTo({center: [-6.183489, 53.458838], zoom: 9, essential: true});
 
-  		//Create control box
-    	createBox();
+    	if(click.options[click.selectedIndex].text == "Most Popular")
+    	{
+    		fetchData("Most_Pop");
+
+    		//Create control box
+    		createBox("Number of Calls");
+    	}
+
+    	else if(click.options[click.selectedIndex].text == "Average Response")
+    	{
+    		fetchData("Avg_Response");
+
+    		//Create control box
+    		createBox("Average Response Time");
+    	}
 
   		//Get slider change info
     	slider = document.getElementById("slider");
@@ -51,11 +61,11 @@ function createMapElement(elementType, id, appendTo)
 	return newElement;
 }
 
-function createBox()
+function createBox(title)
 {
 	outer = createMapElement("div", "controlContainer", mapContainer);
 	    	inner = createMapElement("div", "controlContainerInner", outer);
-	    		createMapElement("h3", "filterTitle", inner).innerHTML = "Sample";
+	    		createMapElement("h3", "filterTitle", inner).innerHTML = title;
 	    		createMapElement("label", "month", inner);
 	    		input = createMapElement("input", "slider", inner);
 		    	input.type = "range";
@@ -67,14 +77,12 @@ function createBox()
 	    	legend = createMapElement("div", "legend", outer);
 	    	legend.style.background = 'linear-gradient(to right, ' + css.getPropertyValue('--mouse-click-graph-color') + ', ' + css.getPropertyValue('--mouse-over-graph-color') + ')';
 		   		createMapElement("div", "bar", legend);
-		   		createMapElement("p", "legendText", legend).innerHTML = "Calls";
+		   		createMapElement("p", "legendText", legend).innerHTML = "Amount (Most to Least)";
 }
 
 // ---------- Fetch data ---------- //
 
-output = {};
-
-function fetchData(year, svg)
+function fetchData(type)
 {
 	function ajaxCall()
 	{
@@ -85,11 +93,10 @@ function fetchData(year, svg)
 			url: "http://localhost:8000/map/get_calls_year/",
 			datatype: "json",
 			//async: true,
-			data: {"year": year},
+			data: {"type": type},
 			success: function(json)
 			{
 				output = json;
-				//console.log("Return: " + json);
 			}
 		});
 	}
@@ -97,21 +104,26 @@ function fetchData(year, svg)
 	$.when(ajaxCall()).done(function(returnVal){
 		
 		//Process data	
-		list = JSON.stringify(returnVal);
-		parsed = JSON.parse(list);
-
+		//console.log("Java return: " + typeof(returnVal1))
+		
 		//Transform the data
-		output = Object.keys(parsed)
-			.map(function(key) { return [Array(key), parsed[key]]; });
-
-		console.log("Return: " + output);
+		output = Object.keys(returnVal)
+			.map(function(key) { return [String(key), returnVal[key]]; });
 
 		addCircles(output);
 		update();
 	});
 
-	
-	//console.log("Return: " + output);
-
 	return output;
+}
+
+function clearMap()
+{
+	//Remove menu
+	frame = document.getElementById("controlContainer");
+	frame.parentNode.removeChild(frame);
+
+	//Remove map elements
+	svg.selectAll("g")
+		.remove();
 }

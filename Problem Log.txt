@@ -1,14 +1,10 @@
 1) Pie chart broken when only one incident type e.g. Fire Small
-2) Missing data //Fixed
-3) Slow fetch
-4) Broken colours
-5) Scatter plot mis-aslign and Y axis not able to find max (Only sees 1 array)
+*2) Slow fetch
+3) Broken colours //Not always
+*4) Scatter plot mis-aslign and Y axis not able to find max (Only sees 1 array)
+*5) Graphs not understandable -> Add scatter plot labels, add pie chart labels
 
 
-// Incorrect naming: Dun Laoghaire and Rathfarhnam spelt wrong - must find and correct //
-
-
--> Change circle to area
 -> Change to horizontal bar chart; Ambulance and fire different colours - Hue is volume
 -> Change to average minutes - Count under 5 minutes, etc.
 -> The big picture on home

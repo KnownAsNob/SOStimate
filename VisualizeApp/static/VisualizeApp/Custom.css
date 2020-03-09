@@ -213,6 +213,12 @@ body {
 	    fill: var(--opposite-graph-color);
 	}
 
+	#xLabel, #yLabel
+	{
+		fill: black;
+		font-size: 175%;
+	}
+
 /* Line SVG */
 #barsvg, #bar2svg {
 	background-color: white;

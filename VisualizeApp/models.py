@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField
 
-
 class Station(models.Model):
     name = models.CharField(max_length=50)
     info = JSONField()
@@ -12,3 +11,7 @@ class Calls(models.Model):
     class Meta: 
         managed = False 
         db_table = 'VisualizeApp_calls'
+
+class MapDisplay(models.Model):
+    name = models.CharField(max_length=50)
+    info = JSONField()

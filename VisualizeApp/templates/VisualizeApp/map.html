@@ -8,9 +8,10 @@
 			<div id = "mapSelector">
 				<p id = "selectorText">Click on a station below or apply filters to map:</p>
 				<!-- Map type selector -->
-				<select id="mapSelectorDrop" onchange="sendMap.call(this, event)", autocomplete="off">
+				<select id="mapSelectorDrop" onchange="sendMap.call(this, event, svg)", autocomplete="off">
 				  <option value="none">None</option>
 				  <option value="most_pop">Most Popular</option>
+				  <option value="most_pop">Average Response</option>
 				</select>  
 			</div>
 		</div> <!-- End selection header -->
@@ -27,8 +28,6 @@
 
 				data = JSON.parse(dataString);
 
-				//console.log(data);
-
 				mapboxgl.accessToken = 'pk.eyJ1Ijoia25vd25hc25vYiIsImEiOiJjazVvNHdza3EwYW1wM2xucmd4eW85OGpqIn0.iR8IWbJUnuIRL3jThbTK1g';
 				map = new mapboxgl.Map
 				({
@@ -38,12 +37,11 @@
 					zoom: 13 // Starting zoom
 				});
 
-				// Add zoom and rotation controls to the map.
+				//Add zoom and rotation controls
 				map.addControl(new mapboxgl.NavigationControl());
 
-				var counter = 0;
-
 				// -------------------- Add markers to map --------------------
+				
 				stationObject.forEach(function(marker) 
 				{
 					//Create HTML element for each station
@@ -60,68 +58,46 @@
 		  				.addTo(map);		
 		  		});
 
-		  		// -------------------- Draw SVG on map --------------------
+		  		// -------------------- Define required methods -------------------- 
 
+		  		//Create required elements
 		  		container = document.getElementById("map");
-
 		  		const bb = container.getBoundingClientRect();  
-
 		  		css = getComputedStyle(document.documentElement)
-			    
-			    var svg = d3.select(container)
-			      .append("svg")
-			      .style("position", "absolute")
-			      .style("top", 0)
-			      .style("left", 0)    
-			      .attr("width", bb.width)
-			      .attr("height", bb.height)
-			      .style("pointer-events", "none"); 
-			      // the svg shouldn't capture mouse events, so we can have pan and zoom from mapbox
 
-			  	//Project any point to map's current state
-				/*function projectPoint(lon, lat)
-				{
-					var point = map.project(new mapboxgl.LngLat(lon, lat));
-					this.stream.point(point.x, point.y);;
-				}*/
-			  
-			    //Projection function
-			    //var transform = d3.geoTransform({point:projectPoint});
-			   // var path = d3.geoPath().projection(transform);       
-			  
-			    console.log("Made it to here...");
-
+		  		//Project points to map's current state
 			    function project(d) 
 			    {
             		return map.project(new mapboxgl.LngLat(+d[0], +d[1]));
         		}
 
-			    /*const dots = svg.selectAll(".puesto")
-            		//.data(votingStations.features)
-            		.data(data.features)
-            		.join("path")
-            		.attr("class", "puesto")
-            		.style("fill", "green")
-            		//.on("mouseover", d => mutable hovered=d)
-            		.style("pointer-events", "all");*/
- 
-            	dataSample = [100, 130, 150, 150, 170, 140, 90, 100, 140, 100, 150, 140, 100, 130]
-
+        		//Calculate area of circle relative to data
             	const sqrtScale = d3.scaleSqrt()
 					    			.domain([0, 50000])
 					    			.range([0, 100]);
 
+				//Colour circle in reference to data value
 				var colorCircle = d3.scaleLinear()
-        			.domain([0, 15000])
-        			.range([css.getPropertyValue('--mouse-over-graph-color'), css.getPropertyValue('--mouse-click-graph-color')])
-        			.interpolate(d3.interpolateHcl); //interpolateHsl interpolateHcl interpolateRgb
+				        			.domain([0, 15000])
+				        			.range([css.getPropertyValue('--mouse-over-graph-color'), css.getPropertyValue('--mouse-click-graph-color')])
+				        			.interpolate(d3.interpolateHcl);
+			    
+				// -------------------- Define SVG and draw -------------------- 
 
+			    //Append svg to map
+				var svg = d3.select(container)
+							.append("svg")
+							.style("position", "absolute")
+							.style("top", 0)
+							.style("left", 0)    
+							.attr("width", bb.width)
+							.attr("height", bb.height)
+							//SVG shouldn't capture mouse events
+							.style("pointer-events", "none"); 
 
             	// Add circles
             	function addCircles(inputData)
             	{
-            		stationStats = inputData;
-
             		var nodes = svg.selectAll("g")
     					.data(data.features);
 
@@ -130,37 +106,49 @@
 	           		g.append("circle")
 		                	.attr("class", "mapCircle")
 		                    .attr("r", function(d, i) {
-		                    	console.log(stationStats[i][1][2013]);
-		                    	//return dataSample[i]/4;
-		                    	return sqrtScale(stationStats[i][1][2013]);//*0.005;
+		                    	//console.log("Size:" + sqrtScale(inputData[i][1][2013]));
+
+		                    	if(sqrtScale(inputData[i][1][2013]) < 5)
+		                    	{
+		                    		return sqrtScale(inputData[i][1][2013]) * 60;
+		                    	}
+
+		                    	else
+		                    	{
+		                    		return sqrtScale(inputData[i][1][2013]);
+		                    	}     			                    			   
 		                    })
-		                    .style("fill", function (d, i) { return colorCircle(stationStats[i][1][2013]); });
+		                    .style("fill", function (d, i) { 
+		                    	
+		                    	if(sqrtScale(inputData[i][1][2013]) < 5)
+		                    	{
+		                    		return colorCircle(inputData[i][1][2013] * 10000) ;
+		                    	}
+
+		                    	else
+		                    	{
+		                    		return colorCircle(inputData[i][1][2013]);
+		                    	} 
+		                    });
 		            
 		            g.append("text")
 					    .attr("dx", function(d){return -22})
 					    .attr("dy", function(d){return 8})
+					    .attr("class", "circleText")
 					    .text(function(d, i) {
-					    	return stationStats[i][1][2013];
+					    	return inputData[i][1][2013];
 					    })
 					    .attr("font-size", "20px")
 					    .attr("fill", "black");
 
 					circles = g.selectAll("circle");
 					circleText = g.selectAll("text");
-		                    //.on("mouseover", handleMouseOver);
-		                    /*.on("click", function(d, i) {
-		                        alert(d.properties.name);
-		                        console.log(i);
-		                    });*/
+		                   
+		            //Add update functions
+					map.on("viewreset", update);
+			    	map.on("move", update);
+			    	map.on("moveend", update);
 
-		            /*function handleMouseOver(d, i) 
-					{
-				        d3.select(this)
-				        	.transition()
-				      		.style("fill", css.getPropertyValue('--mouse-over-graph-color'))
-				      		.attr("r", this.attr("r") + 10);
-					}*/
-		            
 		            return circles;
 	      		}
 
@@ -168,11 +156,29 @@
 	      		{
 	      			circles = svg.selectAll("circle")
 		                .attr("r", function(d, i) {
-		                    	console.log(data[i][1][year]);
-		                    	//return dataSample[i]/4;
-		                    	return sqrtScale(data[i][1][year]);//*0.005;
+		                    	if(sqrtScale(data[i][1][year]) < 5)
+		                    	{
+		                    		return sqrtScale(data[i][1][year]) * 60;
+		                    	}
+
+		                    	else
+		                    	{
+		                    		return sqrtScale(data[i][1][year]);
+		                    	} 
 		                    })
-		                .style("fill", function (d, i) { return colorCircle(data[i][1][year]); });
+		                .style("fill", function (d, i) { 
+
+			                if(sqrtScale(data[i][1][year]) < 5)
+	                    	{
+	                    		return colorCircle(data[i][1][year] * 10000);
+	                    	}
+
+	                    	else
+	                    	{
+	                    		return colorCircle(data[i][1][year]);
+	                    	} 
+
+		                });
 
 		            circleText = svg.selectAll("text")
 		            	.text(function(d, i) {
@@ -180,36 +186,24 @@
 					    })
 	      		}
 
-            	console.log("Still alive...");
-
-			    //const update = () => {
 			    function update() 
 			    {
-			       //dots.attr("d", path); 
-
-			       circles.attr("cx", function(d) { return project(d.geometry.coordinates).x })
-                   		  .attr("cy", function(d) { return project(d.geometry.coordinates).y }); 
+			        circles.attr("cx", function(d) { return project(d.geometry.coordinates).x })
+                   		   .attr("cy", function(d) { return project(d.geometry.coordinates).y }); 
 
                    	circleText.attr("x", function(d) { return project(d.geometry.coordinates).x })
-                   		  .attr("y", function(d) { return project(d.geometry.coordinates).y });     
+                   		      .attr("y", function(d) { return project(d.geometry.coordinates).y });     
 			    }
-			    
-			    //Call update to draw
-
-			    
+			 
 			    // Every time the map changes, update the dots
-			    map.on("viewreset", update);
-			    map.on("move", update);
-			    map.on("moveend", update);
+			    //map.on("viewreset", update);
+			    //map.on("move", update);
+			    //map.on("moveend", update);
 
-				//Adjust view
+				//Adjust view on button click
 		  		function sendMap(event, svg) {
 		  			click = this;
-		  			stats = fetchData(2013);
-		  			//addCircles(data);
-		  			//update();
 		  			overviewChange(click, event, map, svg);
-				
 		  		}
 
 			</script>
