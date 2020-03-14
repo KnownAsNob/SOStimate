@@ -732,8 +732,8 @@ def get_calls_year(request):
 
 			response_data[x] = yearResponse
 
-	return HttpResponse(json.dumps(response_data), content_type = "application/json")
-	
+	return HttpResponse(json.dumps(response_data), content_type = "application/json")	
+
 
 
 

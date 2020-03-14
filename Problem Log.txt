@@ -9,3 +9,26 @@
 -> Change to average minutes - Count under 5 minutes, etc.
 -> The big picture on home
 -> Add faces and info
+
+
+
+Questions:
+- What data you want? 
+	- Agency: [Overall/DA/DF] 
+	- Time frame: [Dates, etc.]
+	- What you want to see? [See categories - Counts, averages, totals, times, etc.]
+- What graph you want? [Line/Bar/Pie/Scatter]
+- (Download?)
+
+Categories:
+- Date: The date of the call,
+- Incident Area: The station from which there is a dispatch,
+- Incident Type: The type of incident that the vehicle is responding to (See below for code translations),
+- Time of Call (TOC): Time that the call was received in control centre,
+- Vehicle Ordered (ORD): Time that the vehicle was ordered by the controller,
+- Vehicle Mobile (MOB):Time that the vehicle was mobile (Moving) to the scene,
+- Vehicle Arrival (IA): Time that the vehicle stopped at the incident i.e. arrived,
+- Vehicle Leaving (LS): Time that the vehicle left for the hospial,
+- Arrive at Hospital (AH): Time that the vehicle arrived at the hospital,
+- Move Away (MAV): Time that the vehicle travelled back to the station,
+- Shut Down (CD): Time that the vehicle shuts down (Radio turned off in station).

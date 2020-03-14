@@ -27,25 +27,24 @@ body {
 
 /* ----- Menu bar ----- */
 
-#mapHeader {
+#mapHeader, #visualizerHeader {
 	margin-top: 2%;
 	outline: 1px solid rgb(224, 224, 224);
 }
 
-	#mapSelector {
+	#mapHeaderBar {
 		background-color: rgb(243,242,237);
 		outline: 1px solid rgb(224, 224, 224);
 		padding-top: 0.5%;
 		padding-bottom: 0.5%;
 	}
 
-	#mainHeader, #selectorText {
+	.mainHeader, #mapSelectorText {
 		padding-left: 1%;
-		font-family: Century Gothic;
-		height: auto;
+		font-family: Century Gothic;	
 	}
 
-	#selectorText {
+	#mapSelectorText {
 		font-family: sans-serif;
 		float: left;
 	}
@@ -307,6 +306,37 @@ body {
 	padding: 20px;
 	width: auto;
 	height: auto; 
+}
+
+#visualizerText {
+	padding-left: 1%;
+	font-family: sans-serif;
+	padding-top: 0.5%;
+	padding-bottom: 0.5%;
+}
+
+#vizHeaderBar {
+		background-color: rgb(243,242,237);
+		outline: 1px solid rgb(224, 224, 224);	
+}
+
+/* Visualizer menu */
+
+#vizControlDiv {
+	width: 100%;
+	outline: 1px solid rgb(224, 224, 224);	
+}
+
+#vizControlHeader {
+	background-color: rgb(243,242,237);
+	outline: 1px solid rgb(224, 224, 224);	
+}
+
+#vizControlHeader p {
+	padding-left: 1%;
+	font-family: sans-serif;
+	padding-top: 0.5%;
+	padding-bottom: 0.5%;
 }
 
 /* ---------- About page ---------- */
