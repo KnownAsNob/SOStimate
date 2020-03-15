@@ -3,6 +3,7 @@ formDiv = document.getElementById("vizForm");
 stations = [];
 agency = [];
 selectedData = [];
+selectedDataDisplay = [];
 
 //Push data to array
 function prepareData(data, output)
@@ -18,7 +19,7 @@ function checkEntry(entry)
 {
     if(entry.length == 0)
     {
-        alert("Must select atleast one option to build the visualization!");
+        alert("Must select atleast one option for each category to build the visualization!");
         return false;
     }
 
@@ -32,6 +33,7 @@ function handleInput(form, pushTo)
 {
     if (!checkEntry(form))
     {
+        console.log("Fail");
         return false;
     }
 
@@ -101,12 +103,36 @@ $('#stationForm').submit(function () {
                 return;
             }
 
-            formDiv.innerHTML = "Ready to draw graph!"
+            //Change text - Choose data display
+            formDiv.innerHTML = '<form id = "dataViewForm">'+
+                                    '<fieldset>'+
+                                        '<p class = "vizQuestion">What would you like to see about the chosen data?</p>'+
+                                        '<input type="radio" id="totalCount" name="dataType" value="TotalCount">'+
+                                        '<label for="totalCount">Total Count</label><br>'+
+                                        '<input type="radio" id="average" name="dataType" value="Average">'+
+                                        '<label for="average">Average</label><br>'+
+                                    '</fieldset>'+
+                                    '<input class="submit" type="submit" value="Next" />'+
+                                '</form>'
 
-            console.log(stations);
-            console.log(agency);
-            console.log(selectedData);
-        });
-       
+            //Handle submit - Data display
+            $('#dataViewForm').submit(function () {
+                console.log("User submitted data view!");
+
+                //If handling fails, break
+                if(!handleInput($('#dataViewForm').serializeArray(), selectedDataDisplay))
+                {
+                    return;
+                }
+
+                console.log(stations);
+                console.log(agency);
+                console.log(selectedData);
+                console.log(selectedDataDisplay);
+
+                formDiv.innerHTML = "Ready";
+
+            });  
+        }); 
     });
 });

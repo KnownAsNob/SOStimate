@@ -324,7 +324,8 @@ body {
 
 #vizControlDiv {
 	width: 100%;
-	outline: 1px solid rgb(224, 224, 224);	
+	outline: 1px solid rgb(224, 224, 224);
+	margin-bottom: 2%;	
 }
 
 #vizControlHeader {
@@ -332,11 +333,28 @@ body {
 	outline: 1px solid rgb(224, 224, 224);	
 }
 
-#vizControlHeader p {
-	padding-left: 1%;
-	font-family: sans-serif;
-	padding-top: 0.5%;
-	padding-bottom: 0.5%;
+#restartViz {
+	width: 10%;
+	margin: 1% 0 1% 2%;
+}
+
+
+/* Visualization form */
+#vizForm {
+	margin-left: 2%;
+}
+
+#vizForm p {
+	font-size: 110%;
+}
+
+#vizForm label {
+	margin-left: 1%;
+}
+
+#vizForm .submit {
+	margin: 1% 0% 1% 0%;
+	width: 20%;
 }
 
 /* ---------- About page ---------- */

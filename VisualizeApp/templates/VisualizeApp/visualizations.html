@@ -7,20 +7,20 @@
 		<div id = "visualizerHeader">
 			<h1 class = "mainHeader">Custom Visualizer</h1>
 			<div id = "vizHeaderBar">
-			   <p id = "visualizerText">The controls below allow you to build your own visualization:</p>
+			   <p id = "visualizerText">Answer each question below by using the appropriate inputs and clicking next. When available, click submit to build visualization.</p>
 			</div>
 		</div> <!-- End Visualizer header -->
 
 		<div id = "vizControlDiv">
 			<div id = "vizControlHeader">
-				<p>Answer each quetion below using the appropriate inputs and, when ready, click submit!</p>
+				<button id = "restartViz" onclick="location.reload();">Restart</button>
 			</div>
 
 			<div id = "vizForm">
 				<form id = "stationForm">
 					<!--Station-->
 					<fieldset>
-						<p class = "vizQuestion">Which stations should be included in the visualization?</p>
+						<p class = "vizQuestion">Which stations should be included in the visualization? <i>[You may choose more than one]</i></p>
 						<input type="checkbox" id="tallaght" name="station" value="Tallaght">
 						<label for="tallaght">Tallaght</label><br>
 						<input type="checkbox" id="rathfarnham" name="station" value="Rathfarnham">
