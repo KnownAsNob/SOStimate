@@ -230,7 +230,7 @@ body {
 	width: 100%;
 }
 
-		#line {
+		.line {
 			fill: none;
 		    stroke: var(--main-graph-color);
 		    stroke-width: 2px;
@@ -346,6 +346,7 @@ body {
 
 #vizForm p {
 	font-size: 110%;
+	margin-top: 1%;
 }
 
 #vizForm label {
@@ -355,6 +356,15 @@ body {
 #vizForm .submit {
 	margin: 1% 0% 1% 0%;
 	width: 20%;
+}
+
+.unselectButton {
+	margin: 0.1% 90% 1% 0.2%;
+	width: 10%;
+}
+
+#overallCustomSVG {
+	margin: 2% 0 2% 1%;
 }
 
 /* ---------- About page ---------- */

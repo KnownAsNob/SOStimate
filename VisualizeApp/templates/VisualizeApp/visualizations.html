@@ -16,11 +16,14 @@
 				<button id = "restartViz" onclick="location.reload();">Restart</button>
 			</div>
 
+			{% csrf_token %}
+			
 			<div id = "vizForm">
 				<form id = "stationForm">
 					<!--Station-->
 					<fieldset>
 						<p class = "vizQuestion">Which stations should be included in the visualization? <i>[You may choose more than one]</i></p>
+						<button class = "unselectButton" type="reset">Unselect All</button>
 						<input type="checkbox" id="tallaght" name="station" value="Tallaght">
 						<label for="tallaght">Tallaght</label><br>
 						<input type="checkbox" id="rathfarnham" name="station" value="Rathfarnham">

@@ -46,12 +46,6 @@ def visualizations(request):
 	return render(request, 'VisualizeApp/visualizations.html')
 
 ############### Map Functions ###############
-#TestCalls:
-	#calls = json_serializer.serialize(Calls.objects.all()[:2], ensure_ascii=False)
-	#calls = Calls.objects.filter(details__StationArea="Tallaght")
-
-	#for call in calls:
-		#print(call.details)
 
 def get_overall_data(request):
 
@@ -693,7 +687,7 @@ def get_incident_lengths(request):
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
 
-########## Map Functions ##########
+########## In-Map Functions ##########
 
 def get_calls_year(request):
 
@@ -734,8 +728,49 @@ def get_calls_year(request):
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")	
 
+########## Custom Visualizer ##########
 
+def get_graph_data(request):
+	
+	stations = request.POST.getlist('stations[]')
+	agency = request.POST['agency']
+	selectedData = request.POST.getlist('selectedData[]')
+	selectedDataDisplay = request.POST['selectedDataDisplay']
+	selectedYears = request.POST.getlist('selectedYears[]')
+	selectedGraph = request.POST['selectedGraph']
 
+	#print("Stations: ", stations) #Stations:  ['Tallaght', 'Blanchardstown']
+	#print("Agency: ", agency) #Agency:  DF
+	#print("Selected Data: ", selectedData) #Selected Data:  ['Incident Type']
+	#print("Data Display: ", selectedDataDisplay) #Data Display:  TotalCount
+	#print("Years: ", selectedYears) #Years:  ['2013', '2014', '2015']
+	#print("Graph: ", selectedGraph) #Graph:  LineGraph
+
+	response_data = {}
+
+	#Operation for each station
+	for station in stations:
+		
+		year_data = {}
+
+		#Operation for each selected data
+		#for data in selectedData:
+		#Operation for each year
+		for year in selectedYears:
+
+			yearCalls = masterCalls.filter(details__Date__endswith=year, details__Agency = agency, details__StationArea = station).count()
+
+			#Add each year's calls
+			year_data[year] = yearCalls
+
+		#Add each station set
+		response_data[station] = year_data
+
+	print(response_data)
+
+	return HttpResponse(json.dumps(response_data), content_type = "application/json")
+
+########## Other Functionality ##########
 
 #Decide time details to provide
 def decideCase(year, month, day):

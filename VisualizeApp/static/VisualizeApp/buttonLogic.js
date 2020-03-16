@@ -584,6 +584,8 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 	data = Object.keys(parsed)
 				 .map(function(key) { return [Number(key), parsed[key]]; });
 
+	console.log(data);
+
 	mainContainer = document.getElementById("mainContainer")
 	
 	//Create new SVG canvas
@@ -647,7 +649,7 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 	    g.append("path")
 	       .data([data])
 	       .attr("d", valueline)
-	       .attr("id", "line");
+	       .attr("class", "line");
 
 	//Define area under
 	var area = d3.area()
@@ -1315,8 +1317,6 @@ function updateScatterPlot(dataIn, station, type, year, ID, title, month, day)
 	list = JSON.stringify(dataIn);
 	parsed = JSON.parse(list);
 
-	console.log(parsed)
-
 	//Transform the data
 	data = Object.keys(parsed)
 				 .map(function(key) { return [String(key), parsed[key]]; });
@@ -1675,7 +1675,7 @@ function getDivWidth (div)
 		.slice(0, -2)
 	//Return as an integer
 	return Math.round(Number(width)) - (Math.round(Number(width)) * 0.06)
-  }
+ }
 
 /* ------------------- SET COOKIES FOR AJAX -------------------- */
 
