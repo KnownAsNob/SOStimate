@@ -9,9 +9,10 @@ subheader = document.getElementById("stationSubHeader");
 text = document.getElementById("text");
 container = document.getElementById("model-content");
 
-css = getComputedStyle(document.documentElement)
+css = getComputedStyle(document.documentElement);
 
 maxDetail = false;
+updating = false;
 
 Station = 'None';
 Type = 'None';
@@ -54,7 +55,9 @@ function onClicked(message) //On clicked - Map popup button
 		//Create overall stat container
 		//createElement(Type, ID, ParentID)
 		createElement("div", "overallStatContainer", "mainContainer");
-				
+		
+	updating = true;
+
 	//Fetch average dispatch data and draw
 	$.when(fetchAvgDispatch(headerText, "Overall", "NA", "NA", "NA")).done(function(returnLine2Val){
 		createLineChart(returnLine2Val, headerText, "Overall", "NA", "bar2svg", "Average Dispatch Category | Type: Overall | Year: All | Month: NA | Day: NA", 670, "NA", "NA");	
@@ -76,7 +79,7 @@ function onClicked(message) //On clicked - Map popup button
 
 			createOverall("Overall", json.message[0], "Overallsvg", headerText);
 			createOverall("DA", json.message[1], "DAsvg", headerText);
-			createOverall("DF", json.message[2], "DFsvg", headerText)
+			createOverall("DF", json.message[2], "DFsvg", headerText);
 
 			//Fetch Bar data and draw
 			$.when(fetchBarData(headerText, "Overall", "NA", "NA", "NA")).done(function(returnVal){
@@ -94,9 +97,9 @@ function onClicked(message) //On clicked - Map popup button
 
 				//Fetch call times data and draw
 				$.when(fetchCallTimes(headerText, "Overall", "NA", "NA", "NA")).done(function(returnCallTimes){
-					console.log("Ready to draw...")
 					createScatterPlot(returnCallTimes, headerText, "Overall", "NA", "callTimes", "Mins. Attended | Type: Overall | Year: All | Month: NA | Day: NA", getDivWidth('#model-content')/2, "NA", "NA");	
-				//getDivWidth('#model-content')/2
+				
+					updating = false;
 				});
 			});
 				
@@ -109,7 +112,7 @@ function onClicked(message) //On clicked - Map popup button
 closeBtn.onclick = function()
 {
   removeBlock("mainContainer");
-}
+};
 
 window.onclick = function(e)
 {
@@ -117,7 +120,7 @@ window.onclick = function(e)
 	{
     	removeBlock("mainContainer");
 	}
-}
+};
 
 function removeBlock(ID)
 {
@@ -156,15 +159,16 @@ function createOverall(Type, Input, ID, Station)
 	svgOverall.setAttribute("height", height);
 	mainContainer.appendChild(svgOverall); 
 
-	var svg = d3.select("#" + ID)
+	var svg = d3.select("#" + ID);
 
 	//Create group elements
 	var overallG = svg.append("g")
 	            	  .attr("transform", "translate(" + 0 + "," + 0 + ")")
 	            	  .on("mouseover", handleMouseOver)
          			  .on("mouseout", handleMouseOut)
-         			  .on("click", handleClick)
-	overallG.id = "test";
+         			  .on("click", handleClick);
+	
+  overallG.id = "test";
 
 	//Name
 	overallG.append("text")
@@ -193,7 +197,7 @@ function createOverall(Type, Input, ID, Station)
    	else
    	{
    		overallG.select("#filterHeader")
-   				.text("Fire Brigade")
+   				.text("Fire Brigade");
    	}
 
    	//Line
@@ -217,7 +221,7 @@ function createOverall(Type, Input, ID, Station)
 
    	function handleMouseOver(d, i) 
 	{
-		group = d3.select(this)
+		group = d3.select(this);
          
         group.select("#filterHeader")    
         	.transition()
@@ -230,7 +234,7 @@ function createOverall(Type, Input, ID, Station)
 
 	function handleMouseOut(d, i) 
 	{
-        group = d3.select(this)
+        group = d3.select(this);
          
         group.select("#filterHeader")    
         	.transition()
@@ -243,6 +247,12 @@ function createOverall(Type, Input, ID, Station)
 
     function handleClick(d, i) 
 	{
+		if(updating == true)
+		{
+			runAlert();
+			return;
+		}
+
 		d3.selectAll("#xLabel")
 					.text("Years");
 					
@@ -262,7 +272,7 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width, month,
 	data = Object.keys(parsed)
 				 .map(function(key) { return [Number(key), parsed[key]]; });
 
-	mainContainer = document.getElementById("mainContainer")
+	mainContainer = document.getElementById("mainContainer");
 	
 	//Create new SVG canvas
 	const svgGraph = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -277,8 +287,8 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width, month,
         width = svg.attr("width") - margin - 15,
         height = svg.attr("height") - margin;
 
-    xBarScale = d3.scaleBand().range ([0, width]).padding(0.2),
-    yBarScale = d3.scaleLinear().range ([height, 0]);
+    xBarScale = d3.scaleBand().range([0, width]).padding(0.2),
+    yBarScale = d3.scaleLinear().range([height, 0]);
 
     var g = svg.append("g")
                .attr("transform", "translate(" + 70 + "," + 50 + ")")
@@ -333,7 +343,7 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width, month,
 		.attr("y", 20)
 		.attr("font-size", "18px")
 		.attr("id", "title")
-	 	.text(title)
+	 	.text(title);
 
 	//Add divider bar under text
 	svg.append("line")
@@ -349,7 +359,7 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width, month,
   		.transition("GrowBar")
         .ease(d3.easeLinear)
         .duration(500)
-        .attr("height", function(d) { return height - yBarScale(d[1]); })
+        .attr("height", function(d) { return height - yBarScale(d[1]); });
 
     g.selectAll(".bar")
       	.transition("ColourBar")
@@ -390,6 +400,12 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width, month,
 
     function handleClick(d, i, year) 
 	{
+		if(updating == true)
+		{
+			runAlert();
+			return;
+		}
+
 		d3.select(this)
           .transition()
       	  .style("fill", css.getPropertyValue('--mouse-click-graph-color'));
@@ -504,6 +520,12 @@ function updateBarChart(inputData, station, type, year, svg, title, month, day)
 
     function handleClick(d, i) 
 	{
+		if(updating == true)
+		{
+			runAlert();
+			return;
+		}
+
         d3.select(this)
     	  .transition()
   		  .style("fill", css.getPropertyValue('--mouse-click-graph-color'));
@@ -735,6 +757,12 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 
     function handleClick(d, i, year) 
 	{
+		if(updating == true)
+		{
+			runAlert();
+			return;
+		}
+
 		d3.select(this)
         	.transition()
       		.style("fill", css.getPropertyValue('--mouse-click-graph-color'))
@@ -875,6 +903,12 @@ function updateLineChart(inputData, station, type, year, svg, title, month, day)
 
     function handleClick(d, i) 
 	{
+		if(updating == true)
+		{
+			runAlert();
+			return;
+		}
+
 		d3.select(this)
         	.transition()
       		.style("fill", css.getPropertyValue('--mouse-click-graph-color:'))
@@ -1169,8 +1203,6 @@ function createScatterPlot(dataIn, station, type, year, ID, title, width, month,
 	data = Object.keys(parsed)
 				 .map(function(key) { return [Number(key), parsed[key]]; });
 
-
-	
 	array = [];
 	max = 0;
 
@@ -1200,10 +1232,6 @@ function createScatterPlot(dataIn, station, type, year, ID, title, width, month,
 			}
 		}
 	}
-
-	//console.log("Data: " + data);
-	//console.log("Array: "  + array);
-	//console.log("Max: "  + max);
 
 	mainContainer = document.getElementById("mainContainer")
 	
@@ -1375,7 +1403,7 @@ function updateScatterPlot(dataIn, station, type, year, ID, title, month, day)
 	g.selectAll(".scatterDot")
 		.remove();
 
-	xPlotScale = d3.scaleLinear().range([0, svg.attr("width") - margin])
+	xPlotScale = d3.scaleLinear().range([0, svg.attr("width") - margin]);
 	yPlotScale = d3.scaleLinear().range([svg.attr("height") - margin, 0]);
 
 	//Create graph scale again
@@ -1589,6 +1617,8 @@ function callUpdate(station, type, year, month, day)
 	createLoader("avgTravelLine");
 	createLoader("callTimes");
 
+	updating = true;
+
 	//Request number of calls/time unit
 	function ajaxBar()
 	{
@@ -1627,7 +1657,6 @@ function callUpdate(station, type, year, month, day)
 	$.when(ajaxPieChart()).done(function(returnVal){
     	
 		updatePieChart(returnVal, station, type, year, "piesvg", "Incidents | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
-
 	});
 
 	//Call line 2 update
@@ -1646,7 +1675,14 @@ function callUpdate(station, type, year, month, day)
 	$.when(ajaxAvgIndcidentTime()).done(function(returnCallTime){
     	
 		updateScatterPlot(returnCallTime, station, type, year, "callTimes", "Mins. Attended | Type: " + type + " | Year: " + year + " | Month: " + month + " | Day: " + day, month, day);
+		
+		updating = false;
 	});
+}
+
+function runAlert()
+{
+	alert("Cannot call update while graphs are updating. Please wait.");
 }
 
 /* ------------------- DRAW LOADING OVERLAY  -------------------- */
