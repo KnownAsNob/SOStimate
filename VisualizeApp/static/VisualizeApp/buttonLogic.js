@@ -584,8 +584,6 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 	data = Object.keys(parsed)
 				 .map(function(key) { return [Number(key), parsed[key]]; });
 
-	console.log(data);
-
 	mainContainer = document.getElementById("mainContainer")
 	
 	//Create new SVG canvas
@@ -649,6 +647,7 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 	    g.append("path")
 	       .data([data])
 	       .attr("d", valueline)
+	       .attr("id", "line")
 	       .attr("class", "line");
 
 	//Define area under
@@ -801,7 +800,7 @@ function updateLineChart(inputData, station, type, year, svg, title, month, day)
     				  .curve(d3.curveMonotoneX);
 
 	//Update line
-	g.select("#line")
+	g.select(".line")
       .transition()
       .duration(500)
       .ease(d3.easeLinear)
@@ -1166,13 +1165,14 @@ function createScatterPlot(dataIn, station, type, year, ID, title, width, month,
 	list = JSON.stringify(dataIn);
 	parsed = JSON.parse(list);
 
-	console.log(parsed);
-
 	//Transform the data
 	data = Object.keys(parsed)
 				 .map(function(key) { return [Number(key), parsed[key]]; });
+
+
 	
 	array = [];
+	max = 0;
 
 	for (item in data)
 	{
@@ -1192,11 +1192,18 @@ function createScatterPlot(dataIn, station, type, year, ID, title, width, month,
 			{
 				array.push([year, data[item][1][callTime]]);
 			}
+
+			//Check is call time is largest
+			if(data[item][1][callTime] > max)
+			{
+				max = data[item][1][callTime];
+			}
 		}
 	}
 
 	//console.log("Data: " + data);
-	//console.log("Array: " + array);
+	//console.log("Array: "  + array);
+	//console.log("Max: "  + max);
 
 	mainContainer = document.getElementById("mainContainer")
 	
@@ -1220,10 +1227,11 @@ function createScatterPlot(dataIn, station, type, year, ID, title, width, month,
 	var g = svg.append("g")
 	           .attr("transform", "translate(" + 50 + "," + 50 + ")")
 	           .attr("id", "mainGroup");
-  
+
 	//Create graph scale
 	xPlotScale.domain([2013, d3.max(data, function(d) { return d[0]; })]);
-	yPlotScale.domain([0, d3.max(data[1][1], function(d) { return d; })]);
+	//yPlotScale.domain([0, d3.max(data[1][1], function(d) { return d; })]);
+	yPlotScale.domain([0, max]);
 
 		//Append scale to graph
 		g.append("g")
@@ -1321,7 +1329,8 @@ function updateScatterPlot(dataIn, station, type, year, ID, title, month, day)
 	data = Object.keys(parsed)
 				 .map(function(key) { return [String(key), parsed[key]]; });
 
-	array = [];			 
+	array = [];
+	max = 0;			 
 
 	for (item in data)
 	{
@@ -1349,6 +1358,12 @@ function updateScatterPlot(dataIn, station, type, year, ID, title, month, day)
 			{
 				array.push([year, data[item][1][callTime]]);
 			}
+
+			//Check is call time is largest
+			if(data[item][1][callTime] > max)
+			{
+				max = data[item][1][callTime];
+			}
 		}
 	}
 
@@ -1365,7 +1380,8 @@ function updateScatterPlot(dataIn, station, type, year, ID, title, month, day)
 
 	//Create graph scale again
 	xPlotScale = xPlotScale.domain([d3.min(data, function(d) { return d[0]; }), d3.max(data, function(d) { return parseInt(d[0]); })]);
-	yPlotScale = yPlotScale.domain([0, d3.max(data[1][1], function(d) { return parseInt(d); })]);
+	//yPlotScale = yPlotScale.domain([0, d3.max(data[1][1], function(d) { return parseInt(d); })]);
+	yPlotScale = yPlotScale.domain([0, max]);
 
 		//Update X-Axis    
 		g.select("#xAxis") 

@@ -174,7 +174,7 @@ def get_calls_unit(request):
 			totalCalls = masterCalls.filter(details__Date = date, details__Agency = type, details__StationArea = input)
 
 		#Cycle though all hours in day
-		for x in range(0, 25):
+		for x in range(0, 24):
 			hour = str(x)
 			if len(hour) == 1:
 				hour = "0" + hour
@@ -362,7 +362,7 @@ def get_avg_response(request):
 		else:
 			overallCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = type, details__StationArea = input)
 
-		for x in range(1, days_in_month[int(month)]):
+		for x in range(1, days_in_month[int(month) - 1] + 1):
 			xStr = str(x)
 
 			if len(xStr) == 1:
@@ -393,13 +393,13 @@ def get_avg_response(request):
 		else:
 			overallCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = type, details__StationArea = input)
 
-		for x in range(1, 25):
+		for x in range(0, 24):
 			xStr = str(x)
 
 			if len(xStr) == 1:
 				xStr = "0" + xStr
 			
-			calls = overallCalls.filter(details__TOC__startswith=x)
+			calls = overallCalls.filter(details__TOC__startswith=xStr)
 			calculateAverages(calls, x)
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
@@ -498,7 +498,7 @@ def get_avg_travel(request):
 		else:
 			overallCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = type, details__StationArea = input)
 
-		for x in range(1, days_in_month[int(month)]):
+		for x in range(1, days_in_month[int(month) - 1] + 1):
 			xStr = str(x)
 
 			if len(xStr) == 1:
@@ -529,13 +529,13 @@ def get_avg_travel(request):
 		else:
 			overallCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = type, details__StationArea = input)
 
-		for x in range(1, 25):
+		for x in range(0, 24):
 			xStr = str(x)
 
 			if len(xStr) == 1:
 				xStr = "0" + xStr
 			
-			calls = overallCalls.filter(details__TOC__startswith=x)
+			calls = overallCalls.filter(details__TOC__startswith=xStr)
 			calculateAverages(calls, x)
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
@@ -645,7 +645,7 @@ def get_incident_lengths(request):
 		else:
 			overallCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = type, details__StationArea = input)
 
-		for x in range(1, days_in_month[int(month)]):
+		for x in range(1, days_in_month[int(month) - 1] + 1):
 			xStr = str(x)
 
 			if len(xStr) == 1:
@@ -676,13 +676,13 @@ def get_incident_lengths(request):
 		else:
 			overallCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = type, details__StationArea = input)
 
-		for x in range(1, 25):
+		for x in range(0, 24):
 			xStr = str(x)
 
 			if len(xStr) == 1:
 				xStr = "0" + xStr
 			
-			calls = overallCalls.filter(details__TOC__startswith=x)
+			calls = overallCalls.filter(details__TOC__startswith=xStr)
 			getCalls(calls, x, type)
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")

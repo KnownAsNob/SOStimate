@@ -1,10 +1,19 @@
 1) Pie chart broken when only one incident type e.g. Fire Small
-*2) Slow fetch
-3) Broken colours //Not always
-*4) Scatter plot mis-aslign and Y axis not able to find max (Only sees 1 array)
-*5) Graphs not understandable -> Add scatter plot labels, add pie chart labels
-6) Some graphs misaslign X
+2) Slow fetch
+3) Broken colours [Wait for issue]
+*4) Graphs not understandable -> Add scatter plot labels, add pie chart labels
+5) Missing calls*
+6) Scatter plot bunches at 0
+8) Stop click when updating
 
+Fixed:
+1) Line not updating
+2) Scatter plot mis-aslign
+3) Graphs starts at 0
+4) Some graphs misaslign X
+5) Always gap between 3 - 9AM
+
+============================
 
 -> Change to horizontal bar chart; Ambulance and fire different colours - Hue is volume
 -> Change to average minutes - Count under 5 minutes, etc.
@@ -15,11 +24,10 @@
 
 Questions:
 - What data you want? 
-	- Agency: [Overall/DA/DF] 
+	X Agency: [Overall/DA/DF]
 	- Time frame: [Dates, etc.]
 	- What you want to see? [See categories - Counts, averages, totals, times, etc.]
 - What graph you want? [Line/Bar/Pie/Scatter]
-- (Download?)
 
 Categories:
 - Date: The date of the call,
