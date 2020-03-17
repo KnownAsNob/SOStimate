@@ -1,9 +1,9 @@
 1) Pie chart broken when only one incident type e.g. Fire Small
 2) Slow fetch
-3) Broken colours [Wait for issue]
-4) Graphs not understandable -> Add scatter plot labels, add pie chart labels
-5) Missing calls*
-6) Scatter plot bunches at 0
+3) Broken colours [Cookie expires]
+4) Graphs not understandable - Pie labels
+5) Missing calls (?)
+6) Scatter plot bunches at 0 (?)
 
 Fixed:
 1) Line not updating
@@ -12,6 +12,8 @@ Fixed:
 4) Some graphs misaslign X
 5) Always gap between 3 - 9AM
 6) Stop click when updating
+7) Scatter labels
+8) Can change views
 
 ============================
 

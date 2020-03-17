@@ -199,12 +199,17 @@ body {
 		float: right;
 	}
 
-/* Bar SVG */
-#linesvg, #catBarsvg, #avgTravelLine, #callTimes {
+	.filterHeader {
+		font-size: 200%;
+		font-weight: bold;
+	}
+
+/* Set up all SVGs */
+#linesvg, #avgTravelLine, #callTimes, #bar2svg, #piesvg {
 	background-color: white;
 	margin-top: 2%;
 	box-shadow: 2px 2px grey;
-	
+	width: 100%;
 }
 
 	/* Bar chart */
@@ -219,56 +224,41 @@ body {
 	}
 
 /* Line SVG */
-#barsvg, #bar2svg {
-	background-color: white;
-	margin-top: 2%;
-	float: right;
-	box-shadow: 2px 2px grey;
+
+.line {
+	fill: none;
+    stroke: var(--main-graph-color);
+    stroke-width: 2px;
 }
 
-#linesvg {
-	width: 100%;
+.lineLabel {
+	font-family: Arial;
+	font-size: 100%;
 }
 
-		.line {
-			fill: none;
-		    stroke: var(--main-graph-color);
-		    stroke-width: 2px;
-		}
+.area {
+	fill: var(--opposite-graph-color);
+}
 
-		.lineLabel {
-			font-family: Arial;
-			font-size: 100%;
-		}
-
-		.area {
-			fill: var(--opposite-graph-color);
-		}
-
-		.dot {
-	   		fill: var(--main-graph-color);
-	    	stroke: white;
-		}
+.dot {
+	fill: var(--main-graph-color);
+	stroke: white;
+}
 
 /* Pie Chart */
-#piesvg {
-	background-color: white;
-	margin-top: 2%;
-	box-shadow: 2px 2px grey;	
+
+.pieLabel {
+	font-family: Arial;
+	font-style: italic;
+	fill: black;
+	font-size: 120%;
+	text-anchor: middle;
 }
 
-
-	.pieLabel {
-		font-family: Arial;
-		font-style: italic;
-		fill: black;
-		font-size: 120%;
-		text-anchor: middle;
-	}
-
 /* Scatter plot */
+
 #callTimes {
-	float: right;
+	margin-bottom: 1%;
 }
 
 .scatterDot {

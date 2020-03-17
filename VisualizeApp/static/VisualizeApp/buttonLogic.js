@@ -29,7 +29,6 @@ xLineScale = 0;
 yLineScale = 0;
 
 //Pie values
-pieWidth = 500;
 pieHeight = 400;
 pieMargin = 100;
 radius = 200;
@@ -60,7 +59,7 @@ function onClicked(message) //On clicked - Map popup button
 
 	//Fetch average dispatch data and draw
 	$.when(fetchAvgDispatch(headerText, "Overall", "NA", "NA", "NA")).done(function(returnLine2Val){
-		createLineChart(returnLine2Val, headerText, "Overall", "NA", "bar2svg", "Average Dispatch Category | Type: Overall | Year: All | Month: NA | Day: NA", 670, "NA", "NA");	
+		createLineChart(returnLine2Val, headerText, "Overall", "NA", "bar2svg", "Average Dispatch Category | Type: Overall | Year: All | Month: NA | Day: NA", "NA", "NA");	
 	});
 
 	//Request from DB
@@ -83,7 +82,7 @@ function onClicked(message) //On clicked - Map popup button
 
 			//Fetch Bar data and draw
 			$.when(fetchBarData(headerText, "Overall", "NA", "NA", "NA")).done(function(returnVal){
-				createBarChart(returnVal, headerText, "Overall", "NA", "linesvg", "Station Calls Per Year | Type: Overall | Year: All | Month: NA | Day: NA", getDivWidth('#model-content'), "NA", "NA");
+				createBarChart(returnVal, headerText, "Overall", "NA", "linesvg", "Station Calls Per Year | Type: Overall | Year: All | Month: NA | Day: NA", "NA", "NA");
 
 				//Fetch pie data and draw
 				$.when(fetchPieData(headerText, "Overall", "NA", "NA", "NA")).done(function(returnPieVal){
@@ -92,12 +91,12 @@ function onClicked(message) //On clicked - Map popup button
 
 				//Fetch average travel data and draw
 				$.when(fetchAvgTravel(headerText, "Overall", "NA", "NA", "NA")).done(function(returnAvgTravel){
-					createLineChart(returnAvgTravel, headerText, "Overall", "NA", "avgTravelLine", "Average Travel Category | Type: Overall | Year: All | Month: NA | Day: NA", getDivWidth('#model-content')/2, "NA", "NA");	
+					createLineChart(returnAvgTravel, headerText, "Overall", "NA", "avgTravelLine", "Average Travel Category | Type: Overall | Year: All | Month: NA | Day: NA", "NA", "NA");	
 				});
 
 				//Fetch call times data and draw
 				$.when(fetchCallTimes(headerText, "Overall", "NA", "NA", "NA")).done(function(returnCallTimes){
-					createScatterPlot(returnCallTimes, headerText, "Overall", "NA", "callTimes", "Mins. Attended | Type: Overall | Year: All | Month: NA | Day: NA", getDivWidth('#model-content')/2, "NA", "NA");	
+					createScatterPlot(returnCallTimes, headerText, "Overall", "NA", "callTimes", "Mins. Attended | Type: Overall | Year: All | Month: NA | Day: NA", "NA", "NA");	
 				
 					updating = false;
 				});
@@ -154,10 +153,10 @@ function createOverall(Type, Input, ID, Station)
 
 	//Create new SVG canvas
 	const svgOverall = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-	svgOverall.id = ID;
-	svgOverall.setAttribute("width", width);
-	svgOverall.setAttribute("height", height);
-	mainContainer.appendChild(svgOverall); 
+		svgOverall.id = ID;
+		svgOverall.setAttribute("width", width);
+		svgOverall.setAttribute("height", height);
+		mainContainer.appendChild(svgOverall); 
 
 	var svg = d3.select("#" + ID);
 
@@ -167,8 +166,6 @@ function createOverall(Type, Input, ID, Station)
 	            	  .on("mouseover", handleMouseOver)
          			  .on("mouseout", handleMouseOut)
          			  .on("click", handleClick);
-	
-  overallG.id = "test";
 
 	//Name
 	overallG.append("text")
@@ -176,27 +173,25 @@ function createOverall(Type, Input, ID, Station)
    		   .attr("x", 0)
    		   .attr("y", height/2)
    		   .attr("dy", "0em")
-   		   .attr("font-size", "35px")
-   		   .attr("font-weight", "bold")
    		   .attr("fill", css.getPropertyValue('--main-graph-color'))
-   		   .attr("id", "filterHeader");
+   		   .attr("class", "filterHeader");
 
    	//Set type text
    	if(Type == "Overall")
    	{
-   		overallG.select("#filterHeader")
+   		overallG.select(".filterHeader")
    				.text("Total Calls");
    	}
 
    	else if (Type == "DA")
    	{
-   		overallG.select("#filterHeader")
+   		overallG.select(".filterHeader")
    				.text("Ambulance");
    	}
 
    	else
    	{
-   		overallG.select("#filterHeader")
+   		overallG.select(".filterHeader")
    				.text("Fire Brigade");
    	}
 
@@ -223,7 +218,7 @@ function createOverall(Type, Input, ID, Station)
 	{
 		group = d3.select(this);
          
-        group.select("#filterHeader")    
+        group.select(".filterHeader")    
         	.transition()
 	      	.style("fill", css.getPropertyValue('--mouse-over-graph-color'));
 
@@ -236,7 +231,7 @@ function createOverall(Type, Input, ID, Station)
 	{
         group = d3.select(this);
          
-        group.select("#filterHeader")    
+        group.select(".filterHeader")    
         	.transition()
 	      	.style("fill", css.getPropertyValue('--main-graph-color'));
 
@@ -262,8 +257,10 @@ function createOverall(Type, Input, ID, Station)
 }
 
 /* ---------- Total CallsBar chart ---------- */
-function createBarChart(inputData, Station, Type, Year, ID, title, width, month, day)
+function createBarChart(inputData, Station, Type, Year, ID, title, month, day)
 {
+	width = getContainerWidth("#model-content");
+
 	//Process data	
 	list = JSON.stringify(inputData);
 	parsed = JSON.parse(list);
@@ -276,15 +273,15 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width, month,
 	
 	//Create new SVG canvas
 	const svgGraph = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-	svgGraph.id = ID;
-	svgGraph.setAttribute("width", width);
-	svgGraph.setAttribute("height", overallBarHeight);
-	mainContainer.appendChild(svgGraph); 
+		svgGraph.id = ID;
+		svgGraph.setAttribute("width", width);
+		svgGraph.setAttribute("height", overallBarHeight);
+		mainContainer.appendChild(svgGraph); 
 	
 	//Create new bar chart
 	var svg = d3.select("#" + ID),
         margin = 100,
-        width = svg.attr("width") - margin - 15,
+        width = getDivWidth('#model-content') - margin - 15,
         height = svg.attr("height") - margin;
 
     xBarScale = d3.scaleBand().range([0, width]).padding(0.2),
@@ -305,8 +302,8 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width, month,
      .append("text")
          //.attr("transform", "rotate(-90)")
          .attr("id", "xLabel")
-         .attr("dx", svg.attr("width")/2 - 20)
-         .attr("dy", "2em")
+         .attr("dx", 60)
+         .attr("dy", 35)
          .attr("text-anchor", "end")
          .text("Years");
 
@@ -318,8 +315,8 @@ function createBarChart(inputData, Station, Type, Year, ID, title, width, month,
          .append("text")
          .attr("id", "yLabel")
          .attr("transform", "rotate(-90)")
-         .attr("dx", "-8em")
-         .attr("dy", "-2.5em")
+         .attr("dx", -250)
+         .attr("dy", -40)
          .attr("text-anchor", "end")
          .text("Calls");
 
@@ -425,6 +422,8 @@ function updateBarChart(inputData, station, type, year, svg, title, month, day)
 {
 	removeLoader(svg);
 
+	width = getDivWidth('#model-content') - margin - 15;
+
 	list = JSON.stringify(inputData);
 	parsed = JSON.parse(list);
 
@@ -439,7 +438,7 @@ function updateBarChart(inputData, station, type, year, svg, title, month, day)
   
 	height = svg.attr("height") - 100; //(margin)
 
-	xBarScale = d3.scaleBand().range ([0, svg.attr("width") - margin]).padding(0.2)
+	xBarScale = d3.scaleBand().range ([0, width]).padding(0.2);
 
 	// Scale the range of the data again 
 	xBarScale.domain(data.map(function(d) { return d[0]; }));
@@ -447,10 +446,10 @@ function updateBarChart(inputData, station, type, year, svg, title, month, day)
 
 	//Remove old bars
 	g.selectAll(".bar")
-	.transition("RemoveBar")
-	.duration(500)
-	.attr("height", 0)
-	.remove();
+		.transition("RemoveBar")
+		.duration(500)
+		.attr("height", 0)
+		.remove();
 
 	//Redraw new bars
 	g.selectAll("bar")
@@ -596,8 +595,10 @@ function updateBarChart(inputData, station, type, year, svg, title, month, day)
 
 /* ---------- Response Time Line chart ---------- */
 
-function createLineChart(dataIn, station, type, year, svg, name, width, month, day)
+function createLineChart(dataIn, station, type, year, svg, name, month, day)
 {
+	width = getContainerWidth("#model-content");
+
 	//Process data
 	list = JSON.stringify(dataIn);
 	parsed = JSON.parse(list);
@@ -618,7 +619,7 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 	//Create new line chart
 	var svg = d3.select('#' + svg),
     margin = 100,
-    width = svg.attr("width") - margin - 5,
+    width = getDivWidth('#model-content') - margin - 15,
     height = svg.attr("height") - margin;
 
     //Scale the chart
@@ -626,7 +627,7 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 	yLineScale = d3.scaleLinear().range([height, 0]);
 
 	var g = svg.append("g")
-	           .attr("transform", "translate(" + 60 + "," + 50 + ")")
+	           .attr("transform", "translate(" + 70 + "," + 50 + ")")
 	           .attr("id", "mainGroup");
   
 	//Create graph scale
@@ -642,8 +643,8 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 	     .attr("id", "xAxis")
 	     	 .append("text")
 		     .attr("id", "xLabel")
-	         .attr("dx", svg.attr("width")/2 - 20)
-	         .attr("dy", "2em")
+	         .attr("dx", 60)
+	         .attr("dy", 35)
 	         .attr("text-anchor", "end")
 	         .text("Years");
 
@@ -654,8 +655,8 @@ function createLineChart(dataIn, station, type, year, svg, name, width, month, d
 	     	 .append("text")
 	         .attr("id", "yLabel")
 	         .attr("transform", "rotate(-90)")
-	         .attr("dx", "-6em")
-	         .attr("dy", "-1.8em")
+	         .attr("dx", -170)
+	         .attr("dy", -35)
 	         .attr("text-anchor", "end")
 	         .text("Time Category");
 
@@ -788,6 +789,8 @@ function updateLineChart(inputData, station, type, year, svg, title, month, day)
 {
 	removeLoader(svg);
 
+	width = getDivWidth('#model-content') - margin - 15;
+
 	//process data
 	list = JSON.stringify(inputData);
 	parsed = JSON.parse(list);
@@ -801,7 +804,7 @@ function updateLineChart(inputData, station, type, year, svg, title, month, day)
 	svg = d3.select('#' + svg);
 	g = svg.select("#mainGroup");
 
-	xLineScale = d3.scaleLinear().range([0, svg.attr("width") - margin])
+	xLineScale = d3.scaleLinear().range([0, width]);
 
 	//Create graph scale again
 	xLineScale = xLineScale.domain([d3.min(data, function(d) { return d[0]; }), d3.max(data, function(d) { return d[0]; })]);
@@ -985,6 +988,8 @@ function updateLineChart(inputData, station, type, year, svg, title, month, day)
 /* ---------- Incidents pie chart ---------- */
 function createPieChart(dataIn, station, type, year, ID, title, month, day)
 {
+	width = getContainerWidth("#model-content");
+
 	//Process data
 	list = JSON.stringify(dataIn);
 	parsed = JSON.parse(list);
@@ -998,11 +1003,11 @@ function createPieChart(dataIn, station, type, year, ID, title, month, day)
 	//Create new SVG canvas
 	const svgGraph = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		svgGraph.id = ID;
-		svgGraph.setAttribute("width", pieWidth);
+		svgGraph.setAttribute("width", width);
 		svgGraph.setAttribute("height", pieHeight);
 		mainContainer.appendChild(svgGraph); 
 	
-	//Create new bar chart
+	//Create new svg
 	var svg = d3.select("#" + ID),
         width = svg.attr("width") - pieMargin,
         height = svg.attr("height") - pieMargin,
@@ -1010,7 +1015,7 @@ function createPieChart(dataIn, station, type, year, ID, title, month, day)
 
     //Append group with translation effect
     var g = svg.append("g")
-                   .attr("transform", "translate(" + svg.attr("width") / 2 + "," + svg.attr("height") / 2 + ")")
+                   .attr("transform", "translate(" + width / 2 + "," + svg.attr("height") / 2 + ")")
                    .attr("id", "mainGroup");
 
     var color = d3.scaleOrdinal([css.getPropertyValue('--pie-color-1'), css.getPropertyValue('--pie-color-2'), css.getPropertyValue('--pie-color-3'), css.getPropertyValue('--pie-color-4'), css.getPropertyValue('--pie-color-5'), css.getPropertyValue('--pie-color-6')]);
@@ -1122,6 +1127,8 @@ function updatePieChart(dataIn, station, type, year, ID, title, month, day)
 {
 	removeLoader(ID);
 
+	width = getContainerWidth("#model-content");
+
 	//Process data
 	list = JSON.stringify(dataIn);
 	parsed = JSON.parse(list);
@@ -1133,6 +1140,9 @@ function updatePieChart(dataIn, station, type, year, ID, title, month, day)
 	//Find elements
 	svg = d3.select("#" + ID);
 	g = svg.select("#mainGroup");
+
+	//Update X placement
+	g.attr("transform", "translate(" + width / 2 + "," + svg.attr("height") / 2 + ")")
 	
 	var color = d3.scaleOrdinal([css.getPropertyValue('--pie-color-1'), css.getPropertyValue('--pie-color-2'), css.getPropertyValue('--pie-color-3'), css.getPropertyValue('--pie-color-4'), css.getPropertyValue('--pie-color-5'), css.getPropertyValue('--pie-color-6')]);
 	//'#4daf4a','#377eb8','#ff7f00','#984ea3','#e41a1c', '#FFFF00'
@@ -1193,8 +1203,10 @@ function updatePieChart(dataIn, station, type, year, ID, title, month, day)
 }
 
 /* ---------- Call time scatter plot ---------- */
-function createScatterPlot(dataIn, station, type, year, ID, title, width, month, day)
+function createScatterPlot(dataIn, station, type, year, ID, title, month, day)
 {
+	width = getContainerWidth("#model-content");
+
 	//Process data
 	list = JSON.stringify(dataIn);
 	parsed = JSON.parse(list);
@@ -1206,6 +1218,7 @@ function createScatterPlot(dataIn, station, type, year, ID, title, width, month,
 	array = [];
 	max = 0;
 
+	//Build array and find max
 	for (item in data)
 	{
 		year = data[item][0]
@@ -1244,16 +1257,16 @@ function createScatterPlot(dataIn, station, type, year, ID, title, width, month,
 
 	//Create new chart
 	var svg = d3.select('#' + ID),
-    margin = 100,
-    width = svg.attr("width") - margin,
-    height = svg.attr("height") - margin;
+	    margin = 100,
+	    width = getDivWidth('#model-content') - margin - 15,
+	    height = svg.attr("height") - margin;
 
     //Scale the chart
 	xPlotScale = d3.scaleLinear().range([0, width]),
 	yPlotScale = d3.scaleLinear().range([height, 0]);
 
 	var g = svg.append("g")
-	           .attr("transform", "translate(" + 50 + "," + 50 + ")")
+	           .attr("transform", "translate(" + 70 + "," + 50 + ")")
 	           .attr("id", "mainGroup");
 
 	//Create graph scale
@@ -1267,18 +1280,25 @@ function createScatterPlot(dataIn, station, type, year, ID, title, width, month,
 		         return d;
 		     }).ticks(6))
 		     .attr("transform", "translate(0," + height + ")")
-		     .attr("id", "xAxis");
+		     .attr("id", "xAxis")
+		     	.append("text")
+			     .attr("id", "xLabel")
+		         .attr("dx", 60)
+		         .attr("dy", 35)
+		         .attr("text-anchor", "end")
+		         .text("Years");
 
 	    g.append("g")
 		     .call(d3.axisLeft(yPlotScale).tickFormat(function(d){
 		         return d;
 		     }).ticks(7))
-		     .attr("id", "yAxis")
 		     .append("text")
-		     .attr("y", 6)
-		     .attr("dy", "0.71em")
-		     .attr("text-anchor", "end")
-		     .text("value");
+	         .attr("id", "yLabel")
+	         .attr("transform", "rotate(-90)")
+	         .attr("dx", -200)
+	         .attr("dy", -35)
+	         .attr("text-anchor", "end")
+	         .text("Minutes");
 
 	// Add dots
 	g.selectAll(".scatterDot")
@@ -1327,7 +1347,7 @@ function createScatterPlot(dataIn, station, type, year, ID, title, width, month,
       	popUp.transition()		
              .duration(200)		
              .style("opacity", .9);		
-        popUp.html("<p class = 'popUpText'><b><i>" + d[0] + "</b></i><br>" + d[1] + " minutes</p>")	
+        popUp.html("<p class = 'popUpText'><b><i>" + "Call: " + d[0] + "</b></i><br>" + d[1] + " minutes</p>")	
              .style("left", (d3.event.pageX) + "px")		
              .style("top", (d3.event.pageY - 30) + "px");	
 	}
@@ -1348,6 +1368,8 @@ function createScatterPlot(dataIn, station, type, year, ID, title, width, month,
 function updateScatterPlot(dataIn, station, type, year, ID, title, month, day)
 {
 	removeLoader(ID);
+
+	width = getDivWidth('#model-content') - margin - 15;
 
 	//Process data
 	list = JSON.stringify(dataIn);
@@ -1403,7 +1425,7 @@ function updateScatterPlot(dataIn, station, type, year, ID, title, month, day)
 	g.selectAll(".scatterDot")
 		.remove();
 
-	xPlotScale = d3.scaleLinear().range([0, svg.attr("width") - margin]);
+	xPlotScale = d3.scaleLinear().range([0, width]);
 	yPlotScale = d3.scaleLinear().range([svg.attr("height") - margin, 0]);
 
 	//Create graph scale again
@@ -1458,7 +1480,7 @@ function updateScatterPlot(dataIn, station, type, year, ID, title, month, day)
       	popUp.transition()		
              .duration(200)		
              .style("opacity", .9);		
-        popUp.html("<p class = 'popUpText'><b><i>" + d[0] + "</b></i><br>" + d[1] + " minutes</p>")	
+        popUp.html("<p class = 'popUpText'><b><i>" + "Call: " + d[0] + "</b></i><br>" + d[1] + " minutes</p>")	
              .style("left", (d3.event.pageX) + "px")		
              .style("top", (d3.event.pageY - 30) + "px");	
 	}
@@ -1727,6 +1749,15 @@ function getDivWidth (div)
 		.slice(0, -2)
 	//Return as an integer
 	return Math.round(Number(width)) - (Math.round(Number(width)) * 0.06)
+ }
+
+ function getContainerWidth(container)
+ {
+ 	var width = d3.select(container)
+ 				 .style('width')
+ 				 .slice(0, -2)
+
+ 	return width;
  }
 
 /* ------------------- SET COOKIES FOR AJAX -------------------- */
