@@ -236,6 +236,11 @@ body {
 		    stroke-width: 2px;
 		}
 
+		.lineLabel {
+			font-family: Arial;
+			font-size: 100%;
+		}
+
 		.area {
 			fill: var(--opposite-graph-color);
 		}
@@ -338,10 +343,10 @@ body {
 	margin: 1% 0 1% 2%;
 }
 
-
 /* Visualization form */
+
 #vizForm {
-	margin-left: 2%;
+	margin: 0 2% 0 2%;
 }
 
 #vizForm p {
@@ -364,7 +369,7 @@ body {
 }
 
 #overallCustomSVG {
-	margin: 2% 0 2% 1%;
+	
 }
 
 /* ---------- About page ---------- */

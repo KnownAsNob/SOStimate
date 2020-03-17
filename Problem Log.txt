@@ -3,6 +3,7 @@
 3) Broken colours //Not always
 *4) Scatter plot mis-aslign and Y axis not able to find max (Only sees 1 array)
 *5) Graphs not understandable -> Add scatter plot labels, add pie chart labels
+6) Some graphs misaslign X
 
 
 -> Change to horizontal bar chart; Ambulance and fire different colours - Hue is volume

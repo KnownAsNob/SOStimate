@@ -758,7 +758,11 @@ def get_graph_data(request):
 		#Operation for each year
 		for year in selectedYears:
 
-			yearCalls = masterCalls.filter(details__Date__endswith=year, details__Agency = agency, details__StationArea = station).count()
+			if agency == "Overall":
+				yearCalls = masterCalls.filter(details__Date__endswith=year, details__StationArea = station).count()
+			
+			else:
+				yearCalls = masterCalls.filter(details__Date__endswith=year, details__Agency = agency, details__StationArea = station).count()
 
 			#Add each year's calls
 			year_data[year] = yearCalls
