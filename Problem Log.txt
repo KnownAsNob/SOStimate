@@ -15,14 +15,17 @@ Fixed:
 7) Scatter labels
 8) Can change views
 
+To-do:
+1) Add pie labels
+2) Add more info. to map
+3) Add more options to visualizer
+
 ============================
 
 -> Change to horizontal bar chart; Ambulance and fire different colours - Hue is volume
 -> Change to average minutes - Count under 5 minutes, etc.
 -> The big picture on home
 -> Add faces and info
-
-
 
 Questions:
 - What data you want? 

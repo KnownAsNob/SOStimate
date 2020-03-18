@@ -1080,6 +1080,55 @@ function createPieChart(dataIn, station, type, year, ID, title, month, day)
     			   .attr("class", "tooltip")				
     			   .style("opacity", 0);
 
+    /* --------------- Legend --------------- */
+
+    console.log(parsed);
+
+    array = [];
+
+    //Build array and find max
+	for (item in parsed)
+	{
+		//console.log(item);
+		array.push(item);
+	}
+
+	console.log(array);
+	
+	var legend = svg.selectAll('g')
+					.data(dataIn)
+					.enter()
+					.append('g')
+					.attr('class', 'legend');
+
+	/*g.append("rect")
+            .attr("x", 10)
+            .attr("y", 10)
+            .attr("width", 100)
+            .attr("height", 100)
+            .style("fill", "black");*/
+
+	legend.append('rect')
+			.attr('x', 50)
+			.attr('y', function(d, i) {
+				return i * 20;
+			})
+			.attr('width', 10)
+			.attr('height', 10)
+			.style('fill', function(d) {
+				//return color(d[0]);
+				return "black";
+			});
+
+	legend.append('text')
+			.attr('x', 40)
+			.attr('y', function(d, i) {
+				return (i * 10) + 9;
+			})
+			.text(function(d) {
+				return d[0];
+			});
+
     /* HANDLE PIE MOUSE */
 
     function handleMouseOver(d, i)
