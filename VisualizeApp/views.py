@@ -700,31 +700,38 @@ def get_calls_year(request):
 	if type == "Most_Pop":
 
 		stationCalls = MapDisplay.objects.filter(name="No_Calls")
-		
-		for x in stations:
 
-			yearResponse={}
-
-			for year in range(2013, 2019):
-				calls = stationCalls.values_list("info__Year__" + str(year), flat=True).get(info__Station=x)
-				
-				yearResponse[year] = calls
-
-			response_data[x] = yearResponse
-		
-	else:
+	elif type == "Avg_Response":
 
 		stationCalls = MapDisplay.objects.filter(name="Avg_Response")
 
-		for x in stations:
+	elif type == "Avg_Travel":
 
-			yearResponse={}
+		stationCalls = MapDisplay.objects.filter(name="Avg_Travel")
 
-			for year in range(2013, 2019):
-				calls = stationCalls.values_list("info__Year__" + str(year), flat=True).get(info__Station=x)
-				yearResponse[year] = calls
+	elif type == "Avg_Travel_Hosp":
 
-			response_data[x] = yearResponse
+		#getData()
+
+		stationCalls = MapDisplay.objects.filter(name="Avg_Travel_Hosp")
+
+	elif type == "Avg_Hosp_Time":
+
+		#getData()
+
+		stationCalls = MapDisplay.objects.filter(name="Avg_Hosp_Time")
+
+	#Process 
+	for x in stations:
+
+		yearResponse={}
+
+		for year in range(2013, 2019):
+			calls = stationCalls.values_list("info__Year__" + str(year), flat=True).get(info__Station=x)
+			
+			yearResponse[year] = calls
+
+		response_data[x] = yearResponse
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")	
 
@@ -801,6 +808,55 @@ def decideCase(year, month, day):
 			else:
 				return 4
 
+#Run to get summary data
+def getData():
+
+	response_data = {}
+
+	print("Running get...")
+
+	def calculateAverages(overallCalls, timeUnit):
+		#Get list of both categories
+		totalMOB_IA = list(overallCalls.values('details__AH-MAV-Cat').values_list('details__AH-MAV-Cat', flat=True))
+
+		totalMOBIA = 0
+
+		totalNAN = 0
+
+		#Check not = 0
+		if not totalMOB_IA:
+			response_data[timeUnit] = 0
+
+		else:
+			#Add to get averages
+			for item in totalMOB_IA:
+				#Deal with NaNs
+				if item == 'nan':
+					totalNAN = totalNAN + 1
+				else:
+					totalMOBIA = totalMOBIA + int(float(item))
+
+			if totalMOBIA == 0:
+				response_data[timeUnit] = 0
+
+			else:
+				averageResponse = totalMOBIA/(len(totalMOB_IA) - totalNAN)
+
+				response_data[timeUnit] = averageResponse
+	#End calculateAverages
+
+	stations = ["Tara Street", "Tallaght", "Kilbarrack", "Dun Laoghaire", "Rathfarnham", "Phibsborough", "Dolphins Barn", "Swords", "North Strand", "Donnybrook", "Finglas", "Skerries", "Blanchardstown", "Balbriggan"]
+	#Calculate every year
+	
+	for station in stations:
+		for x in range(2013, 2019):
+			filterCalls = masterCalls.filter(details__StationArea = station, details__Date__endswith=str(x), details__Agency = "DA")
+			calculateAverages(filterCalls, str(x))
+
+		print(station, "Data: ", response_data)
+
+	#return HttpResponse(json.dumps(response_data), content_type = "application/json")
+
 #Unused: 
 def get_total_cats(request):
 
@@ -843,3 +899,5 @@ def get_total_cats(request):
 		response_data[cat] = total
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
+
+

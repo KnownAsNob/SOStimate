@@ -11,7 +11,10 @@
 				<select id="mapSelectorDrop" onchange="sendMap.call(this, event, svg)", autocomplete="off">
 				  <option value="none">None</option>
 				  <option value="most_pop">Most Popular</option>
-				  <option value="most_pop">Average Response</option>
+				  <option value="most_pop">Average Response Time</option>
+				  <option value="avg_travel">Average Travel Time</option>
+				  <option value="avg_time_to_hospital">Average Time to Hospital [Ambulance]</option>
+				  <option value="avg_time_at_hospital">Average Time at Hospital [Ambulance]</option>
 				</select>  
 			</div>
 		</div> <!-- End selection header -->
@@ -136,10 +139,9 @@
 					    .attr("dy", function(d){return 8})
 					    .attr("class", "circleText")
 					    .text(function(d, i) {
-					    	return inputData[i][1][2013];
-					    })
-					    .attr("font-size", "20px")
-					    .attr("fill", "black");
+					    	return +inputData[i][1][2013].toFixed(2);
+					    });
+					    
 
 					circles = g.selectAll("circle");
 					circleText = g.selectAll("text");
@@ -182,7 +184,7 @@
 
 		            circleText = svg.selectAll("text")
 		            	.text(function(d, i) {
-					    	return data[i][1][year];
+					    	return +data[i][1][year].toFixed(2);
 					    })
 	      		}
 

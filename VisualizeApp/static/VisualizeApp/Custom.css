@@ -50,7 +50,7 @@ body {
 	}
 
 	#mapSelectorDrop {
-		margin-left: 50%;
+		margin-left: 40%;
 	}
 
 /* ----- Map markers ----- */
@@ -112,6 +112,19 @@ body {
 #legendText {
 	font-size: 130%;
 	padding-top: 5%;
+}
+
+.mapCircle {
+	stroke: white;
+	stroke-width: 1px;
+}
+
+.circleText {
+	fill: white;
+	font-size: 180%;
+	font-weight: bold;
+	stroke-width: 0.8px;
+	stroke: black;
 }
 
 /* ----- Graph popup ----- */
@@ -272,14 +285,15 @@ body {
     width: auto;					
     height: 7%;					
     padding: 2px;					
-    background: rgb(176, 196, 222);
+    background: var(--mouse-click-graph-color);
     border: 0px;		
     border-radius: 8px;			
     pointer-events: none;			
 }
 
 .popUpText {
-	font: 150% sans-serif;	
+	font: 150% sans-serif;
+	color: white;	
 }
 
 /* ---------- Visualizations page ---------- */

@@ -29,12 +29,36 @@ function overviewChange(click, event, map, svg) {
     		createBox("Number of Calls");
     	}
 
-    	else if(click.options[click.selectedIndex].text == "Average Response")
+    	else if(click.options[click.selectedIndex].text == "Average Response Time")
     	{
     		fetchData("Avg_Response");
 
     		//Create control box
     		createBox("Average Response Time");
+    	}
+
+    	else if(click.options[click.selectedIndex].text == "Average Travel Time")
+    	{
+    		fetchData("Avg_Travel");
+
+    		//Create control box
+    		createBox("Average Travel Time");
+    	}
+
+    	else if(click.options[click.selectedIndex].text == "Average Time to Hospital [Ambulance]")
+    	{
+    		fetchData("Avg_Travel_Hosp");
+
+    		//Create control box
+    		createBox("Average Time to Hospital");
+    	}
+
+    	else if(click.options[click.selectedIndex].text == "Average Time at Hospital [Ambulance]")
+    	{
+    		fetchData("Avg_Hosp_Time");
+
+    		//Create control box
+    		createBox("Average Time at Hospital");
     	}
 
   		//Get slider change info
