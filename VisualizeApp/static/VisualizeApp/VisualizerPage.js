@@ -5,6 +5,7 @@ agency = [];
 selectedData = [];
 selectedDataDisplay = [];
 selectedYears = [];
+monthsIncl = ["No_Months"];
 selectedGraph = [];
 
 /* ------------------ Form functions ------------------*/
@@ -15,6 +16,15 @@ function prepareData(data, output)
     for(entry in data)
     {
         output.push(data[entry]['value']);
+    }
+
+    if(output == selectedYears)
+    {
+        console.log("Selecting time...");
+
+        //Set months to yes or no
+        //monthsIncl[0] = output[output.length - 1];
+        //output.pop();
     }
 }
 
@@ -148,6 +158,12 @@ $('#stationForm').submit(function () {
                                                 '<label for="2017">2017</label><br>'+
                                                 '<input type="checkbox" id="2018" name="year" value="2018">'+
                                                 '<label for="2018">2018</label><br>'+
+
+                                                //'<p class = "vizQuestion">Include months? <i>[Slower graph generation]</i></p>'+
+                                                //'<input type="radio" id="yesMonths" name="includeMonths" value="Months">'+
+                                                //'<label for="yesMonths">Yes</label><br>'+
+                                                //'<input type="radio" id="noMonths" name="includeMonths" value="No_Months">'+
+                                                //'<label for="noMonths">No</label><br>'+
                                         '</fieldset>'+
                                         '<input class="submit" type="submit" value="Next" />'+
                                     '</form>'
@@ -168,6 +184,8 @@ $('#stationForm').submit(function () {
                                                 '<p class = "vizQuestion">Which type of graph will your visalization be?</p>'+
                                                 '<input type="radio" id="lineGraph" name="graphType" value="LineGraph">'+
                                                 '<label for="lineGraph">Line Chart</label><br>'+
+                                                '<input type="radio" id="barGraph" name="graphType" value="BarGraph">'+
+                                                '<label for="barGraph">Bar Chart</label><br>'+
                                             '</fieldset>'+
                                             '<input class="submit" type="submit" value="Generate" />'+
                                         '</form>'
@@ -217,7 +235,7 @@ function processFetchData()
             url: "http://localhost:8000/map/get_graph_data/",
             datatype: "json",
             //async: true,
-            data: {"stations": stations, "agency": agency[0], "selectedData": selectedData, "selectedDataDisplay": selectedDataDisplay[0], "selectedYears": selectedYears, "selectedGraph": selectedGraph[0]},
+            data: {"stations": stations, "agency": agency[0], "selectedData": selectedData, "selectedDataDisplay": selectedDataDisplay[0], "selectedYears": selectedYears, "monthsIncl": monthsIncl, "selectedGraph": selectedGraph[0]},
             success: function(json)
             {
                 //Operations here
@@ -275,6 +293,12 @@ function drawGraph(data)
     if(selectedGraph[0] == "LineGraph")
     {
         drawLineGraph(data, svg, width, height);
+    }
+
+    //Draw bar graph
+    if(selectedGraph[0] == "BarGraph")
+    {
+        drawBarGraph(data, svg, width, height);
     }
 }
 
@@ -362,8 +386,8 @@ function drawLineGraph(data, svg, width, height)
         //Define line
         var valueline = d3.line()
                           .x(function(d) { console.log(d[0]); return xLineScale(d[0]); })
-                          .y(function(d) { console.log(d[1]); return yLineScale(d[1]); })
-                          .curve(d3.curveMonotoneX);
+                          .y(function(d) { console.log(d[1]); return yLineScale(d[1]); });
+                          //.curve(d3.curveMonotoneX);
 
         //Append line
         lineG.append("path")
@@ -446,6 +470,16 @@ function drawLineGraph(data, svg, width, height)
 
     console.log("Finished");
 }
+
+function drawBarGraph(data, svg, width, height)
+{
+    console.log(data);
+
+    console.log("Drawing bar...");
+
+    removeLoader("overallCustomSVG");
+}
+    
 
 /* ------------------- SET COOKIES FOR AJAX -------------------- */
 

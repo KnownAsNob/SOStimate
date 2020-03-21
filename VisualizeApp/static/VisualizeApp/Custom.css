@@ -350,7 +350,8 @@ body {
 /* Visualization form */
 
 #vizForm {
-	margin: 0 2% 0 2%;
+	margin: 2% 2% 2% 2%;
+	padding-bottom: 2%;
 }
 
 #vizForm p {

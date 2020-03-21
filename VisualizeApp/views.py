@@ -110,7 +110,7 @@ def get_calls_unit(request):
 			totalCalls = masterCalls.filter(details__Agency = type, details__StationArea = input)
 		#Cycle through all years
 		for x in range(2013, 2019):
-			calls = totalCalls.filter(details__Date__endswith=x).count()
+			calls = totalCalls.filter(details__Date__endswith=str(x)).count()
 			response_data[x] = calls
 	
 	#Year, !Month
@@ -744,6 +744,7 @@ def get_graph_data(request):
 	selectedData = request.POST.getlist('selectedData[]')
 	selectedDataDisplay = request.POST['selectedDataDisplay']
 	selectedYears = request.POST.getlist('selectedYears[]')
+	monthsIncl = request.POST.getlist('monthsIncl[]')
 	selectedGraph = request.POST['selectedGraph']
 
 	#print("Stations: ", stations) #Stations:  ['Tallaght', 'Blanchardstown']
@@ -751,33 +752,97 @@ def get_graph_data(request):
 	#print("Selected Data: ", selectedData) #Selected Data:  ['Incident Type']
 	#print("Data Display: ", selectedDataDisplay) #Data Display:  TotalCount
 	#print("Years: ", selectedYears) #Years:  ['2013', '2014', '2015']
+	print("Months: ", monthsIncl[0])
 	#print("Graph: ", selectedGraph) #Graph:  LineGraph
 
-	response_data = {}
+	
 
-	#Operation for each station
-	for station in stations:
-		
-		year_data = {}
+	if selectedGraph == "LineGraph":
 
-		#Operation for each selected data
-		#for data in selectedData:
-		#Operation for each year
+		response_data = {}
+
+		# No months required # 
+		if monthsIncl[0] == "No_Months":
+			#Operation for each station
+			for station in stations:
+				
+				year_data = {}
+
+				#Operation for each selected data
+				#for data in selectedData:
+				#Operation for each year
+				for year in selectedYears:
+
+					if agency == "Overall":
+						yearCalls = masterCalls.filter(details__Date__endswith=year, details__StationArea = station).count()
+					
+					else:
+						yearCalls = masterCalls.filter(details__Date__endswith=year, details__Agency = agency, details__StationArea = station).count()
+
+					#Add each year's calls
+					year_data[year] = yearCalls
+
+				#Add each station set
+				response_data[station] = year_data
+
+		#Months required#
+		else:
+			print("Months required")
+
+			#Operation for each station
+			for station in stations:
+
+				year_data = {}
+				month_data = {}
+
+				#Operation for each year
+				for year in selectedYears:
+
+					#Operation for each month
+					for month in range(1, 13):
+					
+						strMonth = str(month)
+
+						if len(strMonth) == 1:
+							strMonth = "0" + strMonth
+
+						filter = strMonth + "/" + str(year)
+
+						if agency == "Overall":
+							yearCalls = masterCalls.filter(details__Date__endswith=filter, details__StationArea = station).count()
+						
+						else:
+							yearCalls = masterCalls.filter(details__Date__endswith=filter, details__Agency = agency, details__StationArea = station).count()
+
+					#Add each year's calls
+					year_data[month] = yearCalls
+
+				#Add each station set
+				response_data[station] = year_data
+
+	elif selectedGraph == "BarGraph":
+
+		response_data = []
+
 		for year in selectedYears:
-
-			if agency == "Overall":
-				yearCalls = masterCalls.filter(details__Date__endswith=year, details__StationArea = station).count()
 			
-			else:
-				yearCalls = masterCalls.filter(details__Date__endswith=year, details__Agency = agency, details__StationArea = station).count()
+			year_data = {"year": str(year)}
 
-			#Add each year's calls
-			year_data[year] = yearCalls
+			for station in stations:
+				
+				if agency == "Overall":
+					yearCalls = masterCalls.filter(details__Date__endswith=year, details__StationArea = station).count()
+				
+				else:
+					yearCalls = masterCalls.filter(details__Date__endswith=year, details__Agency = agency, details__StationArea = station).count()
 
-		#Add each station set
-		response_data[station] = year_data
+				#Add each year's calls
+				year_data[station] = yearCalls
 
-	print(response_data)
+			#Add each station set
+			response_data.append(year_data)
+
+		print(response_data)
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
 
