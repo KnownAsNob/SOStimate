@@ -1,1 +1,1 @@
-.tmp.drivedownload/*.driveupload
+*.driveupload
