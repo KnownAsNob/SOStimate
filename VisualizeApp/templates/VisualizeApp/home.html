@@ -1,5 +1,7 @@
 {% extends "VisualizeApp/base.html" %}
 
+{% load staticfiles %}
+
 {% block content %}
 
 <!-- Page Content -->
@@ -18,6 +20,7 @@
 		<div class="col-lg-3 col-md-6 mb-4">
 			<div class="card h-100">
 				<img class="card-img-top" src="{% static "VisualizeApp/Img/About.png" %}" alt="about image">
+
 					<div class="card-body">
 						<h4 class="card-title">About</h4>
 						<p class="card-text">What is SOStimate? How can I use it? What data is used? Get answers to all of these questions and more by clicking the button below.</p>
