@@ -87,39 +87,39 @@ DATABASES = {
     }
 }
 
-CORS_ORIGIN_ALLOW_ALL = True 
+#CORS_ORIGIN_ALLOW_ALL = True 
 
-#CORS_ORIGIN_WHITELIST = [
+CORS_ORIGIN_WHITELIST = [
     #"https://example.com",
-    #"http://localhost:8000",
-    #"http://34.254.96.219:80",
+    "http://localhost:8000",
+    "http://34.254.96.219:80",
     #"http://127.0.0.1:9000"
-    #"http://ec2-34-254-96-219.eu-west-1.compute.amazonaws.com/map/"
-#]
+    "http://ec2-34-254-96-219.eu-west-1.compute.amazonaws.com/map/"
+]
 
-#CSRF_TRUSTED_ORIGINS = [
-    #"http://localhost:8000",
-    #"http://34.254.96.219:80",
-    #"http://ec2-34-254-96-219.eu-west-1.compute.amazonaws.com/map/"
-#]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://34.254.96.219:80",
+    "http://ec2-34-254-96-219.eu-west-1.compute.amazonaws.com/map/"
+]
 
-#CORS_ALLOW_METHODS = [
-    #'GET',
-    #'POST',
-    #'PUT'
-#]
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT'
+]
 
-#CORS_ALLOW_HEADERS = [
-    #'accept',
-    #'accept-encoding',
-    #'authorization',
-    #'content-type',
-    #'dnt',
-    #'origin',
-    #'user-agent',
-    #'x-csrftoken',
-    #'x-requested-with',
-#]
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 
 
