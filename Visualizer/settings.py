@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 's+jzxm^f1_w*)ri$%upf358q2n#1k0^ec+0365nn=ld-hw-ytm'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -87,6 +87,37 @@ DATABASES = {
         'HOST': 'database-1.cbnl5dq8asol.eu-west-1.rds.amazonaws.com'
     }
 }
+
+CORS_ORIGIN_WHITELIST = [
+    #"https://example.com",
+    "http://localhost:8000",
+    "http://34.254.96.219:80"
+    #"http://127.0.0.1:9000"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://34.254.96.219:80"
+]
+
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT'
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
 
 
 # Password validation
