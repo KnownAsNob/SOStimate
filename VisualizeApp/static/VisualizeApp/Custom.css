@@ -201,7 +201,7 @@ body {
 /* 0 to 399 */
 
 #mapSelectorText {
-		font-size: 0.5em;
+		font-size: 0.8em;
 	}
 
 /* 400 to 799 */
@@ -540,7 +540,7 @@ body {
 }
 
 #restartViz {
-	width: 10%;
+	width: 5em;
 	margin: 1% 0 1% 2%;
 }
 
@@ -562,14 +562,10 @@ body {
 
 #vizForm .submit {
 	margin: 1% 0% 1% 0%;
-	width: 20%;
+	width: 5em;
 }
 
 .unselectButton {
 	margin: 0.1% 90% 1% 0.2%;
-	width: 10%;
-}
-
-#overallCustomSVG {
-	
+	width: 8em;
 }

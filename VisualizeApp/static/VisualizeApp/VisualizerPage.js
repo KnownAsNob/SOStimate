@@ -244,15 +244,10 @@ function processFetchData()
     }
 
     return $.when(ajaxUserDataCall()).done(function(returnObj){
-    
-        console.log("Data returned successfully...");
-
 
         //Transform the data
         data = Object.keys(returnObj)
             .map(function(key) { return [String(key), returnObj[key]]; });
-
-        console.log("Original data: " + data);
 
         drawGraph(data);
     });

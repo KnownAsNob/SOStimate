@@ -16,5 +16,5 @@ urlpatterns = [
     #MapFunctions
     path('map/get_calls_year/', views.get_calls_year, name='get-calls-year'),
     #CustomVisualizer
-    path('map/get_graph_data/', views.get_graph_data, name='get-graph-data'),    
+    path('visualizations/get_graph_data/', views.get_graph_data, name='get-graph-data'),    
 ]
