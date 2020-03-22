@@ -113,6 +113,7 @@ function fetchData(type)
 		//Request number of calls/time unit
 		return $.ajax({
 			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+			headers: {  'Access-Control-Allow-Origin': '*' },
 			type: "POST",
 			url: "http://localhost:8000/map/get_calls_year/",
 			datatype: "json",
