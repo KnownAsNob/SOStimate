@@ -115,7 +115,7 @@ function fetchData(type)
 			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 			type: "POST",
 			beforeSend: function(xhr){xhr.setRequestHeader('X-CSRFToken', "{{csrf_token}}");},
-			url: "map/get_calls_year/",
+			url: "get_calls_year/",
 			datatype: "json",
 			//async: true,
 			data: {"type": type},
