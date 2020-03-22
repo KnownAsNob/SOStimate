@@ -94,13 +94,13 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:8000",
     "http://34.254.96.219:80",
     #"http://127.0.0.1:9000"
-    "http://ec2-34-254-96-219.eu-west-1.compute.amazonaws.com/map/"
+    "http://ec2-34-254-96-219.eu-west-1.compute.amazonaws.com"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8000",
     "http://34.254.96.219:80",
-    "http://ec2-34-254-96-219.eu-west-1.compute.amazonaws.com/map/"
+    "http://ec2-34-254-96-219.eu-west-1.compute.amazonaws.com"
 ]
 
 CORS_ALLOW_METHODS = [
