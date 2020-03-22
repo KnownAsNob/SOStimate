@@ -119,6 +119,7 @@ body {
 
 .accessibilityDiv {
 	display: inline-block;
+	background-color: blue;
 	width: 30%;
 }
 
