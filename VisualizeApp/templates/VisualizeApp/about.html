@@ -6,7 +6,7 @@
 
 	<div class = "container">
 		
-		<h1 id = "about">About</h1>
+		<h1 class = "mainHeader" id = "aboutHeader">About</h1>
 	
 		<section class = "faq_section">
 			
@@ -17,7 +17,7 @@
 				<li><a class="faq_listOption" href="#disclaimer">Disclaimers</a></li>
 			</ul> <!-- cd-faq__categories -->
 
-			<h3 id = "aboutSub"><i>Navigate sections with the menu and click questions to expand...</i></h3>
+			<h4 id = "aboutSub"><i>Navigate sections with the menu and click questions to expand...</i></h4>
 
 			<div class = "faq_items">
 				<div id = "accessibility" class="faq_group">
@@ -29,22 +29,27 @@
 	         			</div> 
 	         		</div> <!-- faq_item -->
 
-	         		<h4 id = "colorSelectorHeader"><i>Select graph base colour:</i></h4>
-					<h4 id = "textSelectorHeader"><i>Select text size:</i></h4>
+	         		<div class = "accessibilityDiv" id = "graphColour">
+	         			<h3 id = "colorSelectorHeader"><i>Select graph base colour:</i></h3>
 
-	         		<!-- Colour select drop-down -->
-	         		
+	         			<!-- Colour select drop-down -->
 
-	         		<select id="colorSelectorDrop" onchange="setCookie('ColorValue', this.options[this.selectedIndex].value, 1)">
-				  		<option value="blue">Blue</option>
-				  		<option value="red">Red</option>
-					</select> 
+	         			<select class = "accessibilityDrop" id="colorSelectorDrop" onchange="setCookie('ColorValue', this.options[this.selectedIndex].value, 1)">
+					  		<option value="blue">Blue</option>
+					  		<option value="red">Red</option>
+						</select> 
+	         		</div>
 
-					<select id="textSelectorDrop" onchange="setCookie('TextSize', this.options[this.selectedIndex].value, 1)">
-				  		<option value="small">Small</option>
-				  		<option value="large">Large</option>
-					</select> 
+	         		<div class = "accessibilityDiv" id = "fontSize">
+						<h3 id = "textSelectorHeader"><i>Select text size:</i></h3>
 
+						<!-- Text size select drop-down -->
+
+						<select class = "accessibilityDrop" id="textSelectorDrop" onchange="setCookie('TextSize', this.options[this.selectedIndex].value, 1)">
+					  		<option value="small">Small</option>
+					  		<option value="large">Large</option>
+						</select> 
+					</div>	
 	         	</div> <!-- faq_group -->
 
 				<div id = "basics" class="faq_group">

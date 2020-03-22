@@ -1,4 +1,4 @@
-/* ---------- Main page ---------- */
+/* --------------- Main page --------------- */
 
 body {
   padding-top: 56px;
@@ -9,12 +9,168 @@ body {
 	font-family: Arial;
 }
 
-.SubHeader {
-	font-family: Arial;
-	font-style: italic;
+
+#aboutHeader { /* About header not in box */
+	margin-top: 2%;
+	margin-bottom: 2%;
 }
 
-/* ---------- Map page ---------- */
+/* --------------- About page --------------- */
+
+#aboutSub {
+	font-size: 100%;
+}
+
+/* Menu */
+.faq_categories {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: rgb(52, 58, 64);
+	margin-bottom: 1%;
+	border: 0px;		
+    border-radius: 8px;
+}
+
+.faq_categories li {
+	float: left;
+}
+
+.faq_categories a {
+	font-family: Arial;
+	color: rgb(154, 147, 131);
+}
+
+	.faq_categories a:hover {
+		color: white;
+		text-decoration: none;
+	}
+
+
+.faq_listOption {
+	display: block;
+ 	color: white;
+	text-align: center;
+ 	padding: 16px;
+ 	text-decoration: none;
+}
+
+/* Items */
+
+.faq_items {
+	outline: 1px solid rgb(224, 224, 224);
+	padding: 1%;
+	padding-bottom: 0.5%;
+	margin-bottom: 1%;
+}
+
+.faq_items h3 {
+	font-family: Arial;
+}
+
+.faq_item {
+	outline: 1px solid rgb(224, 224, 224);
+	margin-top: 2%;
+	margin-bottom: 2%;
+}
+
+.faq_title {
+
+}
+
+.faq_question {
+	background-color: rgb(243,242,237);
+	outline: 1px solid rgb(224, 224, 224);
+	padding: 0.5% 0 0.5% 0.5%;
+	cursor: pointer;
+	width: 100%;
+	border: none;
+	text-align: left;
+	outline: none;
+}
+
+	.faq_question:hover {
+	 	background-color: #ccc;
+	}
+
+.faq_answer {
+	font-size: 100%;
+	padding: 0 0.5% 0.5% 0.5%;
+	display: none;
+	max-height: 0;
+  	overflow: hidden;
+  	transition: max-height 0.2s ease-out;
+}
+
+/* 0 to 399 */
+
+#colorSelectorHeader {
+	text-align: center;
+	font-size: 0.8em;
+	margin-left: 0.5%;
+}
+
+#textSelectorHeader {
+	text-align: center;
+	font-size: 0.8em;
+	margin-left: 0.5%;
+}
+
+.accessibilityDiv {
+	display: inline-block;
+	width: 30%;
+}
+
+#graphColour {
+	margin-left: 10%;
+}
+
+#fontSize {
+	float: right;
+	margin-right: 10%;
+}
+
+.accessibilityDrop {
+	margin: 5% 15% 5% 15%;
+	width: 70%;
+}
+
+/* 400 to 799 */
+@media screen and (min-width: 400px) {
+  
+	#colorSelectorHeader {
+		font-size: 1em;
+	}
+
+	#textSelectorHeader {
+		font-size: 1em;
+	}
+}
+
+/* 800 and up */
+@media screen and (min-width: 800px) {
+  
+	#colorSelectorHeader {
+		font-size: 1.7em;
+	}
+
+	#textSelectorHeader {
+		font-size: 1.7em;
+	}
+}
+
+
+#colorSelectorDrop {
+	
+}
+
+
+#textSelectorDrop {
+	
+}
+
+/* --------------- Map page --------------- */
 
 .model {
 	z-index: 2;
@@ -375,121 +531,4 @@ body {
 
 #overallCustomSVG {
 	
-}
-
-/* ---------- About page ---------- */
-
-#about {
-	margin-top: 2%;
-	margin-bottom: 2%;
-	font-family: Century Gothic;
-}
-
-#aboutSub {
-	font-size: 120%;
-}
-
-/* Menu */
-.faq_categories {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	background-color: rgb(52, 58, 64);
-	margin-bottom: 1%;
-	border: 0px;		
-    border-radius: 8px;
-}
-
-.faq_categories li {
-	float: left;
-}
-
-.faq_categories a {
-	font-family: Arial;
-	color: rgb(154, 147, 131);
-}
-
-	.faq_categories a:hover {
-	color: white;
-	text-decoration: none;
-	}
-
-
-.faq_listOption {
-	display: block;
- 	color: white;
-	text-align: center;
- 	padding: 16px;
- 	text-decoration: none;
-}
-
-/* Items */
-.faq_items {
-	outline: 1px solid rgb(224, 224, 224);
-	padding: 1%;
-	padding-bottom: 0.5%;
-	margin-bottom: 1%;
-}
-
-.faq_items h3 {
-	font-family: Arial;
-}
-
-.faq_item {
-	outline: 1px solid rgb(224, 224, 224);
-	margin-top: 2%;
-	margin-bottom: 2%;
-}
-
-.faq_title {
-
-}
-
-.faq_question {
-	background-color: rgb(243,242,237);
-	outline: 1px solid rgb(224, 224, 224);
-	padding: 0.5% 0 0.5% 0.5%;
-	cursor: pointer;
-	width: 100%;
-	border: none;
-	text-align: left;
-	outline: none;
-}
-
-	.faq_question:hover {
-	 	background-color: #ccc;
-	}
-
-.faq_answer {
-	font-size: 100%;
-	padding: 0 0.5% 0.5% 0.5%;
-	display: none;
-	max-height: 0;
-  	overflow: hidden;
-  	transition: max-height 0.2s ease-out;
-}
-
-#colorSelectorHeader {
-	float: left;
-	margin-left: 10%;
-	margin-right: 25%;
-}
-
-#colorSelectorDrop {
-	float: left;
-	margin-left: 10%;
-	margin-right: 25%;
-	width: 25%;
-}
-
-#textSelectorHeader {
-	float: right;
-	margin-right: 20%;
-}
-
-#textSelectorDrop {
-	float: right;
-	margin-right: 10%;
-	width: 25%;
 }
