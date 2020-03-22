@@ -117,7 +117,7 @@ function fetchData(type)
 			url: "http://localhost:8000/map/get_calls_year/",
 			datatype: "json",
 			//async: true,
-			data: {"type": type},
+			data: {"type": type, csrfmiddlewaretoken: '{{ csrf_token }}'},
 			success: function(json)
 			{
 				output = json;

@@ -9,10 +9,6 @@ subheader = document.getElementById("stationSubHeader");
 text = document.getElementById("text");
 container = document.getElementById("model-content");
 
-var csrftoken1 = Cookies.get('csrftoken');
-
-console.log("Cookie: + " + csrftoken1);
-
 css = getComputedStyle(document.documentElement);
 
 maxDetail = false;
