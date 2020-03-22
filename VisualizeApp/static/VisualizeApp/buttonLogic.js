@@ -66,7 +66,7 @@ function onClicked(message) //On clicked - Map popup button
 	$.ajax({
 		contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 		type: "POST",
-		url: "http://localhost:8000/map/get_overall_data/",
+		url: "get_overall_data/",
 		datatype: "json",
 		async: true,
 		data: {"station": headerText},
@@ -1558,7 +1558,7 @@ function fetchBarData(station, type, year, month, day)
 		return $.ajax({
 			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 			type: "POST",
-			url: "http://localhost:8000/map/get_calls_unit/",
+			url: "get_calls_unit/",
 			datatype: "json",
 			//async: true,
 			data: {"station": station, "type": type, "year": year, "month": month, "day": day},
@@ -1584,7 +1584,7 @@ function fetchPieData(station, type, year, month, day)
 		return $.ajax({
 			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 			type: "POST",
-			url: "http://localhost:8000/map/get_incidents/",
+			url: "get_incidents/",
 			datatype: "json",
 			//async: true,
 			data: {"station": station, "type": type, "year": year, "month": month, "day": day},
@@ -1610,7 +1610,7 @@ function fetchAvgDispatch(station, type, year, month, day)
 		return $.ajax({
 			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 			type: "POST",
-			url: "http://localhost:8000/map/get_avg_response/",
+			url: "get_avg_response/",
 			datatype: "json",
 			//async: true,
 			data: {"station": station, "type": type, "year": year, "month": month, "day": day},
@@ -1636,7 +1636,7 @@ function fetchAvgTravel(station, type, year, month, day)
 		return $.ajax({
 			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 			type: "POST",
-			url: "http://localhost:8000/map/get_avg_travel/",
+			url: "get_avg_travel/",
 			datatype: "json",
 			//async: true,
 			data: {"station": station, "type": type, "year": year, "month": month, "day": day},
@@ -1662,7 +1662,7 @@ function fetchCallTimes(station, type, year, month, day)
 		return $.ajax({
 			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 			type: "POST",
-			url: "http://localhost:8000/map/get_incident_lengths/",
+			url: "get_incident_lengths/",
 			datatype: "json",
 			//async: true,
 			data: {"station": station, "type": type, "year": year, "month": month, "day": day},
