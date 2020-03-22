@@ -114,10 +114,11 @@ function fetchData(type)
 		return $.ajax({
 			contentType: "application/x-www-form-urlencoded;charset=UTF-8",
 			type: "POST",
+			beforeSend: function(xhr){xhr.setRequestHeader('X-CSRFToken', "{{csrf_token}}");},
 			url: "http://localhost:8000/map/get_calls_year/",
 			datatype: "json",
 			//async: true,
-			data: {"type": type, csrfmiddlewaretoken: '{{ csrf_token }}'},
+			data: {"type": type},
 			success: function(json)
 			{
 				output = json;
