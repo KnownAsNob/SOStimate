@@ -11,7 +11,7 @@ container = document.getElementById("model-content");
 
 var csrftoken1 = Cookies.get('csrftoken');
 
-console.log("Cookie: + csrftoken1");
+console.log("Cookie: + " + csrftoken1);
 
 css = getComputedStyle(document.documentElement);
 
