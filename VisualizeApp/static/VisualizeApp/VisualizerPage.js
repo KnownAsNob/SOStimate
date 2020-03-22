@@ -232,7 +232,7 @@ function processFetchData()
         return $.ajax({
             contentType: "application/x-www-form-urlencoded;charset=UTF-8",
             type: "POST",
-            url: "http://localhost:8000/map/get_graph_data/",
+            url: "get_graph_data/",
             datatype: "json",
             //async: true,
             data: {"stations": stations, "agency": agency[0], "selectedData": selectedData, "selectedDataDisplay": selectedDataDisplay[0], "selectedYears": selectedYears, "monthsIncl": monthsIncl, "selectedGraph": selectedGraph[0]},

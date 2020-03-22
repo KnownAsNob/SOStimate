@@ -5,8 +5,9 @@ body {
   position: relative;
 }
 
-.MainHeader {
-	font-family: Arial;
+.mainHeader {
+	padding-left: 1%;
+	font-family: Century Gothic;	
 }
 
 
@@ -133,10 +134,11 @@ body {
 
 .accessibilityDrop {
 	margin: 5% 15% 5% 15%;
-	width: 70%;
+	width: 100%;
 }
 
 /* 400 to 799 */
+
 @media screen and (min-width: 400px) {
   
 	#colorSelectorHeader {
@@ -149,6 +151,7 @@ body {
 }
 
 /* 800 and up */
+
 @media screen and (min-width: 800px) {
   
 	#colorSelectorHeader {
@@ -160,25 +163,11 @@ body {
 	}
 }
 
-
-#colorSelectorDrop {
-	
-}
-
-
-#textSelectorDrop {
-	
-}
-
 /* --------------- Map page --------------- */
 
 .model {
 	z-index: 2;
 	overflow: auto;
-}
-
-.container {
-	/*Empty*/
 }
 
 /* ----- Menu bar ----- */
@@ -188,26 +177,60 @@ body {
 	outline: 1px solid rgb(224, 224, 224);
 }
 
-	#mapHeaderBar {
-		background-color: rgb(243,242,237);
-		outline: 1px solid rgb(224, 224, 224);
-		padding-top: 0.5%;
-		padding-bottom: 0.5%;
+#mapHeaderBar {
+	background-color: rgb(243,242,237);
+	outline: 1px solid rgb(224, 224, 224);
+	padding-top: 0.5%;
+	padding-bottom: 0.5%;
+}
+
+#mapSelectorText, #mapSelectorDrop {
+	display: inline-block;
+}
+
+#mapSelectorText {
+	font-family: sans-serif;
+	float: left;
+	margin-left: 1%;
+}
+
+#mapSelectorDrop {
+	margin-left: 1%;
+}
+
+/* 0 to 399 */
+
+#mapSelectorText {
+		font-size: 0.5em;
 	}
 
-	.mainHeader, #mapSelectorText {
-		padding-left: 1%;
-		font-family: Century Gothic;	
-	}
+/* 400 to 799 */
 
-	#mapSelectorText {
-		font-family: sans-serif;
-		float: left;
+@media screen and (min-width: 400px) {
+  
+    #mapSelectorText {
+		font-size: 0.8em;
 	}
 
 	#mapSelectorDrop {
-		margin-left: 40%;
+		margin-left: 5%;
+		font-size: 0.7em;
 	}
+}
+
+/* 800 and up */
+
+@media screen and (min-width: 800px) {
+  
+	#mapSelectorText {
+		font-size: 1em;
+	}
+
+	#mapSelectorDrop {
+		margin-left: 10%;
+		font-size: 0.9em;
+	}
+}
 
 /* ----- Map markers ----- */
 
@@ -302,7 +325,7 @@ body {
 		background-color: rgb(243,242,237);
 		padding: 1.5%; 
 		margin: auto; 
-		width: 75%;  
+		width: 100%;  
 		-webkit-animation-name: animatetop;
 		-webkit-animation-duration: 0.4s;
 		animation-name: animatetop;
@@ -345,6 +368,24 @@ body {
 	@keyframes animatetop {
 	from {top:-300px; opacity:0}
 	to {top:0; opacity:1}
+	}
+
+	/* 400 to 799 */
+
+	@media screen and (min-width: 400px) {
+	  
+	    #model-content {
+	    	width: 90%;
+	    }
+	}
+
+	/* 800 and up */
+
+	@media screen and (min-width: 800px) {
+	  
+		#model-content {
+	    	width: 80%;
+	    }
 	}
 
 /* Overall selector SVG */
