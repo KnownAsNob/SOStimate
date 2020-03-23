@@ -1,9 +1,7 @@
 1) Pie chart broken when only one incident type e.g. Fire Small
 2) Slow fetch
 3) Graphs not understandable - Pie labels
-4) Graph month labels
-5) Map filter information box
-
+4) Graph month labels - Didn't do
 
 Fixed:
 1) Line not updating
@@ -15,11 +13,42 @@ Fixed:
 7) Scatter labels
 8) Can change views
 9) Broken colours
+10) Map filter information box 
 
-To-do:
-1) Add pie labels
-2) Add more info. to map
-3) Add more options to visualizer
+HOME PAGE
+=========
+Really great layout of home page, well done.
+
+I think you need to bring your brand out bigger
+> "SOStimate" needs a big banner and logo, maybe something with a clock or stopwatch?
+(something likr https://www.alamy.com/with-clock-sirine-character-cartoon-style-vector-illustration-image185368087.html)
+> Make the size of logo about as big as the logo here: https://www.taxi-zentrale.at/
+
+MAP PAGE
+=========
+Excellent, easy-to-use and intuitive
+
+Would it be a good idea to add a "BACK" button 
+on this and all other sub-pages that you have created?
+
+
+ABOUT PAGE
+==========
+Great, very clear
+
+I would create a separate page for accessibility, and
+add "Accessibility" onto the top bar menu on the Home
+page after Visualizations.
+
+
+VISUALIZATIONS PAGE
+==================
+Could you have a button on each page "Select All"
+
+Can you make the radio buttons bigger? They are really fiddly
+particular for someone with fine motor control issues, e.g. 
+for someone who has had a stroke, or has dyspraxia.
+
 
 ============================
 
@@ -27,6 +56,8 @@ To-do:
 -> Change to average minutes - Count under 5 minutes, etc.
 -> The big picture on home
 -> Add faces and info
+
+============================ Visualizer information =============================
 
 Questions:
 - What data you want? 

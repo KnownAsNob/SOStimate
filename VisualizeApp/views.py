@@ -45,6 +45,9 @@ def map(request):
 def visualizations(request):
 	return render(request, 'VisualizeApp/visualizations.html')
 
+def accessibility(request):
+	return render(request, 'VisualizeApp/accessibility.html')
+
 ############### Map Functions ###############
 
 def get_overall_data(request):
@@ -263,7 +266,6 @@ def get_incidents(request):
 
 	#Add to dictionary
 	for incident in PopIncident:
-		#print(incident['details__Incident'] + " " + str(incident['Count']))
 		response_data[str(incident['details__Incident'])] = incident['Count']
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
@@ -921,48 +923,3 @@ def getData():
 		print(station, "Data: ", response_data)
 
 	#return HttpResponse(json.dumps(response_data), content_type = "application/json")
-
-#Unused: 
-def get_total_cats(request):
-
-	#Calculate total amount for each cat
-	input = request.POST['station']
-	type = request.POST['type']
-	year = request.POST['year']
-
-	response_data={}
-
-	######## Decide what is required ########
-	#!year
-	if year == 'NA':
-		#!year, !type
-		if type == "Overall":
-			overallCalls = masterCalls.filter(details__StationArea = input)
-		#!year, type
-		else:
-			overallCalls = masterCalls.filter(details__StationArea = input, details__Agency = type)
-	#year
-	else:
-		#!type, year
-		if type == "Overall":
-			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year)
-		#type, year
-		else:
-			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year, details__Agency = type)
-
-	list = ["TOC-ORD-Cat", "ORD-MOB-Cat", "MOB-IA-Cat", "IA-MAV-Cat", "MAV-CD-Cat"]
-
-	#Run through classifications of classes
-	for cat in range(1, 11):
-		total = 0
-		catStr = str(cat)
-		for category in list:
-			#Run though classes
-			result = "details__" + category
-			num = overallCalls.filter(**{result: catStr}).count()
-			total = total + num
-		response_data[cat] = total
-
-	return HttpResponse(json.dumps(response_data), content_type = "application/json")
-
-

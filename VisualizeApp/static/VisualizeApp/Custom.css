@@ -104,65 +104,6 @@ body {
   	transition: max-height 0.2s ease-out;
 }
 
-/* 0 to 399 */
-
-#colorSelectorHeader {
-	text-align: center;
-	font-size: 0.8em;
-	margin-left: 0.5%;
-}
-
-#textSelectorHeader {
-	text-align: center;
-	font-size: 0.8em;
-	margin-left: 0.5%;
-}
-
-.accessibilityDiv {
-	display: inline-block;
-	width: 30%;
-}
-
-#graphColour {
-	margin-left: 10%;
-}
-
-#fontSize {
-	float: right;
-	margin-right: 10%;
-}
-
-.accessibilityDrop {
-	margin: 5% 15% 5% 15%;
-	width: 100%;
-}
-
-/* 400 to 799 */
-
-@media screen and (min-width: 400px) {
-  
-	#colorSelectorHeader {
-		font-size: 1em;
-	}
-
-	#textSelectorHeader {
-		font-size: 1em;
-	}
-}
-
-/* 800 and up */
-
-@media screen and (min-width: 800px) {
-  
-	#colorSelectorHeader {
-		font-size: 1.7em;
-	}
-
-	#textSelectorHeader {
-		font-size: 1.7em;
-	}
-}
-
 /* --------------- Map page --------------- */
 
 .model {
@@ -503,6 +444,10 @@ body {
 	    }
 	}
 
+	.dot, .filterHeader, .bar, .scatterDot, .numVal {
+  		cursor: pointer;
+	}
+
 /* Overall selector SVG */
 
 #Overallsvg, #DAsvg, #DFsvg {
@@ -684,4 +629,109 @@ body {
 .unselectButton {
 	margin: 0.1% 90% 1% 0.2%;
 	width: 8em;
+}
+
+/* ---------- Accessibility page ---------- */
+
+#accessibilityHeader {
+	margin: 2% 0 2% 0;
+}
+
+#accessibilityContainer {
+	outline: 1px solid rgb(224, 224, 224);
+	margin-bottom: 35%;
+}
+
+#accessibilityHeaderBar {
+	width: 100%;
+	height: 30px;
+	background-color: rgb(243,242,237);
+	outline: 1px solid rgb(224, 224, 224);
+}
+
+.accessibilityDiv {
+	display: inline-block;
+	width: 30%;
+	margin: 3% 0 3% 0;
+}
+
+#colorSelectorDrop, #textSelectorDrop {
+	width: 100%;
+}
+
+#accessibilityHeaderBar p {
+	font-family: sans-serif;
+	margin-left: 1%;
+}
+
+#graphColour {
+	margin-left: 10%;
+}
+
+#fontSize {
+	float: right;
+	margin-right: 10%;
+}
+
+#colorSelectorHeader {
+	text-align: center;
+	font-size: 0.8em;
+	margin-left: 0.5%;
+}
+
+#textSelectorHeader {
+	text-align: center;
+	font-size: 0.8em;
+	margin-left: 0.5%;
+}
+
+/* 0 to 399 */
+
+#accessibilityHeaderBar p {
+		font-size: 0.8em;
+		padding-top: 1.2%;
+	}
+
+	#colorSelectorHeader {
+		font-size: 0.8em;
+	}
+
+	#textSelectorHeader {
+		font-size: 0.8em;
+	}
+
+/* 400 to 799 */
+
+@media screen and (min-width: 400px) {
+  
+  	#accessibilityHeaderBar p {
+		font-size: 0.8em;
+		padding-top: 1%;
+	}
+
+	#colorSelectorHeader {
+		font-size: 1em;
+	}
+
+	#textSelectorHeader {
+		font-size: 1em;
+	}
+}
+
+/* 800 and up */
+
+@media screen and (min-width: 800px) {
+  	
+  	#accessibilityHeaderBar p {
+		font-size: 1em;
+		padding-top: 0.5%;
+	}
+
+  	#colorSelectorHeader {
+		font-size: 1.5em;
+	}
+
+	#textSelectorHeader {
+		font-size: 1.5em;
+	}
 }

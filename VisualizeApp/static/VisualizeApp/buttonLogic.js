@@ -380,7 +380,7 @@ function createBarChart(inputData, Station, Type, Year, ID, title, month, day)
              .duration(200)		
              .style("opacity", .9);		
         popUp.html("<p class = 'popUpText'><b><i>" + d[0] + "</b></i><br>" + d[1] + "</p>")	
-             .style("left", (d3.event.pageX) + "px")		
+             .style("left", (d3.event.pageX + 10) + "px")		
              .style("top", (d3.event.pageY - 30) + "px");
 	}
 
@@ -502,7 +502,7 @@ function updateBarChart(inputData, station, type, year, svg, title, month, day)
              .duration(200)		
              .style("opacity", .9);		
         popUp.html("<p class = 'popUpText'><b><i>" + d[0] + "</b></i><br>" + d[1] + "</p>")	
-             .style("left", (d3.event.pageX) + "px")		
+             .style("left", (d3.event.pageX + 10) + "px")		
              .style("top", (d3.event.pageY - 30) + "px");
 	}
 
@@ -582,7 +582,7 @@ function updateBarChart(inputData, station, type, year, svg, title, month, day)
              .duration(200)		
              .style("opacity", .9);		
         	popUp.html("<p class = 'popUpText'><i>Current max level of detail reached!</i></p>")	
-             .style("left", (d3.event.pageX) + "px")		
+             .style("left", (d3.event.pageX + 10) + "px")		
              .style("top", (d3.event.pageY - 30) + "px")
 
             popUp.transition()	
@@ -740,7 +740,7 @@ function createLineChart(dataIn, station, type, year, svg, name, month, day)
              .duration(200)		
              .style("opacity", .9);		
         popUp.html("<p class = 'popUpText'><b><i>" + d[0] + "</b></i><br>" + d[1] + "</p>")	
-             .style("left", (d3.event.pageX) + "px")		
+             .style("left", (d3.event.pageX + 10) + "px")		
              .style("top", (d3.event.pageY - 30) + "px");	
 	}
 
@@ -888,7 +888,7 @@ function updateLineChart(inputData, station, type, year, svg, title, month, day)
              .duration(200)		
              .style("opacity", .9);		
         popUp.html("<p class = 'popUpText'><b><i>" + d[0] + "</b></i><br>" + d[1] + "</p>")	
-             .style("left", (d3.event.pageX) + "px")		
+             .style("left", (d3.event.pageX + 10) + "px")		
              .style("top", (d3.event.pageY - 30) + "px");	
 	}
 
@@ -974,7 +974,7 @@ function updateLineChart(inputData, station, type, year, svg, title, month, day)
              .duration(200)		
              .style("opacity", .9);		
         	popUp.html("<p class = 'popUpText'><i>Current max level of detail reached!</i></p>")	
-             .style("left", (d3.event.pageX) + "px")		
+             .style("left", (d3.event.pageX + 10) + "px")		
              .style("top", (d3.event.pageY - 30) + "px")
 
             popUp.transition()	
@@ -1082,19 +1082,14 @@ function createPieChart(dataIn, station, type, year, ID, title, month, day)
 
     /* --------------- Legend --------------- */
 
-    console.log(parsed);
-
     array = [];
 
     //Build array and find max
 	for (item in parsed)
 	{
-		//console.log(item);
 		array.push(item);
 	}
 
-	console.log(array);
-	
 	var legend = svg.selectAll('g')
 					.data(dataIn)
 					.enter()
@@ -1142,7 +1137,7 @@ function createPieChart(dataIn, station, type, year, ID, title, month, day)
              .duration(200)		
              .style("opacity", .9);		
         popUp.html("<p class = 'popUpText'><b><i>" + d.data[0] + "</b></i><br>" + d.data[1] + "</p>")	
-             .style("left", (d3.event.pageX) + "px")		
+             .style("left", (d3.event.pageX + 10) + "px")		
              .style("top", (d3.event.pageY - 30) + "px");	
     }
 
@@ -1397,7 +1392,7 @@ function createScatterPlot(dataIn, station, type, year, ID, title, month, day)
              .duration(200)		
              .style("opacity", .9);		
         popUp.html("<p class = 'popUpText'><b><i>" + "Call: " + d[0] + "</b></i><br>" + d[1] + " minutes</p>")	
-             .style("left", (d3.event.pageX) + "px")		
+             .style("left", (d3.event.pageX + 10) + "px")		
              .style("top", (d3.event.pageY - 30) + "px");	
 	}
 
@@ -1530,7 +1525,7 @@ function updateScatterPlot(dataIn, station, type, year, ID, title, month, day)
              .duration(200)		
              .style("opacity", .9);		
         popUp.html("<p class = 'popUpText'><b><i>" + "Call: " + d[0] + "</b></i><br>" + d[1] + " minutes</p>")	
-             .style("left", (d3.event.pageX) + "px")		
+             .style("left", (d3.event.pageX + 10) + "px")		
              .style("top", (d3.event.pageY - 30) + "px");	
 	}
 

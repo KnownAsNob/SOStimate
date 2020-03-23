@@ -1,0 +1,44 @@
+{% extends "VisualizeApp/base.html" %}
+
+{% block content %}
+
+	<div class = "container">
+		
+		<h1 class = "mainHeader" id = "accessibilityHeader">Accessibility</h1>
+
+		<div id = "accessibilityContainer">
+			
+			<div id = "accessibilityHeaderBar">
+				<p>Adjust the site's appearence:</p>
+			</div>
+
+			<div id = "graphColour" class = "accessibilityDiv">
+				
+				<h4 id = "colorSelectorHeader">Select graph base colour:</h4>
+
+				<!-- Colour drop -->
+				<select id="colorSelectorDrop" onchange="setCookie('ColorValue', this.options[this.selectedIndex].value, 1)">
+				  	<option value="blue">Blue</option>
+				  	<option value="red">Red</option>
+				</select> 
+			</div>
+
+			<div id = "fontSize" class = "accessibilityDiv">
+
+				<h4 id = "textSelectorHeader">Select text size:</h4>
+
+				<!-- Text drop -->
+				<select id="textSelectorDrop" onchange="setCookie('TextSize', this.options[this.selectedIndex].value, 1)">
+				  	<option value="small">Small</option>
+				  	<option value="large">Large</option>
+				</select> 
+			</div>
+
+
+		</div> <!-- Accessibility container -->	
+	</div> <!-- Container -->	
+
+{% endblock content %}
+
+
+
