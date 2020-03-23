@@ -1,9 +1,9 @@
 1) Pie chart broken when only one incident type e.g. Fire Small
 2) Slow fetch
-3) Broken colours [Cookie expires]
-4) Graphs not understandable - Pie labels
-5) Missing calls (?)
-6) Scatter plot bunches at 0 (?)
+3) Graphs not understandable - Pie labels
+4) Graph month labels
+5) Map filter information box
+
 
 Fixed:
 1) Line not updating
@@ -14,6 +14,7 @@ Fixed:
 6) Stop click when updating
 7) Scatter labels
 8) Can change views
+9) Broken colours
 
 To-do:
 1) Add pie labels

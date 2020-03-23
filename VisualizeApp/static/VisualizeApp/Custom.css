@@ -262,8 +262,7 @@ body {
 
 #controlContainer {
 	position: absolute;
-	width: 30%;
-	height: 32%;
+	height: auto;
 	background-color: rgb(243,242,237);
 	outline: 1px solid rgb(224, 224, 224);
 }
@@ -272,26 +271,38 @@ body {
 	margin: 3% 0 4% 3%;
 }
 
-#slider {
-	margin-left: 10%;
-	width: 80%;
-}
-
 #legend {
 	margin-left: 10%;
 	height: 10px;
 	width: 80%;
 }
 
+#filterTitle {
+	text-align: center;
+	font-weight: bold;
+}
+
+#slider {
+	margin-left: 10%;
+	width: 80%;
+}
+
+#sliderGuide {
+	margin-left: 7%;
+}
+
 #sliderText {
-	font-size: 130%;
 	margin-left: 7%;
 }
 
 #legendText {
-	font-size: 130%;
-	padding-top: 5%;
+	padding-top: 3%;
 }
+
+#timeCatList {
+	width: 100%;
+}
+
 
 .mapCircle {
 	stroke: white;
@@ -304,6 +315,106 @@ body {
 	font-weight: bold;
 	stroke-width: 0.8px;
 	stroke: black;
+}
+
+/* 0 to 399 */
+
+#controlContainer {
+	width: 150px;
+}
+
+#filterTitle {
+	font-size: 1.4em;
+}
+
+#sliderGuide {
+	font-size:0.7em;
+}
+	
+#sliderText {
+	font-size: 0.9em;
+	margin-left: 7%;
+}
+
+#legendText {
+	font-size: 0.9em;
+	padding-top: 10%;
+}
+
+#timeCatList ul {
+	font-size: 0.9em;
+}
+
+/* 400 to 799 */
+
+@media screen and (min-width: 400px) {
+  	
+  	#controlContainer {
+		width: 200px;
+	}
+
+    #filterTitle {
+		font-size: 1.3em;
+
+	}
+
+	#sliderGuide {
+		font-size: 0.9em;
+	}
+	
+	#sliderText {
+		font-size: 1em;
+	}
+
+	#legend {
+		margin-bottom: 30%;
+	}
+
+	#legendText {
+		font-size: 1em;
+	}
+
+	#timeCatList ul {
+		font-size: 1em;
+	}
+}
+
+/* 800 and up */
+
+@media screen and (min-width: 800px) {
+
+	#controlContainer {
+		width: 250px;
+	}
+
+	#filterTitle {
+		font-size: 1.8em;
+	}
+
+	#sliderGuide {
+		font-size: 1.1em;
+	}
+	
+	#sliderText {
+		font-size: 1.2em;
+
+	}
+
+	#legend {
+		margin-bottom: 20%;
+	}
+
+	#legendText {
+		font-size: 1.2em;
+	}
+
+	#timeCatList ul {
+		font-size: 1em;
+	}
+
+	#timeCatList ul {
+		font-size: 1.2em;
+	}
 }
 
 /* ----- Graph popup ----- */
@@ -415,6 +526,7 @@ body {
 	}
 
 /* Set up all SVGs */
+
 #linesvg, #avgTravelLine, #callTimes, #bar2svg, #piesvg {
 	background-color: white;
 	margin-top: 2%;

@@ -26,7 +26,7 @@ function overviewChange(click, event, map, svg) {
     		fetchData("Most_Pop");
 
     		//Create control box
-    		createBox("Number of Calls");
+    		createBox("Number of Calls", "Amount of calls (Less to more)");
     	}
 
     	else if(click.options[click.selectedIndex].text == "Average Response Time")
@@ -34,7 +34,7 @@ function overviewChange(click, event, map, svg) {
     		fetchData("Avg_Response");
 
     		//Create control box
-    		createBox("Average Response Time");
+    		createBox("Average Response Time", "Response time (Slow to fast)");
     	}
 
     	else if(click.options[click.selectedIndex].text == "Average Travel Time")
@@ -42,7 +42,7 @@ function overviewChange(click, event, map, svg) {
     		fetchData("Avg_Travel");
 
     		//Create control box
-    		createBox("Average Travel Time");
+    		createBox("Average Travel Time", "Travel time (Slow to fast)");
     	}
 
     	else if(click.options[click.selectedIndex].text == "Average Time to Hospital [Ambulance]")
@@ -50,7 +50,7 @@ function overviewChange(click, event, map, svg) {
     		fetchData("Avg_Travel_Hosp");
 
     		//Create control box
-    		createBox("Average Time to Hospital");
+    		createBox("Average Time to Hospital", "Travel time (Slow to fast)");
     	}
 
     	else if(click.options[click.selectedIndex].text == "Average Time at Hospital [Ambulance]")
@@ -58,7 +58,7 @@ function overviewChange(click, event, map, svg) {
     		fetchData("Avg_Hosp_Time");
 
     		//Create control box
-    		createBox("Average Time at Hospital");
+    		createBox("Average Time at Hospital", "Time at Hospital (Less to more)");
     	}
 
   		//Get slider change info
@@ -69,7 +69,7 @@ function overviewChange(click, event, map, svg) {
     	slider.oninput = function() 
     	{
   			updateCircles(this.value, output);
-  			sliderText.innerHTML = this.value;
+  			sliderText.innerHTML = "Current year: " + this.value;
 		} 
     }
 } //End overviewChange
@@ -85,23 +85,41 @@ function createMapElement(elementType, id, appendTo)
 	return newElement;
 }
 
-function createBox(title)
+function createBox(title, legendT)
 {
 	outer = createMapElement("div", "controlContainer", mapContainer);
 	    	inner = createMapElement("div", "controlContainerInner", outer);
 	    		createMapElement("h3", "filterTitle", inner).innerHTML = title;
-	    		createMapElement("label", "month", inner);
+	    		createMapElement("p", "sliderGuide", inner).innerHTML = "<i>Click and drag to change:</i>";
 	    		input = createMapElement("input", "slider", inner);
 		    	input.type = "range";
 		    	input.min = "2013";
 		    	input.max = "2018";
 		    	input.step = "1";
 		    	input.value = "0";
-		    createMapElement("p", "sliderText", inner).innerHTML = "2013";
+		    createMapElement("p", "sliderText", inner).innerHTML = "Current year: 2013";
 	    	legend = createMapElement("div", "legend", outer);
-	    	legend.style.background = 'linear-gradient(to right, ' + css.getPropertyValue('--mouse-click-graph-color') + ', ' + css.getPropertyValue('--mouse-over-graph-color') + ')';
+	    	legend.style.background = 'linear-gradient(to right, ' + css.getPropertyValue('--mouse-over-graph-color') + ', ' + css.getPropertyValue('--mouse-click-graph-color') + ')';
 		   		createMapElement("div", "bar", legend);
-		   		createMapElement("p", "legendText", legend).innerHTML = "Amount (Most to Least)";
+		   		createMapElement("p", "legendText", legend).innerHTML = legendT;
+
+		   	//Create category list
+		   	timeCatList = createMapElement("div", "timeCatList", outer);
+		   	createMapElement("h3", "filterTitle", timeCatList).innerHTML = "Time Categories";
+		   	createMapElement("p", "catList", timeCatList).innerHTML = '<ul>' +
+																			'<li><b>1: </b>0 - 1 Minute</li>' +
+																			'<li><b>2: </b>1 - 5 Minutes </li>' +
+																			'<li><b>3:  </b>5 - 10 Minutes</li>' +
+																			'<li><b>4: </b>10 - 15 Minutes</li>' +
+																			'<li><b>5: </b>15 - 30 Minutes</li>' +
+																			'<li><b>6: </b>30 Minutes - 1 Hour</li>' +
+																			'<li><b>7: </b>1 - 1:30 Hour</li>' +
+																			'<li><b>8: </b>1:30 - 2 Hours</li>' +
+																			'<li><b>9: </b>2 - 3 Hours</li>' +
+																			'<li><b>10: </b>> 3 Hours</li>' +
+																		'</ul>';
+
+		   					
 }
 
 // ---------- Fetch data ---------- //
