@@ -336,6 +336,10 @@ body {
 	margin-left: 7%;
 }
 
+#legend {
+	margin-bottom: 40%;
+}
+
 #legendText {
 	font-size: 0.9em;
 	padding-top: 10%;
