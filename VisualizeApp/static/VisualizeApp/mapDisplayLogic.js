@@ -5,6 +5,9 @@ function overviewChange(click, event, map, svg) {
     
 	output = {};
 
+	//Remove default markers
+	removeMarkers();
+
     //Check if container already present
 	if(document.getElementById("controlContainer") != null)
 	{
@@ -15,6 +18,9 @@ function overviewChange(click, event, map, svg) {
     if(click.options[click.selectedIndex].text == "None")
     {
     	map.flyTo({center: [-6.259405, 53.347528], zoom: 13, essential: true});
+
+    	//Re-draw markers
+    	drawMarkers();
     }
 
     else
@@ -117,9 +123,7 @@ function createBox(title, legendT)
 																			'<li><b>8: </b>1:30 - 2 Hours</li>' +
 																			'<li><b>9: </b>2 - 3 Hours</li>' +
 																			'<li><b>10: </b>> 3 Hours</li>' +
-																		'</ul>';
-
-		   					
+																		'</ul>';		   					
 }
 
 // ---------- Fetch data ---------- //
@@ -151,6 +155,7 @@ function fetchData(type)
 		//Transform the data
 		output = Object.keys(returnVal)
 			.map(function(key) { return [String(key), returnVal[key]]; });
+
 
 		addCircles(output);
 		update();

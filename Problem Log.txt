@@ -1,3 +1,15 @@
+Essential:
+- 7) Chrome: Fix accessibility
+- 6) Add tutorial
+- 5) Fix pie chart labels and centering
+- 4) Add select all option to years
+- 3)  Resize buttons
+- 2)  Rebuild visualizer
+
+Preferable:
+- Add new visualizer options
+- No circles after stats - Try refresh
+
 1) Pie chart broken when only one incident type e.g. Fire Small
 2) Slow fetch
 3) Graphs not understandable - Pie labels
@@ -13,7 +25,7 @@ Fixed:
 7) Scatter labels
 8) Can change views
 9) Broken colours
-10) Map filter information box 
+10) Added station name to bubbles - New text, removes markers
 
 HOME PAGE
 =========
@@ -29,17 +41,7 @@ MAP PAGE
 Excellent, easy-to-use and intuitive
 
 Would it be a good idea to add a "BACK" button 
-on this and all other sub-pages that you have created?
-
-
-ABOUT PAGE
-==========
-Great, very clear
-
-I would create a separate page for accessibility, and
-add "Accessibility" onto the top bar menu on the Home
-page after Visualizations.
-
+on this and all other sub-pages that you have created
 
 VISUALIZATIONS PAGE
 ==================

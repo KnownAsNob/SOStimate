@@ -45,21 +45,33 @@
 
 				// -------------------- Add markers to map --------------------
 				
-				stationObject.forEach(function(marker) 
+				function drawMarkers()
 				{
-					//Create HTML element for each station
-	  				var el = document.createElement('div');
-	  				el.className = 'marker';
+					stationObject.forEach(function(marker) 
+					{
+						//Create HTML element for each station
+		  				var el = document.createElement('div');
+		  				el.className = 'marker';
 
-	  				var id = "modal-btn";
+		  				var id = "modal-btn";
 
-	  				new mapboxgl.Marker(el)
-	    				.setLngLat([marker.fields.info.geometry.coordinates[0], marker.fields.info.geometry.coordinates[1]])
-		  				.setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-    					.setHTML('<h3 id = "stationName">' + marker.fields.name + '</h3><button onclick="onClicked($(this))">More Information</button>'))
-  
-		  				.addTo(map);		
-		  		});
+		  				new mapboxgl.Marker(el)
+		    				.setLngLat([marker.fields.info.geometry.coordinates[0], marker.fields.info.geometry.coordinates[1]])
+			  				.setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+	    					.setHTML('<h3 id = "stationName">' + marker.fields.name + '</h3><button onclick="onClicked($(this))">Station Statistics</button>'))
+	  
+			  				.addTo(map);		
+			  		});
+			  	}
+
+			  	function removeMarkers()
+			  	{
+			  		d3.selectAll(".marker")
+			  			.remove();
+			  	}
+
+			  	//Draw initial markers
+			  	drawMarkers();
 
 		  		// -------------------- Define required methods -------------------- 
 
@@ -106,10 +118,10 @@
 
             		var g = nodes.enter().append("g")
 
+            		//Append circle
 	           		g.append("circle")
 		                	.attr("class", "mapCircle")
 		                    .attr("r", function(d, i) {
-		                    	//console.log("Size:" + sqrtScale(inputData[i][1][2013]));
 
 		                    	if(sqrtScale(inputData[i][1][2013]) < 5)
 		                    	{
@@ -134,16 +146,32 @@
 		                    	} 
 		                    });
 		            
-		            g.append("text")
-					    .attr("dx", function(d){return -22})
-					    .attr("dy", function(d){return 8})
-					    .attr("class", "circleText")
+		            //Append name
+		            g.append("text")					 
+					    .attr("dy", function(d){return -5})
+					    .attr("class", "nameText")
 					    .text(function(d, i) {
-					    	return +inputData[i][1][2013].toFixed(2);
-					    });
-					    
+					    	//Set text
+					    	return inputData[i][0];
+					    })
+					    //Center text based on content
+					    .attr("dx", function(d){ return -this.getComputedTextLength()/2; });
 
+					//Append number
+					g.append("text")					 
+					    .attr("dy", function(d){return 20})
+					    .attr("class", "statText")
+					    .text(function(d, i) {
+					    	//Set text
+					    	return +inputData[i][1][2013].toFixed(2);
+					    })
+					    //Center text based on content
+					    .attr("dx", function(d){ return -this.getComputedTextLength()/2; });
+					    
 					circles = g.selectAll("circle");
+					circleName = g.selectAll(".nameText");
+					circleStat = g.selectAll(".statText");
+
 					circleText = g.selectAll("text");
 		                   
 		            //Add update functions
@@ -182,10 +210,15 @@
 
 		                });
 
-		            circleText = svg.selectAll("text")
+		            circleName = svg.selectAll(".nameText")
 		            	.text(function(d, i) {
-					    	return +data[i][1][year].toFixed(2);
+					    	return data[i][0];
 					    })
+
+					circleStat = svg.selectAll(".statText")
+		            .text(function(d, i) {
+					    return +data[i][1][year].toFixed(2);
+					})
 	      		}
 
 			    function update() 
@@ -196,16 +229,11 @@
                    	circleText.attr("x", function(d) { return project(d.geometry.coordinates).x })
                    		      .attr("y", function(d) { return project(d.geometry.coordinates).y });     
 			    }
-			 
-			    // Every time the map changes, update the dots
-			    //map.on("viewreset", update);
-			    //map.on("move", update);
-			    //map.on("moveend", update);
 
 				//Adjust view on button click
 		  		function sendMap(event, svg) {
 		  			click = this;
-		  			overviewChange(click, event, map, svg);
+		  			overviewChange(click, event, map);
 		  		}
 
 			</script>
