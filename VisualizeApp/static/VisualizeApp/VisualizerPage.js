@@ -1,5 +1,8 @@
 formDiv = document.getElementById("vizForm");
 
+var currentTab = 0; // Current tab is set to be the first tab (0)
+showTab(currentTab); // Display the current tab
+
 stations = [];
 agency = [];
 selectedData = [];
@@ -10,216 +13,175 @@ selectedGraph = [];
 
 /* ------------------ Form functions ------------------*/
 
-//Push data to array
-function prepareData(data, output)
+//Show selected tab
+function showTab(n) 
 {
-    for(entry in data)
+    var x = document.getElementsByClassName("tab");
+    
+    x[n].style.display = "block";
+    
+    //No prev button if first
+    if (n == 0) 
     {
-        output.push(data[entry]['value']);
+        document.getElementById("prevBtn").style.display = "none";
+    } 
+
+    else 
+    {
+        document.getElementById("prevBtn").style.display = "inline";
+    }
+    
+    //Submit instead of next button if last
+    if (n == (x.length - 1)) 
+    {
+        document.getElementById("nextBtn").innerHTML = "Submit";
+    } 
+
+    else 
+    {
+        document.getElementById("nextBtn").innerHTML = "Next";
     }
 
-    if(output == selectedYears)
-    {
-        console.log("Selecting time...");
-
-        //Set months to yes or no
-        //monthsIncl[0] = output[output.length - 1];
-        //output.pop();
-    }
+    fixStepIndicator(n)
 }
 
-//Check entry not empty
-function checkEntry(entry)
+function nextPrev(n) 
 {
-    if(entry.length == 0)
+    // This function will figure out which tab to display
+    var x = document.getElementsByClassName("tab");
+    
+    // Exit the function if any field in the current tab is invalid:
+    if (n == 1 && !validateForm()) return false;
+    
+    // Hide the current tab:
+    x[currentTab].style.display = "none";
+    
+    // Increase or decrease the current tab by 1:
+    currentTab = currentTab + n;
+    
+    // if you have reached the end of the form... :
+    if (currentTab >= x.length) 
     {
-        alert("Must select atleast one option for each category to build the visualization!");
+        //Submit form at end
+        //document.getElementById("regForm").submit();
+
+        console.log(stations);
+        console.log(agency);
+        console.log(selectedData);
+        console.log(selectedDataDisplay);
+        console.log(selectedYears);
+
+        //formDiv.innerHTML =  "<div class='loader'></div>";
+        formDiv.innerHTML =  "";
+
+        drawCanvas();
+        createLoader("overallCustomSVG");
+        processFetchData();
+       
         return false;
     }
-
-    else
-    {
-        return true;
-    }
+    // Otherwise, display the correct tab:
+    showTab(currentTab);
 }
 
-function handleInput(form, pushTo)
+function validateForm() 
 {
-    if (!checkEntry(form))
+    //This function deals with validation of the form fields
+    var x, y, i, valid = true;
+    
+    x = document.getElementsByClassName("tab");
+    y = x[currentTab].getElementsByTagName("input");
+    
+    //Check inputs in current tab
+    for (i = 0; i < y.length; i++) 
     {
-        return false;
-    }
-
-    else
-    {
-        prepareData(form, pushTo);
-        return true;
-    }
-}
-
-//Handle form submissions
-//Form - Station
-$('#stationForm').submit(function () {
-    console.log("User submitted station!");
-
-    //If handling fails, break
-    if(!handleInput($('#stationForm').serializeArray(), stations))
-    {
-        return;
-    }
-
-    //Change text - Choose Agency
-    formDiv.innerHTML = '<form id = "agencyForm">'+
-                            '<fieldset>'+
-                                '<p class = "vizQuestion">Which agency should be included in the visualization?</p>'+
-                                '<input type="radio" id="overall" name="agency" value="Overall">'+
-                                '<label for="overall"> Both Ambulance and Fire Brigade</label><br>'+
-                                '<input type="radio" id="da" name="agency" value="DA">'+
-                                '<label for="da"> Ambulance Only</label><br>'+
-                                '<input type="radio" id="df" name="agency" value="DF">'+
-                                '<label for="df"> Fire Brigade Only</label><br>'+
-                            '</fieldset>'+
-                            '<input class="submit" type="submit" value="Next" />'+
-                        '</form>';
-
-    //Handle submit - Agency
-    $('#agencyForm').submit(function () {
-        console.log("User submitted agency!");
-
-        //If handling fails, break
-        if(!handleInput($('#agencyForm').serializeArray(), agency))
+        if (y.length == 0) 
         {
-            return;
+            // add an "invalid" class to the field:
+            y[i].className += " invalid";
+            
+            // and set the current valid status to false:
+            valid = false;
         }
+    }
+    
+    // If the valid status is true, mark the step as finished and valid:
+    if (valid) 
+    {
+        addToVar(y);
+        document.getElementsByClassName("step")[currentTab].className += " finish";
+    }
+    
+    return valid; // return the valid status
+}
 
-        //Change text - Choose Data
-        formDiv.innerHTML = '<form id = "dataForm">'+
-                                '<fieldset>'+
-                                    '<p class = "vizQuestion">What data would you like to see on the graph?</p>'+
-                                    '<input type="radio" id="totalCalls" name="data" value="Calls">'+
-                                    '<label for="totalCalls">Total Number of Calls</label><br>'+
-                                    //'<input type="radio" id="incidentType" name="data" value="Incident">'+
-                                    //'<label for="incidentType">Incident Type</label><br>'+
-                                    //'<input type="radio" id="dispatchTime" name="data" value="DispatchTime">'+
-                                    //'<label for="dispatchTime">Dispatch Time</label><br>'+
-                                    //'<input type="radio" id="" name="data" value="">'+
-                                    //'<label for=""></label><br>'+
-                                '</fieldset>'+
-                                '<input class="submit" type="submit" value="Next" />'+
-                            '</form>';
-        
-        //Handle submit - Data
-        $('#dataForm').submit(function () {
-            console.log("User submitted data!");
+function fixStepIndicator(n) 
+{
+    
+    // This function removes the "active" class of all steps...
+    var i, x = document.getElementsByClassName("step");
+    
+    for (i = 0; i < x.length; i++) 
+    {
+        x[i].className = x[i].className.replace(" active", "");
+    }
+    
+    //... and adds the "active" class to the current step:
+    x[n].className += " active";
+}
 
-            //If handling fails, break
-            if(!handleInput($('#dataForm').serializeArray(), selectedData))
-            {
-                return;
-            }
+function addToVar(selection)
+{
+    //Decide variable to append
+    switch(currentTab) 
+    {
+        case 0: //Station
+                variable = stations;
+        break;
+    
+        case 1: //Agency
+                variable = agency;
+        break;
 
-            //Change text - Choose data display
-            formDiv.innerHTML = '<form id = "dataViewForm">'+
-                                    '<fieldset>'+
-                                        '<p class = "vizQuestion">What would you like to see about the chosen data?</p>'+
-                                        '<input type="radio" id="totalCount" name="dataType" value="TotalCount">'+
-                                        '<label for="totalCount">Total Count</label><br>'+
-                                        //'<input type="radio" id="average" name="dataType" value="Average">'+
-                                        //'<label for="average">Average</label><br>'+
-                                    '</fieldset>'+
-                                    '<input class="submit" type="submit" value="Next" />'+
-                                '</form>'
+        case 2: //Data
+                variable = selectedData;
+        break;
 
-            //Handle submit - Data display
-            $('#dataViewForm').submit(function () {
-                console.log("User submitted data view!");
+        case 3: //Data form
+                variable = selectedDataDisplay;
+        break;
 
-                //If handling fails, break
-                if(!handleInput($('#dataViewForm').serializeArray(), selectedDataDisplay))
-                {
-                    return;
-                }
+        case 4: //Time
+                variable = selectedYears;
+        break;
 
-                //Change text - Choose time information
-                formDiv.innerHTML = '<form id = "timeForm">'+
-                                        '<fieldset>'+
-                                            '<p class = "vizQuestion">Which timeframes should be included in the visualization? <i>[You may choose more than one]</i></p>'+
-                                            '<button class = "unselectButton" type="reset">Unselect All</button>'+
-                                            '<p class = "vizQuestion">Years</p>'+
-                                                '<input type="checkbox" id="2013" name="year" value="2013">'+
-                                                '<label for="2013">2013</label><br>'+
-                                                '<input type="checkbox" id="2014" name="year" value="2014">'+
-                                                '<label for="2014">2014</label><br>'+
-                                                '<input type="checkbox" id="2015" name="year" value="2015">'+
-                                                '<label for="2015">2015</label><br>'+
-                                                '<input type="checkbox" id="2016" name="year" value="2016">'+
-                                                '<label for="2016">2016</label><br>'+
-                                                '<input type="checkbox" id="2017" name="year" value="2017">'+
-                                                '<label for="2017">2017</label><br>'+
-                                                '<input type="checkbox" id="2018" name="year" value="2018">'+
-                                                '<label for="2018">2018</label><br>'+
+        case 5: //Graph
+                variable = selectedGraph;
+        break;
+    
+        default:
+            // code block
+    } 
 
-                                                //'<p class = "vizQuestion">Include months? <i>[Slower graph generation]</i></p>'+
-                                                //'<input type="radio" id="yesMonths" name="includeMonths" value="Months">'+
-                                                //'<label for="yesMonths">Yes</label><br>'+
-                                                //'<input type="radio" id="noMonths" name="includeMonths" value="No_Months">'+
-                                                //'<label for="noMonths">No</label><br>'+
-                                        '</fieldset>'+
-                                        '<input class="submit" type="submit" value="Next" />'+
-                                    '</form>'
+    for(item in selection)
+    {
+        if(selection[item].checked == true)
+        {
+            variable.push(selection[item].value)
+        }
+    }
+}
 
-                //Handle submit - Data
-                $('#timeForm').submit(function () {
-                console.log("User submitted year!");
-
-                    //If handling fails, break
-                    if(!handleInput($('#timeForm').serializeArray(), selectedYears))
-                    {
-                        return;
-                    }
-
-                    //Change text - Choose graph type
-                    formDiv.innerHTML = '<form id = "graphSelectionForm">'+
-                                            '<fieldset>'+
-                                                '<p class = "vizQuestion">Which type of graph will your visalization be?</p>'+
-                                                '<input type="radio" id="lineGraph" name="graphType" value="LineGraph">'+
-                                                '<label for="lineGraph">Line Chart</label><br>'+
-                                                '<input type="radio" id="barGraph" name="graphType" value="BarGraph">'+
-                                                '<label for="barGraph">Bar Chart</label><br>'+
-                                            '</fieldset>'+
-                                            '<input class="submit" type="submit" value="Generate" />'+
-                                        '</form>'
-
-                    //Handle submit - Data display
-                    $('#graphSelectionForm').submit(function (e) {
-                        console.log("User submitted graph selection!");
-
-                        e.preventDefault();
-
-                        //If handling fails, break
-                        if(!handleInput($('#graphSelectionForm').serializeArray(), selectedGraph))
-                        {
-                            return;
-                        }
-
-                        formDiv.innerHTML = "";
-
-                        drawCanvas();
-                        createLoader("overallCustomSVG");
-                        processFetchData();
-                        
-                        //console.log(stations);
-                        //console.log(agency);
-                        //console.log(selectedData);
-                        //console.log(selectedDataDisplay);
-                        //console.log(selectedYear);
-                        
-                    });
-                });
-            });  
-        }); 
-    });
-});
+//Check all
+function checkAll() {
+    var checkboxes = document.getElementsByTagName('input');
+    checkboxes = [...checkboxes];
+    
+    for (var i = 0; i < checkboxes.length; i++) 
+    {
+        checkboxes[i].checked = true
+    }
+}
 
 /* ------------------ Data functions ------------------*/
 
@@ -404,15 +366,15 @@ function drawLineGraph(data, svg, width, height)
             .on("mouseout", handleMouseOut)
             .on("click", handleClick);
 
-        // --- Legend ---
+        // --- Legend --- //
 
         lineG.append("text")
           .data(singleData)
-          .attr("transform", function(d) { return "translate(" + (xLineScale(singleData[singleData.length - 1][0]) - 60) + "," + (yLineScale(singleData[singleData.length - 1][1]) - 20) + ")"; })
-          .attr("x", 3)
+          .attr("transform", function(d) { return "translate(" + (xLineScale(singleData[singleData.length - 1][0])) + "," + (yLineScale(singleData[singleData.length - 1][1]) - 20) + ")"; })
           .attr("dy", "0.35em")
           .attr("class", "lineLabel")
-          .text(function(d) { return stations[i]; });
+          .text(function(d) { return stations[i]; })
+          .attr("x", function() { return -this.getComputedTextLength(); });
           //.attr("fill", function(d){ return myColor(i); });
 
     }); //End for each
@@ -474,7 +436,6 @@ function drawBarGraph(data, svg, width, height)
 
     removeLoader("overallCustomSVG");
 }
-    
 
 /* ------------------- SET COOKIES FOR AJAX -------------------- */
 

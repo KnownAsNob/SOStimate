@@ -3,8 +3,8 @@ Essential:
 - 6) Add tutorial
 - 5) Fix pie chart labels and centering
 - 4) Add select all option to years
-- 3)  Resize buttons
-- 2)  Rebuild visualizer
+- 3) Resize buttons
+- 2) Rebuild visualizer + back button
 
 Preferable:
 - Add new visualizer options
@@ -80,3 +80,6 @@ Categories:
 - Arrive at Hospital (AH): Time that the vehicle arrived at the hospital,
 - Move Away (MAV): Time that the vehicle travelled back to the station,
 - Shut Down (CD): Time that the vehicle shuts down (Radio turned off in station).
+
+e.preventDefault();
+formDiv.innerHTML = "";
