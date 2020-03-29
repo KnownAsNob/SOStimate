@@ -108,10 +108,20 @@ function onClicked(message) //On clicked - Map popup button
 	});
 }
 
-closeBtn.onclick = function()
+//Close button for overlay
+try 
 {
-  removeBlock("mainContainer");
-};
+	closeBtn.onclick = function()
+	{
+  		removeBlock("mainContainer");
+	};
+}
+
+catch(err) 
+{
+  //Will cause error on load without overlay open
+}
+
 
 //Re-enable to allow non-menu click close
 /*window.onclick = function(e)

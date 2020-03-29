@@ -28,32 +28,7 @@ Fixed:
 13) Chrome: Fix accessibility
 14) Fix pie chart labels and centering
 
-HOME PAGE
-=========
-Really great layout of home page, well done.
 
-I think you need to bring your brand out bigger
-> "SOStimate" needs a big banner and logo, maybe something with a clock or stopwatch?
-(something likr https://www.alamy.com/with-clock-sirine-character-cartoon-style-vector-illustration-image185368087.html)
-> Make the size of logo about as big as the logo here: https://www.taxi-zentrale.at/
-
-MAP PAGE
-=========
-Excellent, easy-to-use and intuitive
-
-Would it be a good idea to add a "BACK" button 
-on this and all other sub-pages that you have created
-
-VISUALIZATIONS PAGE
-==================
-Could you have a button on each page "Select All"
-
-Can you make the radio buttons bigger? They are really fiddly
-particular for someone with fine motor control issues, e.g. 
-for someone who has had a stroke, or has dyspraxia.
-
-
-============================
 
 -> Change to horizontal bar chart; Ambulance and fire different colours - Hue is volume
 -> Change to average minutes - Count under 5 minutes, etc.

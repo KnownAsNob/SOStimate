@@ -18,31 +18,39 @@ function showTab(n)
 {
     var x = document.getElementsByClassName("tab");
     
-    x[n].style.display = "block";
-    
-    //No prev button if first
-    if (n == 0) 
+    try 
     {
-        document.getElementById("prevBtn").style.display = "none";
-    } 
+        x[n].style.display = "block";
 
-    else 
-    {
-        document.getElementById("prevBtn").style.display = "inline";
+        //No prev button if first
+        if (n == 0) 
+        {
+            document.getElementById("prevBtn").style.display = "none";
+        } 
+
+        else 
+        {
+            document.getElementById("prevBtn").style.display = "inline";
+        }
+        
+        //Submit instead of next button if last
+        if (n == (x.length - 1)) 
+        {
+            document.getElementById("nextBtn").innerHTML = "Submit";
+        } 
+
+        else 
+        {
+            document.getElementById("nextBtn").innerHTML = "Next";
+        }
+
+        fixStepIndicator(n)
     }
-    
-    //Submit instead of next button if last
-    if (n == (x.length - 1)) 
-    {
-        document.getElementById("nextBtn").innerHTML = "Submit";
-    } 
 
-    else 
+    catch(err)
     {
-        document.getElementById("nextBtn").innerHTML = "Next";
+        //Fails if not present on page
     }
-
-    fixStepIndicator(n)
 }
 
 function nextPrev(n) 
