@@ -113,13 +113,14 @@ closeBtn.onclick = function()
   removeBlock("mainContainer");
 };
 
-window.onclick = function(e)
+//Re-enable to allow non-menu click close
+/*window.onclick = function(e)
 {
 	if(e.target == model)
 	{
     	removeBlock("mainContainer");
 	}
-};
+};*/
 
 function removeBlock(ID)
 {
@@ -986,9 +987,10 @@ function updateLineChart(inputData, station, type, year, svg, title, month, day)
 }
 
 /* ---------- Incidents pie chart ---------- */
+
 function createPieChart(dataIn, station, type, year, ID, title, month, day)
 {
-	width = getContainerWidth("#model-content");
+	widthTotal = getContainerWidth("#model-content");
 
 	//Process data
 	list = JSON.stringify(dataIn);
@@ -1003,7 +1005,7 @@ function createPieChart(dataIn, station, type, year, ID, title, month, day)
 	//Create new SVG canvas
 	const svgGraph = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 		svgGraph.id = ID;
-		svgGraph.setAttribute("width", width);
+		svgGraph.setAttribute("width", widthTotal);
 		svgGraph.setAttribute("height", pieHeight);
 		mainContainer.appendChild(svgGraph); 
 	
@@ -1015,7 +1017,7 @@ function createPieChart(dataIn, station, type, year, ID, title, month, day)
 
     //Append group with translation effect
     var g = svg.append("g")
-                   .attr("transform", "translate(" + width / 2 + "," + svg.attr("height") / 2 + ")")
+                   .attr("transform", "translate(" + ((widthTotal/2) - 15) + "," + ((svg.attr("height") / 2) + 20) + ")")
                    .attr("id", "mainGroup");
 
     var color = d3.scaleOrdinal([css.getPropertyValue('--pie-color-1'), css.getPropertyValue('--pie-color-2'), css.getPropertyValue('--pie-color-3'), css.getPropertyValue('--pie-color-4'), css.getPropertyValue('--pie-color-5'), css.getPropertyValue('--pie-color-6')]);
@@ -1053,7 +1055,7 @@ function createPieChart(dataIn, station, type, year, ID, title, month, day)
         arc.append("text")
            .attr("class", "pieLabel")
            .attr("transform", function(d) { 
-                    return "translate(" + label.centroid(d) + ")"; 
+                    return "translate(" + (label.centroid(d)[0] * 1.4) + "," + (label.centroid(d)[1] * 1.1) + ")"; 
                 })
            .text(function(d) { return d.data[0]; });
     
@@ -1186,8 +1188,8 @@ function updatePieChart(dataIn, station, type, year, ID, title, month, day)
 	g = svg.select("#mainGroup");
 
 	//Update X placement
-	g.attr("transform", "translate(" + width / 2 + "," + svg.attr("height") / 2 + ")")
-	
+	g.attr("transform", "translate(" + ((widthTotal/2) - 15) + "," + ((svg.attr("height") / 2) + 20) + ")");
+
 	var color = d3.scaleOrdinal([css.getPropertyValue('--pie-color-1'), css.getPropertyValue('--pie-color-2'), css.getPropertyValue('--pie-color-3'), css.getPropertyValue('--pie-color-4'), css.getPropertyValue('--pie-color-5'), css.getPropertyValue('--pie-color-6')]);
 	//'#4daf4a','#377eb8','#ff7f00','#984ea3','#e41a1c', '#FFFF00'
 
@@ -1232,7 +1234,7 @@ function updatePieChart(dataIn, station, type, year, ID, title, month, day)
     arc.append("text")
            .attr("class", "pieLabel")
            .attr("transform", function(d) { 
-                    return "translate(" + label.centroid(d) + ")"; 
+                    return "translate(" + (label.centroid(d)[0] * 1.4) + "," + (label.centroid(d)[1] * 1.1) + ")"; 
                 })
            .attr("fill-opacity", 0)
            .text(function(d) { return d.data[0]; })
@@ -1675,6 +1677,7 @@ function fetchCallTimes(station, type, year, month, day)
 }
 
 /* -------------------- UPDATE GRAPHS -------------------- */
+
 function callUpdate(station, type, year, month, day)
 {
 	createLoader("linesvg");

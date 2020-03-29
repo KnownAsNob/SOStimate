@@ -26,6 +26,7 @@ Fixed:
 11) Rebuild visualizer + back button
 12) Add select all option to years and stations
 13) Chrome: Fix accessibility
+14) Fix pie chart labels and centering
 
 HOME PAGE
 =========

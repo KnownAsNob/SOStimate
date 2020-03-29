@@ -1,3 +1,4 @@
+
 /* --------------- Main page --------------- */
 
 body {
@@ -520,7 +521,6 @@ body {
 
 .pieLabel {
 	font-family: Arial;
-	font-style: italic;
 	fill: black;
 	font-size: 120%;
 	text-anchor: middle;

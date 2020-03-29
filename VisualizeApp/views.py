@@ -198,6 +198,9 @@ def get_incidents(request):
 
 	case = decideCase(year, month, day)
 
+	#Decides whether to limit incidents
+	daily = 5
+
 	#1 = !Year
 	#2 = #Year, !Month
 	#3 = #Year, Month, !Day
@@ -206,6 +209,7 @@ def get_incidents(request):
 	######## Decide what is required ########
 	#!Year
 	if case == 1:
+
 		#Overall
 		if type == "Overall":
 			overallCalls = masterCalls.filter(details__StationArea = input)
@@ -215,6 +219,7 @@ def get_incidents(request):
 			
 	#Year, !Month
 	elif case == 2:
+
 		#!type, year
 		if type == "Overall":
 			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year)
@@ -224,6 +229,7 @@ def get_incidents(request):
 	
 	#Year, Month, !Day
 	elif case == 3:
+
 		#Generate month + year to filter
 		strMonth = str(month)
 
@@ -242,6 +248,9 @@ def get_incidents(request):
 			
 	#Year, Month, Day
 	else:
+
+		daily = 3
+
 		day = str(day)
 		month = str(month)
 		year = str(year)
@@ -262,7 +271,7 @@ def get_incidents(request):
 
 
 	#Get most popular incidents
-	PopIncident = overallCalls.values('details__Incident').annotate(Count=Count('details__Incident')).order_by('-Count')[:6]
+	PopIncident = overallCalls.values('details__Incident').annotate(Count=Count('details__Incident')).order_by('-Count')[:daily]
 
 	#Add to dictionary
 	for incident in PopIncident:
