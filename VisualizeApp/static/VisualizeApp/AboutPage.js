@@ -1,6 +1,9 @@
 var coll = document.getElementsByClassName("faq_question");
 var i;
 
+colorSelector = document.getElementById("colorSelectorDrop");
+textSelector = document.getElementById("textSelectorDrop");
+
 for (i = 0; i < coll.length; i++) {
   coll[i].addEventListener("click", function() {
     this.classList.toggle("active");
@@ -30,4 +33,38 @@ function setCookie(cname, cvalue, exdays)
 
   //console.log("[Accessibility] " + cname + " cookie updated to " + cvalue);
   location.reload(); 
+}
+
+//Load correct accessbility option
+
+let cookies = getCookies();
+
+for(let cookie in allCookies)
+{
+  if(allCookies[cookie] === "large")
+  {
+    selectItem(textSelector, "large");
+  }
+
+  else if(allCookies[cookie] === "red")
+  {
+    selectItem(colorSelector, "red");
+  }
+}
+
+function selectItem(dropMenu, itemToSelect)
+{
+  // Get a reference to the drop-down
+  var myDropdownList = dropMenu;
+
+  // Loop through all the items
+  for (iLoop = 0; iLoop< myDropdownList.options.length; iLoop++)
+  {    
+    if (myDropdownList.options[iLoop].value == itemToSelect)
+    {
+      // Item is found. Set its selected property, and exit the loop
+      myDropdownList.options[iLoop].selected = true;
+      break;
+    }
+  }
 }

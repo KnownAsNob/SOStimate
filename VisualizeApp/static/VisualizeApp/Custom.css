@@ -626,9 +626,30 @@ body {
 	width: 5em;
 }
 
-.unselectButton {
-	margin: 0.1% 90% 1% 0.2%;
-	width: 8em;
+.unselectButton, .selectAllButton {
+	display: inline-block;
+	margin: 0.1% 5% 1% 0;
+	width: 7em;
+}
+
+#prevBtn, #nextBtn {
+	display: inline-block;
+	margin: 2% 5% 1% 0;
+	width: 7em;
+}
+
+.unselectButton, .selectAllButton, #prevBtn, #nextBtn, #restartViz {
+	background-color: var(--pie-color-2);
+	border: none;
+	color: white;
+	padding: 0.6% 0 0.6% 0;
+	text-align: center;
+	text-decoration: none;
+}
+
+.unselectButton:hover, .selectAllButton:hover, #prevBtn:hover, #nextBtn:hover, #restartViz:hover {
+  background-color: var(--pie-color-4);
+  color: white;
 }
 
 /* Hide all default */
@@ -640,7 +661,7 @@ body {
 	height: 15px;
 	width: 15px;
 	margin: 0 2px;
-	background-color: #bbbbbb;
+	background-color: var(--pie-color-6);
 	border: none;
 	border-radius: 50%;
 	display: inline-block;
@@ -654,7 +675,7 @@ body {
 
 /* Mark the steps that are finished and valid: */
 .step.finish {
-	background-color: #4CAF50;
+	background-color: var(--pie-color-1);
 }
 
 .loader {

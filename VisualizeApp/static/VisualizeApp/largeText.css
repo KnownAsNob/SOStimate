@@ -1,3 +1,16 @@
 p, li, select, label, .submit {
 	font-size: 150% !important;
 }
+
+/* Deal with form */ 
+input[type=radio] {
+    transform: scale(1.5);
+}
+
+input[type=checkbox] {
+    transform: scale(1.5);
+}
+
+#vizForm label {
+	font-size: 110%;
+}

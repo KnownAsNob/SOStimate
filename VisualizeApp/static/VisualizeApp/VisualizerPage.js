@@ -174,7 +174,7 @@ function addToVar(selection)
 
 //Check all
 function checkAll() {
-    var checkboxes = document.getElementsByTagName('input');
+    var checkboxes = $("input:checkbox")
     checkboxes = [...checkboxes];
     
     for (var i = 0; i < checkboxes.length; i++) 

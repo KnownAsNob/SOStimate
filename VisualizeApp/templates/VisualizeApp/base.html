@@ -15,34 +15,26 @@
 			let allCookies = getCookies();
 
 			//Decide colour
-			for(let cookie in allCookies)
+			for(cookie in allCookies)
 			{
-				if(allCookies[cookie] === "blue")
-				{
-					document.write('<link rel="stylesheet" type="text/css" href="{% static "VisualizeApp/baseColor.css" %}" />');
-					console.log("[Accessbility] Using blue colour");
-				}
-
-				else if(allCookies[cookie] === "red")
+				//Set red colour
+				if(allCookies[cookie] === "red")
 				{
 					document.write('<link rel="stylesheet" type="text/css" href="{% static "VisualizeApp/redColor.css" %}" />');
 					console.log("[Accessbility] Using red colour");
 				}
 
-				else
-				{
-					document.write('<link rel="stylesheet" type="text/css" href="{% static "VisualizeApp/baseColor.css" %}" />');
-					console.log("[Accessbility] Using blue colour");
-				}
-			}
-
-			//Decide text size
-			for(let cookie in allCookies)
-			{
-				if(allCookies[cookie] === "large")
+				//Set large text
+				else if(allCookies[cookie] === "large")
 				{
 					document.write('<link rel="stylesheet" type="text/css" href="{% static "VisualizeApp/largeText.css" %}" />');
 					console.log("[Accessbility] Using large text");
+				}
+
+				//Set blue default colour
+				else
+				{
+					document.write('<link rel="stylesheet" type="text/css" href="{% static "VisualizeApp/baseColor.css" %}" />');
 				}
 			}
 
