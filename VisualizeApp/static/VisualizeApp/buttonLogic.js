@@ -44,7 +44,14 @@ function onClicked(message) //On clicked - Map popup button
 	model.style.display = "block";
 	
 	header.innerHTML = headerText;
-	subheader.innerHTML = "Loading...";
+	subheader.innerHTML = "Generating graphs...";
+
+	//Create spinner
+	var spinner = document.createElement("div");
+	spinner.id = "spinnerDiv";
+	spinner.innerHTML =  "<div class='loader'></div>"
+	container.appendChild(spinner);
+
 
 	//Create div and text elements
 	var div = document.createElement("div");
@@ -99,11 +106,15 @@ function onClicked(message) //On clicked - Map popup button
 					createScatterPlot(returnCallTimes, headerText, "Overall", "NA", "callTimes", "Mins. Attended | Type: Overall | Year: All | Month: NA | Day: NA", "NA", "NA");	
 				
 					updating = false;
+
+					//Change loading text
+					subheader.innerHTML = "Station Information";
+
+					//Remove spinner
+					spin = document.getElementById("spinnerDiv");
+					spin.parentNode.removeChild(spin);
 				});
-			});
-				
-			//Change loading text
-			subheader.innerHTML = "Station Information";
+			});			
 		}
 	});
 }

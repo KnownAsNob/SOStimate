@@ -163,7 +163,7 @@
 					    .attr("class", "statText")
 					    .text(function(d, i) {
 					    	//Set text
-					    	return +inputData[i][1][2013].toFixed(2);
+					    	return Math.ceil(+inputData[i][1][2013]);
 					    })
 					    //Center text based on content
 					    .attr("dx", function(d){ return -this.getComputedTextLength()/2; });
@@ -217,7 +217,7 @@
 
 					circleStat = svg.selectAll(".statText")
 		            .text(function(d, i) {
-					    return +data[i][1][year].toFixed(2);
+					    return Math.ceil(+data[i][1][year]);
 					})
 	      		}
 

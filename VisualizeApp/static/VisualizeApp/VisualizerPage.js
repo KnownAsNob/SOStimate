@@ -79,7 +79,6 @@ function nextPrev(n)
         console.log(selectedDataDisplay);
         console.log(selectedYears);
 
-        //formDiv.innerHTML =  "<div class='loader'></div>";
         formDiv.innerHTML =  "";
 
         drawCanvas();

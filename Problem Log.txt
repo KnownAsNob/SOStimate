@@ -1,11 +1,15 @@
 Essential:
 - 1) Add tutorial
-- 2) Fix pie chart labels and centering
 - 3) Fix warnings
+
+- Document slow speed - Why didn't do it?
+
 
 Preferable:
 - Add new visualizer options
 - No circles after stats - Try refresh
+- Document spiiner
+- Send copy
 
 1) Pie chart broken when only one incident type e.g. Fire Small
 2) Slow fetch
@@ -27,7 +31,9 @@ Fixed:
 12) Add select all option to years and stations
 13) Chrome: Fix accessibility
 14) Fix pie chart labels and centering
-
+15) Round up circle
+16) Added hand over graph
+17) Fetch spinner
 
 
 -> Change to horizontal bar chart; Ambulance and fire different colours - Hue is volume
