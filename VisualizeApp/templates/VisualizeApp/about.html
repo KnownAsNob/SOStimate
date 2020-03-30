@@ -12,14 +12,16 @@
 			
 			<ul class = "faq_categories">
 				<li><a class="faq_listOption" href="#basics">Basics</a></li>
+				<li><a class="faq_listOption" href="#features">Features</a></li>
 				<li><a class="faq_listOption" href="#data">Data</a></li>
 				<li><a class="faq_listOption" href="#disclaimer">Disclaimers</a></li>
 			</ul> <!-- cd-faq__categories -->
 
-			<h4 id = "aboutSub"><i>Navigate sections with the menu and click questions to expand...</i></h4>
+			<h4 id = "aboutSub"><i>Navigate sections with the menu and click each question to expand...</i></h4>
 
 			<div class = "faq_items">
 
+				<!-- Basics -->
 				<div id = "basics" class="faq_group">
 					<h3 class = "faq_title">Basics</h3>
 
@@ -59,6 +61,53 @@
 	         		</div> <!-- faq_item -->
 				</div> <!-- faq_group -->
 
+				<!-- Features -->
+				<div id = "features" class="faq_group">
+					<h3 class = "faq_title">Features</h3>
+
+					<div class = "faq_item">
+						<p class = "faq_question">What features are available?</p>
+	          			<div class="faq_answer">
+	            			<p>SOStimate has a number of useful features that can be found throughout the site, including various acessibility options that can be accessed under the 'Accessibility' tab of the menu bar above. The visualization features and how to use them are listed in the following questions.</p>
+	         			</div> 
+	         		</div> <!-- faq_item -->
+
+	         		<div class = "faq_item">
+						<p class = "faq_question">How do I use the map overlay visualization?</p>
+	          			<div class="faq_answer">
+	            			<p>SOStimate allows users to overlay the map presented on the 'Map' page with various visualizations. Each element on the overlay represents a station - the name can be seen within the element. To access the overlay feature, navigate to the 'Map' page and, under the heading, click on the drop down menu. Each options presents different information. When finished, press on the 'None' option of the drop down to access the other map features.</p>
+	            			<img class = "featuresImg" src="{% static 'VisualizeApp/Img/overlayImg.png' %}" alt="Map overlay dropdown highlight">
+	         			</div> 	  
+	         		</div> <!-- faq_item -->
+
+	         		<div class = "faq_item">
+						<p class = "faq_question">How do I use the station summary dashboard visualization?</p>
+	          			<div class="faq_answer">
+	            			<p>SOStimate allows the user to see a detailed, interactive dashboard (Multiple visualizations presented in an informative manner) for the information on any station of their choosing. To access, navigate to the 'Map' page and click on a red marker - the overlay filter must be off. Click on 'Station Statistics' and wait for the dashboard to load. Once this has loaded, users can interact with the dashboard. To filter down to a year, click within the green highlght. Once this is done, the user can now filter to a particular month, day and then hour in the same manner.To filter to fire brigade calls only, etc., click on the red highlight.</p>
+	            			<img class = "featuresImg" src="{% static 'VisualizeApp/Img/dashboardImg.png' %}" alt="Map overlay dropdown highlight">
+	         			</div> 
+	         		</div> <!-- faq_item -->
+
+	         		<div class = "faq_item">
+						<p class = "faq_question">How do I use the custom visualizer builder?</p>
+	          			<div class="faq_answer">
+	            			<p>SOStimate also allows the user to build their own visualization, combining multiple station statistics into one graph. Navigate to the 'Visualizations' page to access. The builder works in guided steps. The first step is to select the stations that you would like to be in the visualization - click each option (Box or label) until a tick appears or alternatively, click 'Select All'. When ready, click 'Next' to advance to the next step. You may restart at any time with the 'Reset' button.<b> Do not worry if you make a mistake - the 'Back' button is available at any time during the process.</b> When all steps are complete (You can see your progress on the coloured dots below), click 'Submit' and your graph will be generated. Depending on the graph type, various levels of interaction are available.</p>
+	            			<img class = "featuresImg" src="{% static 'VisualizeApp/Img/visualizerImg.png' %}" alt="Map overlay dropdown highlight">
+	         			</div> 
+	         		</div> <!-- faq_item -->
+
+	         		<div class = "faq_item">
+						<p class = "faq_question">How do I access the accessibility options?</p>
+	          			<div class="faq_answer">
+	            			<p>SOStimate allows the user to change site appearence to suit comforts. Currently, the base colour and text size options can be changed. To access these, navigate to the 'Accessiblity' tab on the header menu bar. Interact with the drop down menu (Red outline) under each header to change the respective option.</p>
+	            			<img class = "featuresImg" src="{% static 'VisualizeApp/Img/accessibilityImg.png' %}" alt="Map overlay dropdown highlight">
+	         			</div> 
+	         		</div> <!-- faq_item -->
+
+         		
+				</div> <!-- faq_group -->
+
+				<!-- Data -->
 				<div id = "data" class="faq_group">
 					<h3 class = "faq_title">Data</h3>
 					
@@ -143,6 +192,7 @@
 	         		</div> <!-- faq_item -->
 				</div> <!-- faq_group -->
 
+				<!-- Disclaimer -->
 				<div id = "disclaimer" class="faq_group">
 					<h3 class = "faq_title">Disclaimers</h3>
 	         		<div class = "faq_item">

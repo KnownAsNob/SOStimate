@@ -125,6 +125,34 @@ body {
   	transition: max-height 0.2s ease-out;
 }
 
+/* 0 to 399 */
+
+.featuresImg {
+	width: 90%;
+	outline: 1px solid rgb(224, 224, 224);
+	margin: 0 0 2% 5%;
+}
+
+/* 400 to 799 */
+
+@media screen and (min-width: 400px) {
+  
+	   .featuresImg {
+		width: 80%;
+		margin: 0 0 2% 10%;
+	}
+}
+
+/* 800 and up */
+
+@media screen and (min-width: 800px) {
+  
+	.featuresImg {
+		width: 80%;
+		margin: 0 0 2% 10%;
+	}
+}
+
 /* --------------- Map page --------------- */
 
 .model {
