@@ -34,6 +34,7 @@ Fixed:
 15) Round up circle
 16) Added hand over graph
 17) Fetch spinner
+18) Add tutorial
 
 
 -> Change to horizontal bar chart; Ambulance and fire different colours - Hue is volume

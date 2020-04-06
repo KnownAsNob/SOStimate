@@ -122,12 +122,20 @@ def get_calls_unit(request):
 		if type == "Overall":
 			totalCalls = masterCalls.filter(details__StationArea = input)
 		else:
-			totalCalls = masterCalls.filter(details__Date__endswith=year, details__Agency = type, details__StationArea = input)
+			totalCalls = masterCalls.filter(details__Date__endswith=str(year), details__Agency = type, details__StationArea = input)
 		#Cycle though all months
 		for x in range(1, 13):
-			time = str(x) + "/" + str(year)
+			
+			xStr = str(x)
+
+			if len(xStr) == 1:
+				xStr = "0" + xStr
+
+			time = xStr + "/" + str(year)
+
 			calls = totalCalls.filter(details__Date__endswith=time).count()
 			response_data[x] = calls
+	
 	#Year, Month, !Day
 	elif case == 3:
 		#Generate month + year to filter
@@ -352,7 +360,14 @@ def get_avg_response(request):
 			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year, details__Agency = type)
 
 		for x in range(1, 13):
-			time = str(x) + "/" + str(year)
+
+			xStr = str(x)
+
+			if len(xStr) == 1:
+				xStr = "0" + xStr
+
+			time = xStr + "/" + str(year)
+
 			calls = overallCalls.filter(details__Date__endswith=time)
 			calculateAverages(calls, x)
 		
@@ -488,7 +503,14 @@ def get_avg_travel(request):
 			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year, details__Agency = type)
 
 		for x in range(1, 13):
-			time = str(x) + "/" + str(year)
+
+			xStr = str(x)
+
+			if len(xStr) == 1:
+				xStr = "0" + xStr
+
+			time = xStr + "/" + str(year)
+
 			calls = overallCalls.filter(details__Date__endswith=time)
 			calculateAverages(calls, x)
 		
@@ -635,7 +657,13 @@ def get_incident_lengths(request):
 			overallCalls = masterCalls.filter(details__StationArea = input, details__Date__endswith=year, details__Agency = type)
 
 		for x in range(1, 13):
-			time = str(x) + "/" + str(year)
+			xStr = str(x)
+
+			if len(xStr) == 1:
+				xStr = "0" + xStr
+
+			time = xStr + "/" + str(year)
+			
 			calls = overallCalls.filter(details__Date__endswith=time)
 			getCalls(calls, x, type)
 		
