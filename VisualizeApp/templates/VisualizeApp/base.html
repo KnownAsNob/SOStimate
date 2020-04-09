@@ -5,8 +5,11 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<meta name="description" content="">
-		<meta name="author" content="">
+		<meta name="description" content="SOStimate is an online visualizer that allows users to generate graphs based on ambulance and fire brigade dispatches in the Dublin region.">
+		<meta name="author" content="Niall O Brien">
+		<meta name="keywords" content="national ambulance service, dublin, sostimate, dublin fire brigade, fire brigade, dublin city, visualizer, visualization">
+
+		<link rel="icon" href='{% static "VisualizeApp/Img/favicon-32x32.png" %}'>
 
 		<title>SOStimate</title>
 
@@ -20,21 +23,35 @@
 				//Set red colour
 				if(allCookies[cookie] === "red")
 				{
-					document.write('<link rel="stylesheet" type="text/css" href="{% static "VisualizeApp/redColor.css" %}" />');
+					var fileref=document.createElement("link");
+				        fileref.setAttribute("rel", "stylesheet");
+				        fileref.setAttribute("type", "text/css");
+				        fileref.setAttribute("href", '{% static "VisualizeApp/redColor.css" %}')
+				        document.getElementsByTagName('head')[0].appendChild(fileref);
+			
 					console.log("[Accessbility] Using red colour");
 				}
 
 				//Set large text
 				else if(allCookies[cookie] === "large")
 				{
-					document.write('<link rel="stylesheet" type="text/css" href="{% static "VisualizeApp/largeText.css" %}" />');
+					var fileref=document.createElement("link");
+				        fileref.setAttribute("rel", "stylesheet");
+				        fileref.setAttribute("type", "text/css");
+				        fileref.setAttribute("href", '{% static "VisualizeApp/largeText.css" %}')
+				        document.getElementsByTagName('head')[0].appendChild(fileref);
+
 					console.log("[Accessbility] Using large text");
 				}
 
 				//Set blue default colour
 				else
 				{
-					document.write('<link rel="stylesheet" type="text/css" href="{% static "VisualizeApp/baseColor.css" %}" />');
+					var fileref=document.createElement("link");
+				        fileref.setAttribute("rel", "stylesheet");
+				        fileref.setAttribute("type", "text/css");
+				        fileref.setAttribute("href", '{% static "VisualizeApp/baseColor.css" %}')
+				        document.getElementsByTagName('head')[0].appendChild(fileref);
 				}
 			}
 

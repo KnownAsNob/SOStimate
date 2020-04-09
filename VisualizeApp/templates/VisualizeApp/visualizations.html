@@ -73,7 +73,7 @@
 					<div class="tab">
 						<p class = "vizQuestion"><b>What data would you like to see on the graph?</b></p>
 						<input type="radio" id="totalCalls" name="data" value="Calls">
-						<label for="totalCalls">Total Number of Calls</label><br>
+						<label for="totalCalls">Number of Calls</label><br>
 					</div>
 
 					<!-- Data form -->
@@ -85,7 +85,7 @@
 
 					<!-- Time -->
 					<div class="tab">
-						<p class = "vizQuestion"><b>Which timeframes should be included in the visualization? </b><i>[You may choose more than one]</i></p>
+						<p class = "vizQuestion"><b>Which timeframes should be included in the visualization? </b><i>[You <b>should</b> choose more than one]</i></p>
 						<input class = "selectAllButton" type="button" name="checkall" value="Select All" onClick="checkAll()">
 						<button class = "unselectButton" type="reset">Unselect All</button>
 						<p class = "vizQuestion">Years</p>
@@ -134,5 +134,9 @@
 		</div>
 	
 	</div> <!-- End container -->
+
+	<script>
+		document.title = "SOStimate - Visualizer";
+	</script>
 
 {% endblock content %}
