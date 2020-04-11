@@ -1,4 +1,5 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -26,7 +27,7 @@
 					var fileref=document.createElement("link");
 				        fileref.setAttribute("rel", "stylesheet");
 				        fileref.setAttribute("type", "text/css");
-				        fileref.setAttribute("href", '{% static "VisualizeApp/redColor.css" %}')
+				        fileref.setAttribute("href", '{% static "VisualizeApp/Accessibility/redColor.css" %}')
 				        document.getElementsByTagName('head')[0].appendChild(fileref);
 			
 					console.log("[Accessbility] Using red colour");
@@ -38,7 +39,7 @@
 					var fileref=document.createElement("link");
 				        fileref.setAttribute("rel", "stylesheet");
 				        fileref.setAttribute("type", "text/css");
-				        fileref.setAttribute("href", '{% static "VisualizeApp/largeText.css" %}')
+				        fileref.setAttribute("href", '{% static "VisualizeApp/Accessibility/largeText.css" %}')
 				        document.getElementsByTagName('head')[0].appendChild(fileref);
 
 					console.log("[Accessbility] Using large text");
@@ -50,7 +51,7 @@
 					var fileref=document.createElement("link");
 				        fileref.setAttribute("rel", "stylesheet");
 				        fileref.setAttribute("type", "text/css");
-				        fileref.setAttribute("href", '{% static "VisualizeApp/baseColor.css" %}')
+				        fileref.setAttribute("href", '{% static "VisualizeApp/Accessibility/baseColor.css" %}')
 				        document.getElementsByTagName('head')[0].appendChild(fileref);
 				}
 			}
@@ -67,9 +68,6 @@
 				return cookies;
 			}
 		</script>
-
-		<!-- Bootstrap core CSS 
-		<link href="VisualizeApp/CSS/Core.css" rel="stylesheet">-->
 		
 		<!-- Bootstrap custom CSS -->
 		<link rel="stylesheet" type="text/css" href="{% static 'VisualizeApp/Custom.css' %}">
@@ -162,15 +160,3 @@
 	</body>
 
 </html>
-
-<!--{% for post in posts %} {% endfor %} //A loop through posts dictionary -->
-
-<!--<h1>{{ post.title }}</h1> //Access a variable -->
-
-<!--{% if title %} #If title present
-		<title> </title>
-	{% else %}
-		<title> </title> 
-	{% endif %}
-//A loop through posts dictionary 
--->

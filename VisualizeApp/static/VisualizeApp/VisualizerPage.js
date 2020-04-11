@@ -1,6 +1,12 @@
+//Located here:
+  //Form logic
+  //Form functions
+  //Fetch visalizer data
+  //Draw visualizer graph
+
 formDiv = document.getElementById("vizForm");
 
-var currentTab = 0; // Current tab is set to be the first tab(0)
+var currentTab = 0; // Current tab is set to be the first
 showTab(currentTab); // Display the current tab
 
 stations = [];
@@ -55,22 +61,21 @@ function showTab(n)
 
 function nextPrev(n) 
 {
-    //This function will figure out which tab to display
+    //Figure out which tab to display
     var x = document.getElementsByClassName("tab");
     
-    //Exit the function if any field in the current tab is invalid
+    //Exit if any field is invalid
     if (n == 1 && !validateForm()) return false;
     
     //Hide the current tab:
     x[currentTab].style.display = "none";
     
-    // Increase or decrease the current tab by 1
+    //Increase or decrease the current tab by 1
     currentTab = currentTab + n;
     
-    //Reached the end of the form...
+    //Reached the end of the form - Remove form and, fetch data and draw graph
     if (currentTab >= x.length) 
     {
-       
         formDiv.innerHTML =  "";
 
         drawCanvas();
@@ -79,13 +84,14 @@ function nextPrev(n)
        
         return false;
     }
+
     //Otherwise, display the correct tab
     showTab(currentTab);
 }
 
 function validateForm() 
 {
-    //This function deals with validation of the form fields
+    //Validate input
     var x, y, i, valid = true;
     
     x = document.getElementsByClassName("tab");
@@ -93,6 +99,7 @@ function validateForm()
     
     selected = [];
 
+    //Add checked items to list
     for(item in y)
     {
         if(y[item].checked == true)
@@ -110,7 +117,7 @@ function validateForm()
         valid = false;
     }
     
-    //If the valid status is true, mark the step as finished and valid
+    //Mark step as valid
     if (valid) 
     {
         addToVar(y);
@@ -122,8 +129,7 @@ function validateForm()
 
 function fixStepIndicator(n) 
 {
-    
-    // This function removes the "active" class of all steps...
+    //Remove active class of all steps
     var i, x = document.getElementsByClassName("step");
     
     for (i = 0; i < x.length; i++) 
@@ -131,7 +137,7 @@ function fixStepIndicator(n)
         x[i].className = x[i].className.replace(" active", "");
     }
     
-    //... and adds the "active" class to the current step:
+    //Add active class to current step
     x[n].className += " active";
 }
 
@@ -177,7 +183,7 @@ function addToVar(selection)
     }
 }
 
-//Check all
+//Check all button
 function checkAll() {
     var checkboxes = $("input:checkbox")
     checkboxes = [...checkboxes];
@@ -201,12 +207,7 @@ function processFetchData()
             type: "POST",
             url: "get_graph_data/",
             datatype: "json",
-            //async: true,
-            data: {"stations": stations, "agency": agency[0], "selectedData": selectedData, "selectedDataDisplay": selectedDataDisplay[0], "selectedYears": selectedYears, "monthsIncl": monthsIncl, "selectedGraph": selectedGraph[0]},
-            success: function(json)
-            {
-                //Operations here
-            }
+            data: {"stations": stations, "agency": agency[0], "selectedData": selectedData, "selectedDataDisplay": selectedDataDisplay[0], "selectedYears": selectedYears, "monthsIncl": monthsIncl, "selectedGraph": selectedGraph[0]}           
         });
     }
 
@@ -249,14 +250,13 @@ function drawGraph(data)
         width = svg.attr("width") - margin,
         height = svg.attr("height") - margin;
 
-    console.log("Ready to draw graph...");
-
     //Draw line graph
     if(selectedGraph[0] == "LineGraph")
     {
         drawLineGraph(data, svg, width, height);
     }
 
+    // - NOT IMPLEMENTED - //
     //Draw bar graph
     if(selectedGraph[0] == "BarGraph")
     {
@@ -321,7 +321,7 @@ function drawLineGraph(data, svg, width, height)
         .attr("text-anchor", "end")
         .text("Amount");
 
-    //Define colours
+    //Define different colours for lines
     //var myColor = d3.scaleOrdinal().domain([0, stations.length])
         //.range(["gold", "blue", "green", "black", "grey", "pink", "brown", "slateblue", "orange"])
 
@@ -347,8 +347,8 @@ function drawLineGraph(data, svg, width, height)
 
         //Define line
         var valueline = d3.line()
-                          .x(function(d) { console.log(d[0]); return xLineScale(d[0]); })
-                          .y(function(d) { console.log(d[1]); return yLineScale(d[1]); });
+                          .x(function(d) { return xLineScale(d[0]); })
+                          .y(function(d) { return yLineScale(d[1]); });
                           //.curve(d3.curveMonotoneX);
 
         //Append line
@@ -429,14 +429,11 @@ function drawLineGraph(data, svg, width, height)
                .duration(500)       
                .style("opacity", 0);
         }
-
-    console.log("Finished");
 }
 
+// - NOT IMPLEMENTED - //
 function drawBarGraph(data, svg, width, height)
 {
-    console.log(data);
-
     console.log("Drawing bar...");
 
     removeLoader("overallCustomSVG");

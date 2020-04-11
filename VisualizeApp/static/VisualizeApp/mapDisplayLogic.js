@@ -1,3 +1,7 @@
+//Located here:
+  //Handle map overlay drawing
+  //Handle map overlay fetching and updating
+
 mainContainer = document.getElementsByClassName("container");
 mapContainer = document.getElementById("map");
 
@@ -155,7 +159,6 @@ function fetchData(type)
 		//Transform the data
 		output = Object.keys(returnVal)
 			.map(function(key) { return [String(key), returnVal[key]]; });
-
 
 		addCircles(output);
 		update();

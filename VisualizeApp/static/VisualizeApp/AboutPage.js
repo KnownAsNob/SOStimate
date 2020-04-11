@@ -1,3 +1,8 @@
+//Located here:
+  //About page click logic
+  //Accessibility cookie operations
+  //Accessiblity drop down automatic select
+
 var coll = document.getElementsByClassName("faq_question");
 var i;
 

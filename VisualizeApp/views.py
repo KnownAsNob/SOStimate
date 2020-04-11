@@ -2,31 +2,32 @@ from django.shortcuts import render
 from .models import Station
 from .models import Calls
 from .models import MapDisplay
+
 from django.http import HttpResponse
 from django.core import serializers
-import json
 from django.core.serializers import serialize
+
+import json
+from django.http import JsonResponse
 
 from django.db.models import Count
 from django.db.models import Avg
 from django.db.models import IntegerField
 from django.db.models.functions import Cast
 
-from django.http import JsonResponse
 
-#Get total calls for station
+#Get total calls for station - Fetch from database once
 masterCalls = Calls.objects.all()
 
 days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
-def home(request): #Handles logic of certain route
+#Render static files on request
+def home(request):
 	return render(request, 'VisualizeApp/home.html')
-	#Pass in variable: render(request, 'VisualizeApp/home.html', Name)
 
 def about(request):
 	return render(request, 'VisualizeApp/about.html')
-	#Pass in variable in dictionary directly: render(request, 'VisualizeApp/home.html', {'title': 'About'})
-
+	
 def map(request):
 
 	json_serializer = serializers.get_serializer("json")()
@@ -48,13 +49,11 @@ def visualizations(request):
 def accessibility(request):
 	return render(request, 'VisualizeApp/accessibility.html')
 
-############### Map Functions ###############
+############### Dashboard Queries ###############
 
 def get_overall_data(request):
 
 	input = request.POST['station']
-	
-	#json_serializer = serializers.get_serializer("json")()
 
 	#Get total calls for station
 	overallCalls = masterCalls.filter(details__StationArea = input)
@@ -77,12 +76,13 @@ def get_overall_data(request):
 
 	response_data={}
 
+	#Try add data, return error to stop app crash
 	try:
 		response_data['result'] = input;
 		response_data['message'] = response_list;
 	except:
-		response_data['result'] = "Failure"
-		response_data['message'] = "Error";
+		response_data['result'] = "Error!"
+		response_data['message'] = "Error!";
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
 
@@ -164,6 +164,7 @@ def get_calls_unit(request):
 			time = day + "/" + filter
 			calls = totalCalls.filter(details__Date = time).count()
 			response_data[x] = calls
+	
 	#Year, Month, Day
 	else:
 		day = str(day)
@@ -215,6 +216,7 @@ def get_incidents(request):
 	#4 = #Year, Month, Day
 	
 	######## Decide what is required ########
+
 	#!Year
 	if case == 1:
 
@@ -277,7 +279,6 @@ def get_incidents(request):
 		else:
 			overallCalls = masterCalls.filter(details__Date = date, details__Agency = type, details__StationArea = input)
 
-
 	#Get most popular incidents
 	PopIncident = overallCalls.values('details__Incident').annotate(Count=Count('details__Incident')).order_by('-Count')[:daily]
 
@@ -336,6 +337,7 @@ def get_avg_response(request):
 	#End calculateAverages
 
 	######## Decide what is required ########
+
 	#!Year
 	if case == 1:
 		#!Year, !Type
@@ -514,7 +516,6 @@ def get_avg_travel(request):
 			calls = overallCalls.filter(details__Date__endswith=time)
 			calculateAverages(calls, x)
 		
-	
 	#Year, Month, !Day
 	elif case == 3:
 		#Generate month + year to filter
@@ -726,7 +727,7 @@ def get_incident_lengths(request):
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
 
-########## In-Map Functions ##########
+############### Map Overlay Queries ################
 
 def get_calls_year(request):
 
@@ -750,17 +751,13 @@ def get_calls_year(request):
 
 	elif type == "Avg_Travel_Hosp":
 
-		#getData()
-
 		stationCalls = MapDisplay.objects.filter(name="Avg_Travel_Hosp")
 
 	elif type == "Avg_Hosp_Time":
 
-		#getData()
-
 		stationCalls = MapDisplay.objects.filter(name="Avg_Hosp_Time")
 
-	#Process 
+	#Process the data
 	for x in stations:
 
 		yearResponse={}
@@ -774,7 +771,7 @@ def get_calls_year(request):
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")	
 
-########## Custom Visualizer ##########
+############### Custom Visualizer Queries ################
 
 def get_graph_data(request):
 	
@@ -786,15 +783,7 @@ def get_graph_data(request):
 	monthsIncl = request.POST.getlist('monthsIncl[]')
 	selectedGraph = request.POST['selectedGraph']
 
-	#print("Stations: ", stations) #Stations:  ['Tallaght', 'Blanchardstown']
-	#print("Agency: ", agency) #Agency:  DF
-	#print("Selected Data: ", selectedData) #Selected Data:  ['Incident Type']
-	#print("Data Display: ", selectedDataDisplay) #Data Display:  TotalCount
-	#print("Years: ", selectedYears) #Years:  ['2013', '2014', '2015']
-	print("Months: ", monthsIncl[0])
-	#print("Graph: ", selectedGraph) #Graph:  LineGraph
-
-	
+	##### Line graph #####
 
 	if selectedGraph == "LineGraph":
 
@@ -807,8 +796,6 @@ def get_graph_data(request):
 				
 				year_data = {}
 
-				#Operation for each selected data
-				#for data in selectedData:
 				#Operation for each year
 				for year in selectedYears:
 
@@ -824,6 +811,7 @@ def get_graph_data(request):
 				#Add each station set
 				response_data[station] = year_data
 
+		# -NOT IMPLEMENTED YET - #
 		#Months required#
 		else:
 			print("Months required")
@@ -859,6 +847,9 @@ def get_graph_data(request):
 				#Add each station set
 				response_data[station] = year_data
 
+	# -NOT IMPLEMENTED YET - #
+	##### Bar graph #####
+
 	elif selectedGraph == "BarGraph":
 
 		response_data = []
@@ -885,7 +876,7 @@ def get_graph_data(request):
 
 	return HttpResponse(json.dumps(response_data), content_type = "application/json")
 
-########## Other Functionality ##########
+############### Other Functions ############### 
 
 #Decide time details to provide
 def decideCase(year, month, day):
@@ -911,52 +902,3 @@ def decideCase(year, month, day):
 			#Year, Month, Day
 			else:
 				return 4
-
-#Run to get summary data
-def getData():
-
-	response_data = {}
-
-	print("Running get...")
-
-	def calculateAverages(overallCalls, timeUnit):
-		#Get list of both categories
-		totalMOB_IA = list(overallCalls.values('details__AH-MAV-Cat').values_list('details__AH-MAV-Cat', flat=True))
-
-		totalMOBIA = 0
-
-		totalNAN = 0
-
-		#Check not = 0
-		if not totalMOB_IA:
-			response_data[timeUnit] = 0
-
-		else:
-			#Add to get averages
-			for item in totalMOB_IA:
-				#Deal with NaNs
-				if item == 'nan':
-					totalNAN = totalNAN + 1
-				else:
-					totalMOBIA = totalMOBIA + int(float(item))
-
-			if totalMOBIA == 0:
-				response_data[timeUnit] = 0
-
-			else:
-				averageResponse = totalMOBIA/(len(totalMOB_IA) - totalNAN)
-
-				response_data[timeUnit] = averageResponse
-	#End calculateAverages
-
-	stations = ["Tara Street", "Tallaght", "Kilbarrack", "Dun Laoghaire", "Rathfarnham", "Phibsborough", "Dolphins Barn", "Swords", "North Strand", "Donnybrook", "Finglas", "Skerries", "Blanchardstown", "Balbriggan"]
-	#Calculate every year
-	
-	for station in stations:
-		for x in range(2013, 2019):
-			filterCalls = masterCalls.filter(details__StationArea = station, details__Date__endswith=str(x), details__Agency = "DA")
-			calculateAverages(filterCalls, str(x))
-
-		print(station, "Data: ", response_data)
-
-	#return HttpResponse(json.dumps(response_data), content_type = "application/json")
