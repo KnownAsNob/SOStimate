@@ -11,7 +11,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 's+jzxm^f1_w*)ri$%upf358q2n#1k0^ec+0365nn=ld-hw-ytm'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+# REPLACE SERVER ACCESS INFO BEFORE COMMIT
 
 ALLOWED_HOSTS = ["*"]
 
@@ -67,11 +68,11 @@ WSGI_APPLICATION = 'Visualizer.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'nelly',
-        'PASSWORD': '220368ob',
-        'HOST': 'database-1.cbnl5dq8asol.eu-west-1.rds.amazonaws.com'
+        'ENGINE': '',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': ''
     }
 }
 
